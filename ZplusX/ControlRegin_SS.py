@@ -3,7 +3,7 @@ import os,sys
 sys.path.append("%s/../lib" %os.getcwd())
 from deltaR import *
 
-Signal = ROOT.TFile('/afs/cern.ch/work/g/guoj/XToZZ_FullRunII/Data2018/2018_noDuplicates.root')
+Signal = ROOT.TFile('/afs/cern.ch/work/g/guoj/XToZZ_FullRunII/Data2016/2016_noDuplicates.root')
 t = Signal.Get('passedEvents')
 #DY = ROOT.TChain("passedEvents")
 #DY.Add("/afs/cern.ch/work/g/guoj/XToZZ_FullRunII/Data2016/MC/DYJetsToLL_CN01.root")
@@ -215,13 +215,13 @@ print " npassed4e = " + str(npassed4e)
 
 
 data4e.Draw("E1")
-c.SaveAs("plot/dataP2F2_4e_SS.png")
+c.SaveAs("plot/data16P2F2_4e_SS.png")
 data4mu.Draw("E1")
-c.SaveAs("plot/dataP2F2_4mu_SS.png")
+c.SaveAs("plot/data16P2F2_4mu_SS.png")
 data2e2mu.Draw("E1")
-c.SaveAs("plot/dataP2F2_2e2mu_SS.png")
+c.SaveAs("plot/data16P2F2_2e2mu_SS.png")
 data2mu2e.Draw("E1")
-c.SaveAs("plot/dataP2F2_2mu2e_SS.png")
+c.SaveAs("plot/data16P2F2_2mu2e_SS.png")
 
 #Zmass.Draw()
 #c.SaveAs("plot/ZmassCRSS.png")
