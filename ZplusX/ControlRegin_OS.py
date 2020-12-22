@@ -73,7 +73,7 @@ def main():
 
         for cat_name in cat_names:
             stacks = MakeStack(histos[cat_name], analyzer_cfg, cat_name)
-            scaled_data = MakeDataLabel(histo[cat_name]['data'],cat_name)
+            scaled_data = MakeDataLabel(histos[cat_name]['data'],cat_name)
             legend = MakeLegend(plot_cfg, histos[cat_name], scaled_data)
 
             canv = CreateCanvas(cat_name)
