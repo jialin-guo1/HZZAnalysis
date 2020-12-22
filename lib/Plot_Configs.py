@@ -19,13 +19,14 @@ class Plot_Config:
         self.colors["ZH"] =  kBlue + 1
         self.colors["WH"] =  kGreen + 2
         self.colors["ttH"]  = kPink + 6
+        self.colors["DY"]  = kGreen + 1
 
 	# trying to use blue for Z, green for W, yellow for top, red for g/q
         self.colors["ZJets"]  =  kGreen + 1
 	self.colors["tt_ll"] = kYellow - 9
 	self.colors["TT"]  = kBlue + 1
 	self.colors["WW"] =  kSpring -1
-        self.colors["WZ"] =  kGreen - 9
+        self.colors["WZ"] =  kMagenta -4
 	self.colors["qqZZ"] =  kCyan - 7
 	self.colors["ggZZ"] = kViolet - 9
         self.colors["ttV"] = kOrange - 9
@@ -33,9 +34,14 @@ class Plot_Config:
         self.colors["VVV"] = kPink + 6
 
 
-    def SetHistStyles(self, hist, sample):
+    def SetHistStyles(self, hist, sample,cat_name):
         if sample == 'data':
     	    hist.SetMarkerStyle(20)
+            hist.SetLineColor(kBlack)
+            hist.GetXaxis().SetTitle('m_{%s}'%cat_name)
+            #hist.GetXaxis().SetTitleSize(0.20)
+            hist.GetYaxis().SetTitle('Events / %d GeV' %hist.GetBinWidth(1))
+            #hist.GetYaxis().SetTitleSize(0.20)
     	elif sample in self.ana_cfg.sig_names:
     	    hist.SetLineColor(self.colors[sample])
     	    hist.SetLineWidth(2)
