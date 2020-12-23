@@ -17,7 +17,8 @@ class Analyzer_Config:
         if self.channel == 'inclusive' or self.channel == 'ggH' or self.channel == 'VBF' or self.channel == 'WH_3l' or self.channel == 'ZH_4l' or self.channel == 'ttH_lep':
     	    self.sample_loc = '/cms/user/guojl/Sample'
     	    self.sig_names  = []
-    	    self.bkg_names  = ['DY','WZ','TT','qqZZ']
+    	    #self.bkg_names  = ['qqZZ','WZ','TT','DY']
+            self.bkg_names  = ['DY']
     	    self.samp_names = self.bkg_names + ['data']
     	else:
     	    print "channel is invalid: channel = %s" %self.channel

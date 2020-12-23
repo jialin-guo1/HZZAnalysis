@@ -39,6 +39,7 @@ def main():
             #print "get ntuple"
             #print ntuples[sample].GetEntries()
             for ievent,event in enumerate(ntup):
+                #if(ievent==10000): break
                 if(sample=='DY'):
                     weight = 59.7*1000*6104*event.eventWeight/event.crossSection/130939680.0
                 elif(sample=='WZ'):
@@ -73,7 +74,7 @@ def main():
 
         for cat_name in cat_names:
             stacks = MakeStack(histos[cat_name], analyzer_cfg, cat_name)
-            scaled_data = MakeDataLabel(histos[cat_name]['data'],cat_name)
+            scaled_data = MakeDataLabel(stacks['data'],cat_name)
             legend = MakeLegend(plot_cfg, histos[cat_name], scaled_data)
 
             canv = CreateCanvas(cat_name)

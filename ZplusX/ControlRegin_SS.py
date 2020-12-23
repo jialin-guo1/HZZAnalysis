@@ -9,6 +9,8 @@ from SSMethod import *
 
 gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(False)
+ROOT.EnableImplicitMT(4)
+
 
 def main():
     save_dir = 'plot'
@@ -44,15 +46,15 @@ def main():
 
         #===============start analysis=================
         for ievent,event in enumerate(ntup):
-            #if(ievent==100):break
+            #if(ievent==10000):break
             if(sample=='DY'):
                 weight = 59.7*1000*6104*event.eventWeight/event.crossSection/130939680.0
             elif(sample=='WZ'):
                 weight = 59.7*1000*4.67*event.eventWeight/event.crossSection/3110669.0
             elif(sample=='TT'):
-                weight = 59.7*1000*4.67*event.eventWeight/event.crossSection/32584720.0
+                weight = 59.7*1000*87.31*event.eventWeight/event.crossSection/32584720.0
             elif(sample=='qqZZ'):
-                weight = 59.7*1000*4.67*event.eventWeight*event.k_qqZZ_qcd_M*event.k_qqZZ_ewk/event.crossSection/18896902.0
+                weight = 59.7*1000*1.256*event.eventWeight*event.k_qqZZ_qcd_M*event.k_qqZZ_ewk/event.crossSection/18896902.0
             else:
                 weight = 1.0
             #print "enter the loop of events"
