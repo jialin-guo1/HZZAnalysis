@@ -17,10 +17,10 @@ def LoadNtuples(ana_cfg):
             ntuples[sample]. Add(ana_cfg.sample_loc + '/2018_noDuplicates.root')
 
         else:
-            print "will open file"+ana_cfg.sample_loc + '/%s_2018.root' %sample
+            print "will open file"+ana_cfg.sample_loc + '/%s_2016.root' %sample
             #tmpfile = TFile(ana_cfg.sample_loc + '/%s_2018.root' %sample)
 	    ntuples[sample] = TChain("Ana/passedEvents","chain_" + sample)
-            ntuples[sample]. Add(ana_cfg.sample_loc + '/%s_2018.root' %sample)
+            ntuples[sample]. Add(ana_cfg.sample_loc + '/%s_2016.root' %sample)
         if(ntuples[sample]):
             print " number of events = " + str(ntuples[sample].GetEntries())
             print " do a loop testing"
@@ -169,4 +169,4 @@ def DrawOnCanv(canv, var_name, plt_cfg, stacks, histos, scaled_sig,legend, lumi_
 def SaveCanvPic(canv, save_dir, save_name):
     canv.cd()
     #canv.SaveAs(save_dir + '/' + save_name + '.pdf')
-    canv.SaveAs(save_dir + '/' + save_name +'OS2018' + '.png')
+    canv.SaveAs(save_dir + '/' + save_name +'SS2016' + '.png')
