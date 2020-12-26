@@ -9,6 +9,7 @@ class Plot_Config:
     	self.colors  = {}
     	self.logY    = True
     	self.lumi    = '59.7'
+        #self.lumi    = '35.9'
     	self.sig_scale  = 50
 	self.LoadColors()
 

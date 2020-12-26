@@ -51,7 +51,10 @@ def main():
             passedSSCRselection = foundSSCRCandidate(event,lep_index)
             if(passedSSCRselection):
                 if(sample=='DY'):
-                    weight = 59.7*1000*6104*event.eventWeight/event.crossSection/130939680.0
+                    #weight = 35.9*1000*6104*event.eventWeight/event.crossSection/81781072.0
+                    #weight = 35.9*1000*6104*event.eventWeight/81781072.0
+                    #weight = 59.7*1000*6225.4*event.eventWeight/event.crossSection/130939680.0
+                    weight = 59.7*1000*6225.4*event.eventWeight/130939680.0
                 elif(sample=='WZ'):
                     weight = 59.7*1000*4.67*event.eventWeight/event.crossSection/3110669.0
                 elif(sample=='TT'):
@@ -97,5 +100,6 @@ def main():
         legend = MakeLegend(plot_cfg, histos[cat_name])
         canv = CreateCanvas(cat_name)
         DrawOnCanv(canv, cat_name, plot_cfg, stacks, histos[cat_name],scaled_data,legend, lumi_label, cms_label)
-        SaveCanvPic(canv, save_dir, cat_name)
+        save_name = cat_name+"SS2018"
+        SaveCanvPic(canv, save_dir, save_name)
 main()

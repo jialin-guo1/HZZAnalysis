@@ -5,6 +5,7 @@ from ROOT import *
 
 class Analyzer_Config:
     def __init__(self, channel):
+        #self.year = years
 	self.channel    = channel
 	self.sample_loc = 'NONE'
 	self.sig_names  = []
@@ -15,7 +16,8 @@ class Analyzer_Config:
 
     def Config_Analyzer(self):
         if self.channel == 'inclusive' or self.channel == 'ggH' or self.channel == 'VBF' or self.channel == 'WH_3l' or self.channel == 'ZH_4l' or self.channel == 'ttH_lep':
-    	    self.sample_loc = '/cms/user/guojl/Sample'
+    	    self.sample_loc = '/cms/user/guojl/Sample/skimed'
+            #self.sample_loc = '/cms/user/guojl/Sample'
     	    self.sig_names  = []
     	    #self.bkg_names  = ['qqZZ','WZ','TT','DY']
             self.bkg_names  = ['DY']
