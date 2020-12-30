@@ -36,10 +36,6 @@ def main():
             histos['2e2mu3P1F'][sample] = ROOT.TH1D(sample+'2e2mu3P1F',sample+'2e2mu3P1F',40,70,870)
 
         #loop over samples and events
-        passedCR = 0
-        passedID = 0
-        twoFailed = 0
-        oneFailed = 0
         print " will start loop samples = "+str(analyzer_cfg.samp_names)
         for sample in analyzer_cfg.samp_names:
             print " enter the loop of samples = " + sample
@@ -48,10 +44,11 @@ def main():
             #print "get ntuple"
             #print ntuples[sample].GetEntries()
             for ievent,event in enumerate(ntup):
-                if(ievent==10000): break
+                #if(ievent==100000): break
                 if(sample=='DY'):
                     #weight = 35.9*1000*6104*event.eventWeight/event.crossSection/81781072.0
-                    weight = 59.7*1000*6225.4*event.eventWeight/130939680.0
+                    #weight = 59.7*1000*6225.4*event.eventWeight/130939680.0
+                    weight = 59.7*1000*event.eventWeight/130939680.0
                     #weight = 59.7*1000*6225.4*event.eventWeight/event.crossSection/130939680.0
                 elif(sample=='WZ'):
                     #weight = 59.7*1000*4.67*event.eventWeight/event.crossSection/3110669.0
@@ -65,43 +62,27 @@ def main():
                     weight = 1.0
                 #print "enter the loop of events"
                 if(not event.passedZXCRSelection): continue
-                passedCR += 1
-                if(event.lep_id[event.lep_Hindex[0]]*event.lep_id[event.lep_Hindex[1]]>0 or event.lep_id[event.lep_Hindex[2]]+event.lep_id[event.lep_Hindex[3]]>0):continue
-                passedID += 1
-                l1 = ROOT.TLorentzVector()
-                l2 = ROOT.TLorentzVector()
-                l3 = ROOT.TLorentzVector()
-                l4 = ROOT.TLorentzVector()
-                l1.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[3]])
-                l2.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[3]])
-                l3.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[3]])
-                l4.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[3]])
-                mass4l = (l1+l2+l3+l4).M()
+                if(event.lep_id[event.lep_Hindex[0]]*event.lep_id[event.lep_Hindex[1]]>0 or event.lep_id[event.lep_Hindex[2]]>event.lep_id[event.lep_Hindex[3]]>0):continue
                 if(event.nZXCRFailedLeptons==2):
-                    twoFailed +=1
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==11):
-                        histos['4e2P2F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==13):
-                        histos['4mu2P2F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==11 and event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==13):
-                        histos['2e2mu2P2F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==13 and event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==11):
-                        histos['2mu2e2P2F'][sample].Fill(mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                        histos['4e2P2F'][sample].Fill(event.mass4l,weight)
+                        #print "mass4l="+str(event.mass4l)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                        histos['4mu2P2F'][sample].Fill(event.mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                        histos['2e2mu2P2F'][sample].Fill(event.mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                        histos['2mu2e2P2F'][sample].Fill(event.mass4l,weight)
                 if(event.nZXCRFailedLeptons==1):
-                    oneFailed +=1
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==11):
-                        histos['4e3P1F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==13):
-                        histos['4mu3P1F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==11 and event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==13):
-                        histos['2e2mu3P1F'][sample].Fill(mass4l,weight)
-                    if(event.lep_id[event.lep_Hindex[0]]==event.lep_id[event.lep_Hindex[1]]==13 and event.lep_id[event.lep_Hindex[2]]==event.lep_id[event.lep_Hindex[3]]==11):
-                        histos['2mu2e3P1F'][sample].Fill(mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                        histos['4e3P1F'][sample].Fill(event.mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                        histos['4mu3P1F'][sample].Fill(event.mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                        histos['2e2mu3P1F'][sample].Fill(event.mass4l,weight)
+                    if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                        histos['2mu2e3P1F'][sample].Fill(event.mass4l,weight)
 
-        print"passedCR="+str(passedCR)
-        print"passedID="+str(passedID)
-        print"twoFailed="+str(twoFailed)
-        print"oneFailed="+str(oneFailed)
         #set histoStyles
         for cat_name in cat_names:
             for sample in analyzer_cfg.samp_names:

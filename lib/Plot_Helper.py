@@ -10,17 +10,17 @@ def LoadNtuples(ana_cfg):
     ntuples = {}
     print " list of samp_names = "+str(ana_cfg.samp_names)
     for sample in ana_cfg.samp_names:
-        if(sample=='data'):
+        if(sample=='data' or sample == 'ZX'):
             print "will open data file"
             #tmpfile = TFile(ana_cfg.sample_loc + '/2018_noDuplicates.root')
             ntuples[sample] = TChain("passedEvents","chain_" + sample)
             ntuples[sample]. Add(ana_cfg.sample_loc + '/2018_noDuplicates.root')
 
         else:
-            print "will open file"+ana_cfg.sample_loc + '/%s_2018.root' %sample
+            print "will open file"+ana_cfg.sample_loc + '/%s*.root' %sample
             #tmpfile = TFile(ana_cfg.sample_loc + '/%s_2018.root' %sample)
 	    ntuples[sample] = TChain("passedEvents","chain_" + sample)
-            ntuples[sample]. Add(ana_cfg.sample_loc + '/%s_2018.root' %sample)
+            ntuples[sample]. Add(ana_cfg.sample_loc + '/MC/%s*.root' %sample)
         if(ntuples[sample]):
             print " number of events = " + str(ntuples[sample].GetEntries())
             print " do a loop testing"
@@ -31,18 +31,29 @@ def LoadNtuples(ana_cfg):
     return ntuples
 
 
-def MakeStack(histos, ana_cfg, var_name):
+def AddHistos(histos,ana_cfg,var_name):
+    tmpSimhisto = TH1D("Sim","Sim",50,70,170)
+    tmpSimhisto.SetFillColor(kRed-7)
+    tmpSimhisto.Sumw2()
+    tmpGGZZhisto = TH1D("GGZZ","GGZZ",50,70,170)
+    tmpGGZZhisto.SetFillColor(kAzure -1)
+    tmpGGZZhisto.Sumw2()
+    for sample in ana_cfg.sig_names:
+        tmpSimhisto.Add(tmpSimhisto,histos[sample])
+    for sample in ana_cfg.bkg_names:
+        if(sample.find('GluGluToContinToZZ')!=-1):
+            tmpGGZZhisto.Add(tmpGGZZhisto,histos[sample])
+    return tmpSimhisto,tmpGGZZhisto
+
+def MakeStack(histos, ana_cfg, var_name,Simhisto,GGZZhisto):
     stacks = {}
     stacks['data']  = THStack("h_stack_"+var_name, var_name)
-    stacks['sig']  = THStack("h_stack_"+var_name, var_name)
     stacks['bkg']  = THStack("h_stack_"+var_name, var_name)
     stacks['data'].Add(histos['data'])
-    for sample in ana_cfg.sig_names:
-        stacks['sig'].Add(histos[sample])
-    #    stacks['all'].Add(histos[sample])
-    for sample in ana_cfg.bkg_names:
-        stacks['bkg'].Add(histos[sample])
-    #    stacks['all'].Add(histos[sample])
+    stacks['bkg'].Add(histos['ZX'])
+    stacks['bkg'].Add(GGZZhisto)
+    stacks['bkg'].Add(histos['ZZTo4L'])
+    stacks['bkg'].Add(Simhisto)
     return stacks
 
 
@@ -111,17 +122,19 @@ def MakeRatioPlot(h_data, h_MC, var_name):
     return ratio_plot
 
 
-def MakeLegend(plt_cfg, histos):
+def MakeLegend(plt_cfg, histos,Simhito,GGZZhito):
     legend = TLegend(0.65,0.65,0.85,0.85)
     legend.SetNColumns(1)
     legend.SetLineColor(10)
 
     legend.AddEntry(histos["data"], "data")
+    legend.AddEntry(Simhito,"H(125)","f")
+    legend.AddEntry(histos["ZZTo4L"],"qq->ZZ","f")
+    legend.AddEntry(GGZZhito,"gg->ZZ","f")
+    legend.AddEntry(histos["ZX"],"Z+X","f")
     #for sample in plt_cfg.ana_cfg.sig_names:
     #    legend.AddEntry(histos[sample], sample )
     #    legend.AddEntry(scaled_signal, "signal X%d" %plt_cfg.sig_scale)
-    for sample in plt_cfg.ana_cfg.bkg_names:
-        legend.AddEntry(histos[sample],sample,"f")
     return legend
 
 
@@ -170,3 +183,36 @@ def SaveCanvPic(canv, save_dir, save_name):
     canv.cd()
     #canv.SaveAs(save_dir + '/' + save_name + '.pdf')
     canv.SaveAs(save_dir + '/' + save_name+ '.png')
+
+def Getbkgweight(event,sample):
+    if(sample=='GluGluHToZZTo4L'):
+        weight=59.7*13.33*event.weight/event.cross
+    elif(sample=='VBF_HToZZTo4L'):
+        weight=59.7*1.044*event.weight/event.cross
+    elif(sample=='WminusH_HToZZTo4L'):
+        weight=59.7*0.147*event.weight/event.cross
+    elif(sample=='WplusH_HToZZTo4L'):
+        weight=59.7*0.232*event.weight/event.cross
+    elif(sample=='ZH_HToZZ_4L'):
+        weight=59.7*0.668*event.weight/event.cross
+    elif(sample=='ttH_HToZZ'):
+        weight=56.7*0.393*event.weight/event.cross
+    elif(sample==''):
+        weight==56.7*0.133*event.enentWeight/event.crossSection
+    elif(sample=='ZZTo4L'):
+        weight=59.7*1000*1.256*event.weight*event.k_qq_qcd_M*event.k_qq_ewk/event.cross
+    elif(sample=='GluGluToContinToZZTo2e2mu'):
+        weight=59.7*1000*0.00319*event.weight*event.k_gg/event.cross
+    elif(sample=='GluGluToContinToZZTo2e2tau'):
+        weight=59.7*1000*0.00319*event.weight*event.k_gg/event.cross
+    elif(sample=='GluGluToContinToZZTo2mu2tau'):
+        weight=59.7*1000*0.00319*event.weight*event.k_gg/event.cross
+    elif(sample=='GluGluToContinToZZTo4e'):
+        weight=59.7*1000*0.00159*event.weight*event.k_gg/event.cross
+    elif(sample=='GluGluToContinToZZTo4mu'):
+        weight=59.7*1000*0.00159*event.weight*event.k_gg/event.cross
+    elif(sample=='GluGluToContinToZZTo4tau'):
+        weight=59.7*1000*0.00159*event.weight*event.k_gg/event.cross
+    else:
+        weight=1
+    return weight

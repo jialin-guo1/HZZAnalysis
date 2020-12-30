@@ -21,6 +21,21 @@ class Plot_Config:
         self.colors["WH"] =  kGreen + 2
         self.colors["ttH"]  = kPink + 6
         self.colors["DY"]  = kGreen + 1
+        self.colors["ZX"] = kGreen + 3
+        self.colors["GluGluHToZZTo4L"]  = kRed-7
+        self.colors["VBF_HToZZTo4L"]  = kRed-7
+        self.colors["WminusH_HToZZTo4L"]  = kRed-7
+        self.colors["WplusH_HToZZTo4L"]  = kRed-7
+        self.colors["ZH_HToZZ_4L"]  = kRed-7
+        self.colors["ttH_HToZZ"]  = kRed-7
+        self.colors["bbH_HToZZTo4L"] = kRed - 7
+        self.colors["GluGluToContinToZZTo2e2mu"]  = kAzure -1
+        self.colors["GluGluToContinToZZTo2e2tau"]  = kAzure -1
+        self.colors["GluGluToContinToZZTo2mu2tau"]  = kAzure -1
+        self.colors["GluGluToContinToZZTo4e"]  = kAzure -1
+        self.colors["GluGluToContinToZZTo4mu"]  = kAzure -1
+        self.colors["GluGluToContinToZZTo4tau"]  = kAzure -1
+        self.colors["ZZTo4L"] = kAzure +6
 
 	# trying to use blue for Z, green for W, yellow for top, red for g/q
         self.colors["ZJets"]  =  kGreen + 1
@@ -44,8 +59,8 @@ class Plot_Config:
             hist.GetYaxis().SetTitle('Events / %d GeV' %hist.GetBinWidth(1))
             #hist.GetYaxis().SetTitleSize(0.20)
     	elif sample in self.ana_cfg.sig_names:
-    	    hist.SetLineColor(self.colors[sample])
-    	    hist.SetLineWidth(2)
-    	    hist.SetFillColor(kGray)
+    	    #hist.SetLineColor(self.colors[sample])
+    	    hist.SetFillColor(self.colors[sample])
     	elif sample in self.ana_cfg.bkg_names:
+            #hist.SetLineColor(self.colors[sample])
     	    hist.SetFillColor(self.colors[sample])

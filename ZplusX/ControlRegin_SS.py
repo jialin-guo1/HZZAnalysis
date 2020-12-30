@@ -18,7 +18,7 @@ def main():
     ntuples = LoadNtuples(analyzer_cfg)
     print "get ntuples done "
     print "start test ntuple"
-    print "number of events after loading = " +str(ntuples['DY'].GetEntries())
+    #print "number of events after loading = " +str(ntuples['DY'].GetEntries())
 
 
     cat_names = ['4e', '4mu', '2mu2e', '2e2mu']
@@ -53,7 +53,7 @@ def main():
                 if(sample=='DY'):
                     #weight = 35.9*1000*6104*event.eventWeight/event.crossSection/81781072.0
                     #weight = 59.7*1000*6104*event.eventWeight/event.crossSection/130939680.0
-                    weight = 59.7*1000*6225.4*event.eventWeight/130939680.0
+                    weight = 59.7*1000*event.eventWeight/130939680.0
                 elif(sample=='WZ'):
                     #weight = 59.7*1000*4.67*event.eventWeight/event.crossSection/3110669.0
                     weight = 59.7*1000*4.67*event.eventWeight/3110669.0
