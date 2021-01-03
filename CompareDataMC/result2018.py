@@ -59,7 +59,7 @@ def main():
                     histos['4l'][sample].Fill(event.H_FSR,weight)
         #==================end analysis============================
 
-    #set histoStyles and # save raw histograms
+    #set histoStyles and save raw histograms
     for sample in analyzer_cfg.samp_names:
         plot_cfg.SetHistStyles(histos['4l'][sample], sample,'4l')
 
