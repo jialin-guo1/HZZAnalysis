@@ -97,23 +97,23 @@ class FakeRates():
             if(event.met>25.0):continue
             if(event.lep_Sip[event.lep_Hindex[2]]>4.0): continue
             if(event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
-                if(abs(event.lep_id[event.lep_Hindex[2]])==11)):
+                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         passing['EE']['electron'].Fill(event.lep_pt[lep_Hindex[2]],0.5)
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         passing['EB']['electron'].Fill(event.lep_pt[lep_Hindex[2]],1.5)
-                if(abs(event.lep_id[event.lep_Hindex[2]])==13)):
+                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         passing['EE']['muon'].Fill(event.lep_pt[lep_Hindex[2]],0.5)
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         passing['EE']['muon'].Fill(event.lep_pt[lep_Hindex[2]],1.5)
             else:
-                if(abs(event.lep_id[event.lep_Hindex[2]])==11)):
+                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         failing['EE']['electron'].Fill(event.lep_pt[lep_Hindex[2]],0.5)
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         failing['EB']['electron'].Fill(event.lep_pt[lep_Hindex[2]],1.5)
-                if(abs(event.lep_id[event.lep_Hindex[2]])==13)):
+                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         failing['EE']['muon'].Fill(event.lep_pt[lep_Hindex[2]],0.5)
                     if(event.lep_isEB[event.lep_Hindex[2]]):
@@ -168,9 +168,9 @@ class FakeRates():
 										  vector_EY['EE']['muon'][0])
         FR_SS_muon_EE_unc.SetName("FR_SS_muon_EE_unc")
 
-        FR_SS_muon_EE_unc = TGraphErrors (vector_X['EB']['electron'].size(),
-										  vector_X['EB']['electron'][0],
-										  vector_Y['EE']['electron'][0],
-										  vector_EX['EE']['electron'][0],
-										  vector_EY['EE']['electron'][0])
-        FR_SS_muon_EE_unc.SetName("FR_SS_muon_EE_unc")
+        FR_SS_muon_EB_unc = TGraphErrors (vector_X['EB']['muon'].size(),
+										  vector_X['EB']['muon'][0],
+										  vector_Y['EB']['muon'][0],
+										  vector_EX['EB']['muon'][0],
+										  vector_EY['EB']['muon'][0])
+        FR_SS_muon_EB_unc.SetName("FR_SS_muon_EE_unc")

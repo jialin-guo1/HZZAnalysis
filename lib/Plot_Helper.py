@@ -32,10 +32,10 @@ def LoadNtuples(ana_cfg):
 
 
 def AddHistos(histos,ana_cfg,var_name):
-    tmpSimhisto = TH1D("Sim","Sim",50,70,170)
+    tmpSimhisto = TH1D("Sim"+var_name,"Sim"+var_name,50,70,170)
     tmpSimhisto.SetFillColor(kRed-7)
     tmpSimhisto.Sumw2()
-    tmpGGZZhisto = TH1D("GGZZ","GGZZ",50,70,170)
+    tmpGGZZhisto = TH1D("GGZZ"+var_name,"GGZZ"+var_name,50,70,170)
     tmpGGZZhisto.SetFillColor(kAzure -1)
     tmpGGZZhisto.Sumw2()
     for sample in ana_cfg.sig_names:
@@ -197,8 +197,8 @@ def Getbkgweight(event,sample):
         weight=59.7*0.668*event.weight/event.cross
     elif(sample=='ttH_HToZZ'):
         weight=56.7*0.393*event.weight/event.cross
-    elif(sample==''):
-        weight==56.7*0.133*event.enentWeight/event.crossSection
+    elif(sample=='bbH_HToZZTo4L'):
+        weight=56.7*0.133*event.eventWeight/event.crossSection/207800.00
     elif(sample=='ZZTo4L'):
         weight=59.7*1000*1.256*event.weight*event.k_qq_qcd_M*event.k_qq_ewk/event.cross
     elif(sample=='GluGluToContinToZZTo2e2mu'):

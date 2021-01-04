@@ -54,7 +54,7 @@ class Plot_Config:
         if sample == 'data':
     	    hist.SetMarkerStyle(20)
             hist.SetLineColor(kBlack)
-            hist.GetXaxis().SetTitle('m_{%s}'%cat_name)
+            hist.GetXaxis().SetTitle('m_{4l}')
             #hist.GetXaxis().SetTitleSize(0.20)
             hist.GetYaxis().SetTitle('Events / %d GeV' %hist.GetBinWidth(1))
             #hist.GetYaxis().SetTitleSize(0.20)
