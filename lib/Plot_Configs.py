@@ -8,8 +8,10 @@ class Plot_Config:
         self.ana_cfg = ana_cfg
     	self.colors  = {}
     	self.logY    = True
-    	self.lumi    = '59.7'
+    	#self.lumi    = '59.7'
+        #self.lumi    = '41.5'
         #self.lumi    = '35.9'
+        self.lumi    = '137'
     	self.sig_scale  = 50
 	self.LoadColors()
 

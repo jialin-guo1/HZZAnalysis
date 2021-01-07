@@ -13,13 +13,13 @@ ROOT.gStyle.SetOptStat(False)
 ROOT.ROOT.EnableImplicitMT(4)
 
 def main():
-    lumi=59.7
-    outfilename = "2018Cat"
+    lumi=35.9
+    outfilename = "2016Cat"
     save_dir = 'plot'
     outfile=ROOT.TFile("../RawHistos/"+outfilename+".root","RECREATE")
 
     #create object for FakeRate
-    filename = '/cms/user/guojl/Sample/FakeRates/FakeRates_SS_2018_Legacy.root'
+    filename = '/cms/user/guojl/Sample/FakeRates/FakeRates_SS_2016_Legacy.root'
     FakeRate = FR.FakeRates(filename)
 
     analyzer_cfg = AC.Analyzer_Config('inclusive')
@@ -39,7 +39,7 @@ def main():
         #====================start analysis=====================
         for ievent,event in enumerate(ntup):
             #if(ievent==10000): break
-            if(sample == 'data' or sample == 'ZX' or sample == 'bbH_HToZZTo4L'):
+            if(sample == 'data' or sample == 'ZX' ):
                 if(event.EventCat==1):
                     cat='VBF-1jet'
                 elif(event.EventCat==2):
@@ -88,11 +88,7 @@ def main():
                 histos[cat][sample].Fill(event.mass4l)
             else:
                 weight = Getbkgweight(event,sample,lumi)
-                if(sample == 'bbH_HToZZTo4L'):
-                    if(not event.passedFullSelection): continue
-                    histos[cat][sample].Fill(event.mass4l,weight)
-                else:
-                    histos[cat][sample].Fill(event.H_FSR,weight)
+                histos[cat][sample].Fill(event.H_FSR,weight)
         #==================end analysis============================
 
     #set histoStyles and save raw histograms
@@ -114,7 +110,7 @@ def main():
         legend = MakeLegend(plot_cfg, histos[cat_name],Simhito,GGZZhito)
         canv = CreateCanvas(cat_name)
         DrawOnCanv(canv, cat_name, plot_cfg, stacks, histos[cat_name],scaled_data,legend, lumi_label, cms_label)
-        save_name = "{0:s}2018".format(cat_name)
+        save_name = "{0:s}2016".format(cat_name)
         SaveCanvPic(canv, save_dir, save_name)
 
 main()

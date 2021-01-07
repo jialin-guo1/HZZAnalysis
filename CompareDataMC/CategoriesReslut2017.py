@@ -13,13 +13,13 @@ ROOT.gStyle.SetOptStat(False)
 ROOT.ROOT.EnableImplicitMT(4)
 
 def main():
-    lumi=59.7
-    outfilename = "2018Cat"
+    lumi=41.5
+    outfilename = "2017Cat"
     save_dir = 'plot'
     outfile=ROOT.TFile("../RawHistos/"+outfilename+".root","RECREATE")
 
     #create object for FakeRate
-    filename = '/cms/user/guojl/Sample/FakeRates/FakeRates_SS_2018_Legacy.root'
+    filename = '/cms/user/guojl/Sample/FakeRates/FakeRates_SS_2017_Legacy.root'
     FakeRate = FR.FakeRates(filename)
 
     analyzer_cfg = AC.Analyzer_Config('inclusive')
@@ -114,7 +114,7 @@ def main():
         legend = MakeLegend(plot_cfg, histos[cat_name],Simhito,GGZZhito)
         canv = CreateCanvas(cat_name)
         DrawOnCanv(canv, cat_name, plot_cfg, stacks, histos[cat_name],scaled_data,legend, lumi_label, cms_label)
-        save_name = "{0:s}2018".format(cat_name)
+        save_name = "{0:s}2017".format(cat_name)
         SaveCanvPic(canv, save_dir, save_name)
 
 main()
