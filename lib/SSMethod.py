@@ -1,5 +1,7 @@
 from ROOT import *
 from deltaR import *
+import math
+from array import array
 import FakeRates as FR
 
 class SSMethod:
@@ -26,6 +28,34 @@ class SSMethod:
         self.vector_EX={} #errors
         self.vector_EY={}
 
+        self.Constructor()
+
+    #===========================================================================
+    #==============initialize variables=========================================
+    #===========================================================================
+    def Constructor(self):
+        for iprocess in self.nprocess:
+            self.passing[iprocess]={}
+            self.failing[iprocess]={}
+            for var_name in self.var_names:
+                self.passing[iprocess][var_name]=TH2D('pass'+iprocess+var_name,'pass'+iprocess+var_name,80, 0, 80, 2, 0, 2)
+                self.failing[iprocess][var_name]=TH2D('failing'+iprocess+var_name,'failing'+iprocess+var_name,80, 0, 80, 2, 0, 2)
+
+        for cat_state in self.cat_states:
+            self.vector_X[cat_state]={}
+            self.vector_Y[cat_state]={}
+            self.vector_EX[cat_state]={}
+            self.vector_EY[cat_state]={}
+            for cat_name in self.cat_names:
+                self.vector_X[cat_state][cat_name]={}
+                self.vector_Y[cat_state][cat_name]={}
+                self.vector_EX[cat_state][cat_name]={}
+                self.vector_EY[cat_state][cat_name]={}
+                for var_name in self.var_names:
+                    self.vector_X[cat_state][cat_name][var_name]=array('f',[])
+                    self.vector_Y[cat_state][cat_name][var_name]=array('f',[])
+                    self.vector_EX[cat_state][cat_name][var_name]=array('f',[])
+                    self.vector_EY[cat_state][cat_name][var_name]=array('f',[])
 
 
 
@@ -173,15 +203,15 @@ class SSMethod:
     def FillFRHistos(self,file,process):
         inputfile = TFile(file)
         inputTree = inputfile.Get("passedEvents")
-        self.passing[process]={}
-        self.failing[process]={}
-        for var_name in self.var_names:
-            self.passing[process][var_name]=TH2D('pass'+process+var_name,'pass'+process+var_name,80, 0, 80, 2, 0, 2)
-            self.failing[process][var_name]=TH2D('failing'+process+var_name,'failing'+process+var_name,80, 0, 80, 2, 0, 2)
+        #self.passing[process]={}
+        #self.failing[process]={}
+        #for var_name in self.var_names:
+        #    self.passing[process][var_name]=TH2D('pass'+process+var_name,'pass'+process+var_name,80, 0, 80, 2, 0, 2)
+        #    self.failing[process][var_name]=TH2D('failing'+process+var_name,'failing'+process+var_name,80, 0, 80, 2, 0, 2)
 
         #loop events and save passing and failing hitos
         for ievent,event in enumerate(inputTree):
-            if(ievent==100): break
+            #if(ievent==100): break
             if(not event.passedZ1LSelection): continue
             if(process=='WZ'):
                 weight = 59.7*1000*4.67*event.eventWeight/32584720.0
@@ -206,10 +236,14 @@ class SSMethod:
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
                         self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    if(event.lep_isEB[event.lep_Hindex[2]]):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
                         self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+                    #if(event.lep_isEE[event.lep_Hindex[2]]):
+                    #    self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    #if(event.lep_isEB[event.lep_Hindex[2]]):
+                    #    self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
             else:
                 if(abs(event.lep_id[event.lep_Hindex[2]])==11):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
@@ -217,12 +251,14 @@ class SSMethod:
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
                         self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    if(event.lep_isEB[event.lep_Hindex[2]]):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
                         self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-
-
+                    #if(event.lep_isEE[event.lep_Hindex[2]]):
+                    #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    #if(event.lep_isEB[event.lep_Hindex[2]]):
+                    #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
 
 
 
@@ -233,28 +269,30 @@ class SSMethod:
         outfilename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
         outfile = TFile(outfilename,"recreate")
         outfile.cd()
-        self.passing['Total']={}
-        self.failing['Total']={}
+        #self.passing['Total']={}
+        #self.failing['Total']={}
         for var_name in self.var_names:
-            self.passing['Total'][var_name]=TH2D('pass'+'Total'+var_name,'pass'+'Total'+var_name,80, 0, 80, 2, 0, 2)
-            self.failing['Total'][var_name]=TH2D('failing'+'Total'+var_name,'failing'+'Total'+var_name,80, 0, 80, 2, 0, 2)
-            self.passing['Total'][var_name].Add(self.passing['Total'][var_name],1.)
-            self.failing['Total'][var_name].Add(self.failing['Total'][var_name],1.)
+            #self.passing['Total'][var_name]=TH2D('pass'+'Total'+var_name,'pass'+'Total'+var_name,80, 0, 80, 2, 0, 2)
+            #self.failing['Total'][var_name]=TH2D('failing'+'Total'+var_name,'failing'+'Total'+var_name,80, 0, 80, 2, 0, 2)
+            self.passing['Total'][var_name].Add(self.passing['data'][var_name],1.)
+            self.failing['Total'][var_name].Add(self.failing['data'][var_name],1.)
 
         # Subtract WZ contribution from MC estimate
-        if(subtractWZ=='subtractWZ'):
-            subtractWZ(self)
+        if(subtractWZ):
+            SSMethod.subtractWZ(self)
 
-        if(remove_negative_bins=='remove_negative_bins'):
+        if(remove_negative_bins):
             for var_name in self.var_names:
-                RemoveNegativeBins2D(self.passing['Total'][var_name])
-                RemoveNegativeBins2D(self.passing['Total'][var_name])
+                SSMethod.RemoveNegativeBins2D(self,self.passing['Total'][var_name])
+                SSMethod.RemoveNegativeBins2D(self,self.passing['Total'][var_name])
             print "[INFO] Negative bins removed."
 
+
+        # that will clear up histos, so when we want to use them again, we should handle them from where we stroe
         for var_name in self.var_names:
             for iprocess in self.nprocess:
-                passing[iprocess][var_name].Write()
-                failing[iprocess][var_name].Write()
+                self.passing[iprocess][var_name].Write()
+                self.failing[iprocess][var_name].Write()
 
         outfile.Close()
         print "[INFO] All FakeRate histograms saved."
@@ -280,27 +318,76 @@ class SSMethod:
                     histo.SetBinContent(i_bin_x,i_bin_y,0.0)
 
 
+    #===========================================================================
+    #================= Get FR Histos============================================
+    #===========================================================================
+    def GetFRHistos(self,year):
+        filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
+        inputfile = TFile.Open(filename)
+        if(inputfile):
+            print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
+        #for var_name in self.var_names:
+        #    for iprocess in self.nprocess:
+        #        self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+        #        self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+
+        for iprocess in self.nprocess:
+            self.passing[iprocess]={}
+            self.failing[iprocess]={}
+            for var_name in self.var_names:
+                self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+                self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+                print "[INFO] get histos="+iprocess+var_name
+
+        print "enter produce FR function"
+
+        print "[INFO] All FakeRate histograms retrieved from file."
+
+
     #============================================================================
     #==================prodece FakeRate from data================================
     #============================================================================
     def SSFRproduce(self,year,process):
+
+        filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
+        inputfile = TFile(filename)
+        if(inputfile):
+            print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
+        #for var_name in self.var_names:
+        #    for iprocess in self.nprocess:
+        #        self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+        #        self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+
+        for iprocess in self.nprocess:
+            self.passing[iprocess]={}
+            self.failing[iprocess]={}
+            for var_name in self.var_names:
+                self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+                self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+                print "[INFO] get histos="+iprocess+var_name
+
+        print "enter produce FR function"
+
+        print "[INFO] All FakeRate histograms retrieved from file."
+        c=TCanvas()
+        self.passing['Total']['mu'].Draw()
+        c.SaveAs("SStest_total.png")
         outfilename="../RawHistos/FakeRates_SS_%s_Legacy.root"%year
         #initialize x and y axis for FakeRate
-        for cat_state in self.cat_states:
-            self.vector_X[cat_state]={}
-            self.vector_Y[cat_state]={}
-            self.vector_EX[cat_state]={}
-            self.vector_EY[cat_state]={}
-            for cat_name in self.cat_names:
-                self.vector_X[cat_state][cat_name]={}
-                self.vector_Y[cat_state][cat_name]={}
-                self.vector_EX[cat_state][cat_name]={}
-                self.vector_EY[cat_state][cat_name]={}
-                for var_name in self.var_names:
-                    self.vector_X[cat_state][cat_name][var_name]=[]
-                    self.vector_Y[cat_state][cat_name][var_name]=[]
-                    self.vector_EX[cat_state][cat_name][var_name]=[]
-                    self.vector_EY[cat_state][cat_name][var_name]=[]
+        #for cat_state in self.cat_states:
+        #    self.vector_X[cat_state]={}
+        #    self.vector_Y[cat_state]={}
+        #    self.vector_EX[cat_state]={}
+        #    self.vector_EY[cat_state]={}
+        #    for cat_name in self.cat_names:
+        #        self.vector_X[cat_state][cat_name]={}
+        #        self.vector_Y[cat_state][cat_name]={}
+        #        self.vector_EX[cat_state][cat_name]={}
+        #        self.vector_EY[cat_state][cat_name]={}
+        #        for var_name in self.var_names:
+        #            self.vector_X[cat_state][cat_name][var_name]=[]
+        #            self.vector_Y[cat_state][cat_name][var_name]=[]
+        #            self.vector_EY[cat_state][cat_name][var_name]=[]
 
         #calculate FakeRates and save Gragh
         pt_bins=[5, 7, 10, 20, 30, 40, 50, 80]
@@ -309,131 +396,164 @@ class SSMethod:
             temp_NP = 0
             temp_NF = 0
             temp_error_x = 0
-            temp_error_NP = 0
-            temp_error_NF = 0
+            temp_error_NP = 0.0
+            temp_error_NF = 0.0
             for var_name in self.var_names:
                 if(var_name=='el' and i_pt_bin==0): continue #electrons do not have 5 - 7 GeV bin
-                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NP)
-                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NF)
+
+                tempNPaxis = self.passing['Total'][var_name].GetXaxis()
+                tempNFaxis = self.failing['Total'][var_name].GetXaxis()
+
+                print "pt_bins[i_pt_bin] = "+ str(pt_bins[i_pt_bin])
+                print "pt_bins[i_pt_bin]+1 = "+str(pt_bins[i_pt_bin+1])
+                print "bin number of pt_bins[i_pt_bin] = "+ str(tempNPaxis.FindBin(pt_bins[i_pt_bin]))
+                print "bin number of pt_bins[i_pt_bin+1]-1 = "+str(tempNPaxis.FindBin(pt_bins[i_pt_bin+1])-1)
+
+                temp_NP = self.passing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                temp_NF = self.failing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+
+                #temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NP)
+                #temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NF)
 
                 self.vector_X['corrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['corrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
                 self.vector_EX['corrected']['EB'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
-                self.vector_EY['corrected']['EB'][var_name].append(sqrt(pow((temp_NF/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NP,2) + pow((temp_NP/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
+                self.vector_EY['corrected']['EB'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
 
-                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, temp_error_NP)
-                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, temp_error_NF)
+                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
+                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
 
                 self.vector_X['corrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['corrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
                 self.vector_EX['corrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
-                self.vector_EY['corrected']['EE'][var_name].append(sqrt(pow((temp_NF/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NP,2) + pow((temp_NP/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
+                self.vector_EY['corrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
 
                 #Just for fake rate plots calculate the same for histograms without WZ subtraction
-                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NP)
-                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NF)
+                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
 
                 self.vector_X['uncorrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['uncorrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
                 self.vector_EX['uncorrected']['EB'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
-                self.vector_EY['uncorrected']['EB'][var_name].append(sqrt(pow((temp_NF/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NP,2) + pow((temp_NP/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
+                self.vector_EY['uncorrected']['EB'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
 
-                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, temp_error_NP)
-                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, temp_error_NF)
+                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
+                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
 
                 self.vector_X['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['uncorrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
                 self.vector_EX['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
-                self.vector_EY['uncorrected']['EE'][var_name].append(sqrt(pow((temp_NF/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NP,2) + pow((temp_NP/pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
+                self.vector_EY['uncorrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
+
+        print " check type "
+        print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
 
 
 
-
-
-        self.FR_SS_electron_EB_unc = TGraphErrors (self.vector_X['uncorrected']['EB']['el'].size(),
-											  self.vector_X['uncorrected']['EB']['el'][0],
-											  self.vector_Y['uncorrected']['EB']['el'][0],
-											  self.vector_EX['uncorrected']['EB']['el'][0],
-											  self.vector_EY['uncorrected']['EB']['el'][0])
+        self.FR_SS_electron_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['el']),
+											  self.vector_X['uncorrected']['EB']['el'],
+											  self.vector_Y['uncorrected']['EB']['el'],
+											  self.vector_EX['uncorrected']['EB']['el'],
+											  self.vector_EY['uncorrected']['EB']['el'])
         self.FR_SS_electron_EB_unc.SetName("FR_SS_electron_EB_unc")
 
-        self.FR_SS_electron_EE_unc = TGraphErrors (self.vector_X['uncorrected']['EE']['el'].size(),
-											  self.vector_X['uncorrected']['EE']['el'][0],
-											  self.vector_Y['uncorrected']['EE']['el'][0],
-											  self.vector_EX['uncorrected']['EE']['el'][0],
-											  self.vector_EY['uncorrected']['EE']['el'][0])
+        self.FR_SS_electron_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['el']),
+											  self.vector_X['uncorrected']['EE']['el'],
+											  self.vector_Y['uncorrected']['EE']['el'],
+											  self.vector_EX['uncorrected']['EE']['el'],
+											  self.vector_EY['uncorrected']['EE']['el'])
         self.FR_SS_electron_EE_unc.SetName("FR_SS_electron_EE_unc")
 
-        self.FR_SS_muon_EE_unc = TGraphErrors (self.vector_X['uncorrected']['EE']['mu'].size(),
-										  self.vector_X['uncorrected']['EE']['mu'][0],
-										  self.vector_Y['uncorrected']['EE']['mu'][0],
-										  self.vector_EX['uncorrected']['EE']['mu'][0],
-										  self.vector_EY['uncorrected']['EE']['mu'][0])
+        self.FR_SS_muon_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['mu']),
+										  self.vector_X['uncorrected']['EE']['mu'],
+										  self.vector_Y['uncorrected']['EE']['mu'],
+										  self.vector_EX['uncorrected']['EE']['mu'],
+										  self.vector_EY['uncorrected']['EE']['mu'])
         self.FR_SS_muon_EE_unc.SetName("FR_SS_muon_EE_unc")
 
-        self.FR_SS_muon_EB_unc = TGraphErrors (self.vector_X['uncorrected']['EB']['mu'].size(),
-										  self.vector_X['uncorrected']['EB']['mu'][0],
-										  self.vector_Y['uncorrected']['EB']['mu'][0],
-										  self.vector_EX['uncorrected']['EB']['mu'][0],
-										  self.vector_EY['uncorrected']['EB']['mu'][0])
+        self.FR_SS_muon_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['mu']),
+										  self.vector_X['uncorrected']['EB']['mu'],
+										  self.vector_Y['uncorrected']['EB']['mu'],
+										  self.vector_EX['uncorrected']['EB']['mu'],
+										  self.vector_EY['uncorrected']['EB']['mu'])
         self.FR_SS_muon_EB_unc.SetName("FR_SS_muon_EE_unc")
 
-        self.FR_SS_muon_EE = TGraphErrors (self.vector_X['corrected']['EE']['mu'].size(),
-										  self.vector_X['corrected']['EE']['mu'][0],
-										  self.vector_Y['corrected']['EE']['mu'][0],
-										  self.vector_EX['corrected']['EE']['mu'][0],
-										  self.vector_EY['corrected']['EE']['mu'][0])
+        self.FR_SS_muon_EE = TGraphErrors (len(self.vector_X['corrected']['EE']['mu']),
+										  self.vector_X['corrected']['EE']['mu'],
+										  self.vector_Y['corrected']['EE']['mu'],
+										  self.vector_EX['corrected']['EE']['mu'],
+										  self.vector_EY['corrected']['EE']['mu'])
         self.FR_SS_muon_EE.SetName("FR_SS_muon_EE")
 
-        self.FR_SS_muon_EB = TGraphErrors (self.vector_X['corrected']['EB']['mu'].size(),
-										  self.vector_X['corrected']['EB']['mu'][0],
-										  self.vector_Y['corrected']['EB']['mu'][0],
-										  self.vector_EX['corrected']['EB']['mu'][0],
-										  self.vector_EY['corrected']['EB']['mu'][0])
+        self.FR_SS_muon_EB = TGraphErrors (len(self.vector_X['corrected']['EB']['mu']),
+										  self.vector_X['corrected']['EB']['mu'],
+										  self.vector_Y['corrected']['EB']['mu'],
+										  self.vector_EX['corrected']['EB']['mu'],
+										  self.vector_EY['corrected']['EB']['mu'])
         self.FR_SS_muon_EB.SetName("FR_SS_muon_EE")
 
         # Electron fake rates must be corrected using average number of missing hits
         #CorrectElectronFakeRate(file)
 
-        self.FR_SS_electron_EB = TGraphErrors (self.vector_X['corrected']['EB']['el'].size(),
-											  self.vector_X['corrected']['EB']['el'][0],
-											  self.vector_Y['corrected']['EB']['el'][0],
-											  self.vector_EX['corrected']['EB']['el'][0],
-											  self.vector_EY['corrected']['EB']['el'][0])
+        self.FR_SS_electron_EB = TGraphErrors (len(self.vector_X['corrected']['EB']['el']),
+											  self.vector_X['corrected']['EB']['el'],
+											  self.vector_Y['corrected']['EB']['el'],
+											  self.vector_EX['corrected']['EB']['el'],
+											  self.vector_EY['corrected']['EB']['el'])
         self.FR_SS_electron_EB_unc.SetName("FR_SS_electron_EB_unc")
 
-        self.FR_SS_electron_EE_unc = TGraphErrors (self.vector_X['uncorrected']['EE']['el'].size(),
-											  self.vector_X['uncorrected']['EE']['el'][0],
-											  self.vector_Y['uncorrected']['EE']['el'][0],
-											  self.vector_EX['uncorrected']['EE']['el'][0],
-											  self.vector_EY['uncorrected']['EE']['el'][0])
+        self.FR_SS_electron_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['el']),
+											  self.vector_X['uncorrected']['EE']['el'],
+											  self.vector_Y['uncorrected']['EE']['el'],
+											  self.vector_EX['uncorrected']['EE']['el'],
+											  self.vector_EY['uncorrected']['EE']['el'])
         self.FR_SS_electron_EE_unc.SetName("FR_SS_electron_EE_unc")
 
-        self.FR_SS_muon_EE_unc = TGraphErrors (self.vector_X['uncorrected']['EE']['mu'].size(),
-										  self.vector_X['uncorrected']['EE']['mu'][0],
-										  self.vector_Y['uncorrected']['EE']['mu'][0],
-										  self.vector_EX['uncorrected']['EE']['mu'][0],
-										  self.vector_EY['uncorrected']['EE']['mu'][0])
+        self.FR_SS_muon_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['mu']),
+										  self.vector_X['uncorrected']['EE']['mu'],
+										  self.vector_Y['uncorrected']['EE']['mu'],
+										  self.vector_EX['uncorrected']['EE']['mu'],
+										  self.vector_EY['uncorrected']['EE']['mu'])
         self.FR_SS_muon_EE_unc.SetName("FR_SS_muon_EE_unc")
 
 
 
-        FakeRates.plotFR(self)
+        SSMethod.plotFR(self)
+        SSMethod.SaveFRGragh(self,outfilename)
 
+        #OutFRFile=TFile(outfilename,"RECREATE")
+        #OutFRFile.cd()
+        #self.FR_SS_electron_EB_unc.Write()
+        #self.FR_SS_electron_EE_unc.Write()
+        #self.FR_SS_muon_EE_unc.Write()
+        #self.FR_SS_muon_EB_unc.Write()
+        #self.FR_SS_electron_EB.Write()
+        #self.FR_SS_electron_EE.Write()
+        #self.FR_SS_muon_EE.Write()
+        #self.FR_SS_muon_EB.Write()
+        #OutFRFile.Close()
+
+        #print "[INFO] All FakeRate histograms were saved."
+
+
+    #===========================================================================
+    #===================save raw FakeRates Gragh================================
+    #===========================================================================
+    def SaveFRGragh(self,outfilename):
         OutFRFile=TFile(outfilename,"RECREATE")
         OutFRFile.cd()
-        FR_SS_electron_EB_unc.Write()
-        FR_SS_electron_EE_unc.Write()
-        FR_SS_muon_EE_unc.Write()
-        FR_SS_muon_EB_unc.Write()
-        FR_SS_electron_EB.Write()
-        FR_SS_electron_EE.Write()
-        FR_SS_muon_EE.Write()
-        FR_SS_muon_EB.Write()
+        print " type of Gragh = "+str(type(self.FR_SS_electron_EB_unc))
+        self.FR_SS_electron_EB_unc.Write()
+        self.FR_SS_electron_EE_unc.Write()
+        self.FR_SS_muon_EE_unc.Write()
+        self.FR_SS_muon_EB_unc.Write()
+        self.FR_SS_electron_EB.Write()
+        self.FR_SS_electron_EE.Write()
+        self.FR_SS_muon_EE.Write()
+        self.FR_SS_muon_EB.Write()
         OutFRFile.Close()
 
         print "[INFO] All FakeRate histograms were saved."
-
 
     #============================================================================
     #==================corrected electron FakeRate===============================
@@ -447,7 +567,7 @@ class SSMethod:
     #==================Draw FR plots=============================================
     #============================================================================
     def plotFR(self):
-        c_ele=TCanvas("FR_ele", "FR_ele", 600, 600)
+        c_ele=TCanvas("FR_ele", "FR_ele", 600,600)
         c_muon=TCanvas("FR_muon","FRmuon",600,600)
         mg_electrons=TMultiGraph()
         mg_muons=TMultiGraph()
@@ -486,15 +606,15 @@ class SSMethod:
         self.FR_SS_muon_EE_unc.SetTitle("endcap uncorrected")
 
         mg_muons.Add(self.FR_SS_muon_EB)
-        self.FR_SS_muon_EB_unc.SetLineColor(kBlue)
-        self.FR_SS_muon_EB_unc.SetLineStyle(2)
-        self.FR_SS_muon_EB_unc.SetMarkerSize(0)
-        self.FR_SS_muon_EB_unc.SetTitle("barel corrected")
+        self.FR_SS_muon_EB.SetLineColor(kBlue)
+        self.FR_SS_muon_EB.SetLineStyle(2)
+        self.FR_SS_muon_EB.SetMarkerSize(0)
+        self.FR_SS_muon_EB.SetTitle("barel corrected")
         mg_muons.Add(self.FR_SS_muon_EE)
-        self.FR_SS_muon_EE_unc.SetLineColor(kRed)
-        self.FR_SS_muon_EE_unc.SetLineStyle(2)
-        self.FR_SS_muon_EE_unc.SetMarkerSize(0)
-        self.FR_SS_muon_EE_unc.SetTitle("endcap corrected")
+        self.FR_SS_muon_EE.SetLineColor(kRed)
+        self.FR_SS_muon_EE.SetLineStyle(2)
+        self.FR_SS_muon_EE.SetMarkerSize(0)
+        self.FR_SS_muon_EE.SetTitle("endcap corrected")
 
         gStyle.SetEndErrorSize(0)
 
@@ -506,19 +626,19 @@ class SSMethod:
 	mg_electrons.GetYaxis().SetTitle("Fake Rate")
 	mg_electrons.SetTitle("Electron fake rate")
         mg_electrons.SetMaximum(0.35);
-        leg_ele = CreateLegend_FR("left",self.FR_SS_electron_EB_unc,self.FR_SS_electron_EE_unc,self.FR_SS_electron_EB,self.FR_SS_electron_EE)
+        leg_ele = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_electron_EB_unc,self.FR_SS_electron_EE_unc,self.FR_SS_electron_EB,self.FR_SS_electron_EE)
         leg_ele.Draw()
-        SavePlots(c_ele, "plot/FR_SS_electrons")
+        SSMethod.SavePlots(self,c_ele, "plot/FR_SS_electrons")
 
-        c_mu.cd();
+        c_muon.cd();
         mg_muons.Draw("AP");
 	mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
 	mg_muons.GetYaxis().SetTitle("Fake Rate");
 	mg_muons.SetTitle("Muon fake rate");
         mg_muons.SetMaximum(0.35);
-        leg_mu = CreateLegend_FR("left",self.FR_SS_muon_EB_unc,self.FR_SS_muon_EE_unc,self.FR_SS_muon_EB,self.FR_SS_muon_EE);
+        leg_mu = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_muon_EB_unc,self.FR_SS_muon_EE_unc,self.FR_SS_muon_EB,self.FR_SS_muon_EE);
         leg_mu.Draw();
-        SavePlots(c_mu, "plot/FR_SS_muons");
+        SSMethod.SavePlots(self,c_muon, "plot/FR_SS_muons");
 
     #=============================================================================
     #=============Create Legend for FakeRates=====================================
