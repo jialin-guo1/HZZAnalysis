@@ -4,9 +4,10 @@ sys.path.append("%s/../lib" %os.getcwd())
 import Analyzer_Configs as AC
 import Plot_Configs     as PC
 import FakeRates as FR
+import SSMethod
 from Plot_Helper import *
 from deltaR import *
-from SSMethod import *
+
 
 gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(False)
@@ -20,8 +21,9 @@ def main():
     outfilename = "RuIICat"
     save_dir = 'plot'
     outfile=ROOT.TFile("../RawHistos/"+outfilename+".root","RECREATE")
-
     analyzer_cfg = AC.Analyzer_Config('inclusive')
+    SS = SSMethod.SSMethod()
+
 
     ntuples={}
     for year in years:
@@ -37,7 +39,8 @@ def main():
         for year in years:
             histos[cat_name][year]={}
             for sample in analyzer_cfg.samp_names:
-                histos[cat_name][year][sample] = ROOT.TH1D(year+cat_name+sample,year+cat_name+sample,25,70,170)
+                histos[cat_name][year][sample] = ROOT.TH1D(year+cat_name+sample,year+cat_name+sample,680,100,3500)
+                histos[cat_name][year][sample].GetXaxis().SetLabelOffset(99)
 
 
     lep_index = [0,0,0,0]
@@ -58,39 +61,9 @@ def main():
             ntup = ntuples[year][sample]
             #====================start analysis=====================
             for ievent,event in enumerate(ntup):
-                #if(ievent==1000): break
-                if(sample == 'data' or sample == 'ZX' ):
-                    if(event.EventCat==1):
-                        cat='VBF-1jet'
-                    elif(event.EventCat==2):
-                        cat='VBF-2jets'
-                    elif(event.EventCat==3):
-                        cat='VH-leptonic'
-                    elif(event.EventCat==4):
-                        cat='VH-hadronic'
-                    elif(event.EventCat==5):
-                        cat='ttH-hadronic'
-                    elif(event.EventCat==6):
-                        cat='ttH-leptonic'
-                    else:
-                        cat='untagged'
-                else:
-                    if(event.Cat==1):
-                        cat='VBF-1jet'
-                    elif(event.Cat==2):
-                        cat='VBF-2jets'
-                    elif(event.Cat==3):
-                        cat='VH-leptonic'
-                    elif(event.Cat==4):
-                        cat='VH-hadronic'
-                    elif(event.Cat==5):
-                        cat='ttH-hadronic'
-                    elif(event.Cat==6):
-                        cat='ttH-leptonic'
-                    else:
-                        cat='untagged'
+                #if(ievent==10): break
                 if(sample == 'ZX'):
-                    passedSSCRselection = foundSSCRCandidate(event,lep_index)
+                    passedSSCRselection = SS.foundSSCRCandidate(event,lep_index)
                     if(passedSSCRselection):
                         l1 = ROOT.TLorentzVector()
                         l2 = ROOT.TLorentzVector()
@@ -102,13 +75,13 @@ def main():
                         l4.SetPtEtaPhiM(event.lepFSR_pt[lep_index[3]],event.lepFSR_eta[lep_index[3]],event.lepFSR_phi[lep_index[3]],event.lepFSR_mass[lep_index[3]])
                         mass4l = (l1+l2+l3+l4).M()
                         weight = FakeRate.GetFakeRate(event.lepFSR_pt[lep_index[2]],event.lepFSR_eta[lep_index[2]],event.lep_id[lep_index[2]])*FakeRate.GetFakeRate(event.lepFSR_pt[lep_index[3]],event.lepFSR_eta[lep_index[3]],event.lep_id[lep_index[3]])
-                        histos[cat][year][sample].Fill(mass4l,weight)
+                        histos['inclusive'][year][sample].Fill(mass4l,weight)
                 elif(sample == 'data'):
                     if(not event.passedFullSelection): continue
-                    histos[cat][year][sample].Fill(event.mass4l)
+                    histos['inclusive'][year][sample].Fill(event.mass4l)
                 else:
                     weight = Getbkgweight(event,sample,lumi)
-                    histos[cat][year][sample].Fill(event.H_FSR,weight)
+                    histos['inclusive'][year][sample].Fill(event.H_FSR,weight)
             #==================end analysis============================
 
     #set histoStyles and save raw histograms
@@ -131,19 +104,24 @@ def main():
     SumggZZ={}
     SumqqZZ={}
     for cat_name in cat_names:
-        SumData[cat_name]=ROOT.TH1D("data"+cat_name,"data"+cat_name,25,70,170)
+        SumData[cat_name]=ROOT.TH1D("data"+cat_name,"data"+cat_name,680,100,3500)
         SumData[cat_name].Sumw2()
-        SumSim[cat_name]=ROOT.TH1D("Sim"+cat_name,"Sim"+cat_name,25,70,170)
+        SumData[cat_name].GetXaxis().SetLabelOffset(99)
+        SumSim[cat_name]=ROOT.TH1D("Sim"+cat_name,"Sim"+cat_name,680,100,3500)
         SumSim[cat_name].Sumw2()
+        SumSim[cat_name].GetXaxis().SetLabelOffset(99)
         SumSim[cat_name].SetFillColor(ROOT.kRed-7)
-        SumZX[cat_name]=ROOT.TH1D("ZX"+cat_name,"ZX"+cat_name,25,70,170)
+        SumZX[cat_name]=ROOT.TH1D("ZX"+cat_name,"ZX"+cat_name,680,100,3500)
         SumZX[cat_name].Sumw2()
+        SumZX[cat_name].GetXaxis().SetLabelOffset(99)
         SumZX[cat_name].SetFillColor(ROOT.kGreen + 3)
-        SumggZZ[cat_name]=ROOT.TH1D("ggZZ"+cat_name,"ggZZ"+cat_name,25,70,170)
+        SumggZZ[cat_name]=ROOT.TH1D("ggZZ"+cat_name,"ggZZ"+cat_name,680,100,3500)
         SumggZZ[cat_name].Sumw2()
+        SumggZZ[cat_name].GetXaxis().SetLabelOffset(99)
         SumggZZ[cat_name].SetFillColor(ROOT.kAzure -1)
-        SumqqZZ[cat_name]=ROOT.TH1D("qqZZ"+cat_name,"qqZZ"+cat_name,25,70,170)
+        SumqqZZ[cat_name]=ROOT.TH1D("qqZZ"+cat_name,"qqZZ"+cat_name,680,100,3500)
         SumqqZZ[cat_name].Sumw2()
+        SumqqZZ[cat_name].GetXaxis().SetLabelOffset(99)
         SumqqZZ[cat_name].SetFillColor(ROOT.kAzure +6)
         for year in years:
             SumData[cat_name].Add(histos[cat_name][year]['data'],1.0)
@@ -176,7 +154,21 @@ def main():
         cms_label.Draw('same')
         lumi_label.DrawLatexNDC(0.90, 0.91, '%s fb^{-1} (13 TeV)' %plot_cfg.lumi)
         lumi_label.Draw('same')
-        save_name = "{0:s}RunII".format(cat_name)
+        # draw x label
+        x_low = 100
+        x_up =3500
+        step = 10
+        latex={}
+        label_margin = -0.02
+        for i in range(100,3500,step):
+            if(i==200 or i==300 or i==400 or i==500 or i==1000 or i==2000 or i==3000):
+                i_x = i
+                latex[i] = ROOT.TLatex(i_x,label_margin,"%.0f"%i_x)
+                latex[i].SetTextAlign(23)
+                latex[i].SetTextFont (42)
+                latex[i].SetTextSize (0.04)
+                latex[i].Draw()
+        save_name = "{0:s}XToZZRunII".format(cat_name)
         SaveCanvPic(canv, save_dir, save_name)
 
 main()

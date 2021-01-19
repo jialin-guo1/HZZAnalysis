@@ -27,6 +27,7 @@ class SSMethod:
         self.vector_Y={}
         self.vector_EX={} #errors
         self.vector_EY={}
+        self.a=1
 
         self.Constructor()
 
@@ -209,6 +210,11 @@ class SSMethod:
         #    self.passing[process][var_name]=TH2D('pass'+process+var_name,'pass'+process+var_name,80, 0, 80, 2, 0, 2)
         #    self.failing[process][var_name]=TH2D('failing'+process+var_name,'failing'+process+var_name,80, 0, 80, 2, 0, 2)
 
+        #initialize a pt distrubtion checking histos
+        passingeleEE = TH1D("passingeleEE","passingeleEE",80,0,80)
+        failingeleEE = TH1D("failingeleEE","failingeleEE",80,0,80)
+
+
         #loop events and save passing and failing hitos
         for ievent,event in enumerate(inputTree):
             #if(ievent==100): break
@@ -233,6 +239,7 @@ class SSMethod:
                 if(abs(event.lep_id[event.lep_Hindex[2]])==11):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)  #0.5 for EB 1.5 for EE
+                        passingeleEE.Fill(event.lep_pt[event.lep_Hindex[2]])
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
@@ -248,6 +255,7 @@ class SSMethod:
                 if(abs(event.lep_id[event.lep_Hindex[2]])==11):
                     if(event.lep_isEE[event.lep_Hindex[2]]):
                         self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                        failingeleEE.Fill(event.lep_pt[event.lep_Hindex[2]])
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
@@ -259,6 +267,14 @@ class SSMethod:
                     #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
                     #if(event.lep_isEB[event.lep_Hindex[2]]):
                     #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+
+        if(process=='data'):
+            c1=TCanvas()
+            passingeleEE.Draw()
+            c1.SaveAs("passingeleEE.png")
+            failingeleEE.Draw()
+            c1.SaveAs("failingeleEE.png")
+
 
 
 
@@ -322,6 +338,7 @@ class SSMethod:
     #================= Get FR Histos============================================
     #===========================================================================
     def GetFRHistos(self,year):
+        self.a=2
         filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
         inputfile = TFile.Open(filename)
         if(inputfile):
@@ -339,10 +356,13 @@ class SSMethod:
                 self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
                 print "[INFO] get histos="+iprocess+var_name
 
-        print "enter produce FR function"
+        self.passing['Total']['el'].Draw()
 
         print "[INFO] All FakeRate histograms retrieved from file."
-
+        #return self.passing
+        
+    def Test(self):
+        self.passing['Total']['el'].Draw()
 
     #============================================================================
     #==================prodece FakeRate from data================================
@@ -445,9 +465,21 @@ class SSMethod:
                 self.vector_EX['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
                 self.vector_EY['uncorrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
 
-        print " check type "
+        print "[INFO] check type "
         print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
 
+
+        print "[INFO] check value of vector ele after append value"
+        print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
+        print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
+        print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+
+        print "[INFO] check value of vector muon after append value"
+        print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
+        print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
+        print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
+        print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
 
 
         self.FR_SS_electron_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['el']),
@@ -540,9 +572,16 @@ class SSMethod:
     #===================save raw FakeRates Gragh================================
     #===========================================================================
     def SaveFRGragh(self,outfilename):
+
+        print "[INFO] check value of vector ele in SaveFRGragh function "
+        c=TCanvas()
+        self.FR_SS_electron_EB_unc.Draw()
+        c.SaveAs("FR_SS_electron_EB_unc")
+
+
+
         OutFRFile=TFile(outfilename,"RECREATE")
         OutFRFile.cd()
-        print " type of Gragh = "+str(type(self.FR_SS_electron_EB_unc))
         self.FR_SS_electron_EB_unc.Write()
         self.FR_SS_electron_EE_unc.Write()
         self.FR_SS_muon_EE_unc.Write()
@@ -567,6 +606,13 @@ class SSMethod:
     #==================Draw FR plots=============================================
     #============================================================================
     def plotFR(self):
+
+        print "[INFO] check value of vector ele in plot function "
+        print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
+        print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
+        print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+
         c_ele=TCanvas("FR_ele", "FR_ele", 600,600)
         c_muon=TCanvas("FR_muon","FRmuon",600,600)
         mg_electrons=TMultiGraph()
@@ -625,7 +671,7 @@ class SSMethod:
 	mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
 	mg_electrons.GetYaxis().SetTitle("Fake Rate")
 	mg_electrons.SetTitle("Electron fake rate")
-        mg_electrons.SetMaximum(0.35);
+        #mg_electrons.SetMaximum(0.35);
         leg_ele = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_electron_EB_unc,self.FR_SS_electron_EE_unc,self.FR_SS_electron_EB,self.FR_SS_electron_EE)
         leg_ele.Draw()
         SSMethod.SavePlots(self,c_ele, "plot/FR_SS_electrons")
@@ -635,7 +681,7 @@ class SSMethod:
 	mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
 	mg_muons.GetYaxis().SetTitle("Fake Rate");
 	mg_muons.SetTitle("Muon fake rate");
-        mg_muons.SetMaximum(0.35);
+        #mg_muons.SetMaximum(0.35);
         leg_mu = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_muon_EB_unc,self.FR_SS_muon_EE_unc,self.FR_SS_muon_EB,self.FR_SS_muon_EE);
         leg_mu.Draw();
         SSMethod.SavePlots(self,c_muon, "plot/FR_SS_muons");

@@ -22,7 +22,9 @@ class FakeRates():
             self.g_FR_e_EB = self.input_file_FR.Get("FR_SS_electron_EB")
             self.g_FR_e_EE = self.input_file_FR.Get("FR_SS_electron_EE")
 
+    #============================================================================
     #==================Get FakeRate from existing file===========================
+    #============================================================================
     def GetFakeRate(self,lep_pt,lep_eta,lep_id):
         if(lep_pt>=80):
             my_lep_Pt = 79.0
@@ -59,9 +61,11 @@ class FakeRates():
             print "[ERROR] Wrong lepton ID:" + str(my_lep_id)
             return 0
 
-
+    #============================================================================
     #==================prodece FakeRate from data================================
-    def SSFRproduce(self,file):
+    #============================================================================
+    def SSFRproduce(self,file,year):
+        outfilename="../RawHistos/FakeRates_SS_%s_Legacy.root"%year
         inputfile = TFile(file)
         inputTree = TFile.Get("passedEvents")
         cat_names=['EE','EB']
@@ -81,7 +85,7 @@ class FakeRates():
                 vector_EX[cat_name][var_name]=[]
                 vector_EY[cat_name][var_name]=[]
 
-        #=====================loop events and save passing and failing hitos=================
+        #loop events and save passing and failing hitos
         for ievent,event in enumerate(inputTree):
             if(not event.passedZ1LSelection): continue
             l1 = ROOT.TLorentzVector()
@@ -118,7 +122,7 @@ class FakeRates():
                         failing['EE']['muon'].Fill(event.lep_pt[lep_Hindex[2]],0.5)
                     if(event.lep_isEB[event.lep_Hindex[2]]):
                         failing['EB']['muon'].Fill(event.lep_pt[lep_Hindex[2]],1.5)
-        #====================calculate FakeRates and save Gragh==========================
+        #calculate FakeRates and save Gragh
         pt_bins=[5, 7, 10, 20, 30, 40, 50, 80]
         n_pt_bins=8
         for i_pt_bin in range(n_pt_bins-1):
@@ -174,3 +178,72 @@ class FakeRates():
 										  vector_EX['EB']['muon'][0],
 										  vector_EY['EB']['muon'][0])
         FR_SS_muon_EB_unc.SetName("FR_SS_muon_EE_unc")
+
+        FakeRates.plotFR(self)
+
+        OutFRFile=TFile(outfilename,"RECREATE")
+        OutFRFile.cd()
+        FR_SS_electron_EB_unc.Write()
+        FR_SS_electron_EE_unc.Write()
+        FR_SS_muon_EE_unc.Write()
+        FR_SS_muon_EB_unc.Write()
+        OutFRFile.Close()
+
+        print "[INFO] All FakeRate histograms were saved."
+
+
+
+    #============================================================================
+    #==================Draw FR plots=============================================
+    #============================================================================
+    def plotFR(self):
+        c_ele=TCanvas("FR_ele", "FR_ele", 600, 600)
+        c_muon=TCanvas("FR_muon","FRmuon",600,600)
+        mg_electrons=TMultiGraph()
+        mg_muons=TMultiGraph()
+
+        mg_electrons.Add(FR_SS_electron_EB)
+        FR_SS_electron_EB_unc.SetLineColor(kBlue)
+        FR_SS_electron_EB_unc.SetLineStyle(1)
+        FR_SS_electron_EB_unc.SetMarkerSize(0)
+        FR_SS_electron_EB_unc.SetTitle("barel uncorrected")
+        mg_electrons.Add(FR_SS_electron_EE_unc)
+        FR_SS_electron_EE_unc.SetLineColor(kRed);
+        FR_SS_electron_EE_unc.SetLineStyle(1);
+        FR_SS_electron_EE_unc.SetMarkerSize(0);
+        FR_SS_electron_EE_unc.SetTitle("endcap uncorrected");
+
+        mg_muons.Add(FR_SS_muon_EB_unc)
+        FR_SS_muon_EB_unc.SetLineColor(kBlue);
+        FR_SS_muon_EB_unc.SetLineStyle(1);
+        FR_SS_muon_EB_unc.SetMarkerSize(0);
+        FR_SS_muon_EB_unc.SetTitle("barel uncorrected");
+        mg_muons.Add(FR_SS_muon_EE_unc);
+        FR_SS_muon_EE_unc.SetLineColor(kRed);
+        FR_SS_muon_EE_unc.SetLineStyle(1);
+        FR_SS_muon_EE_unc.SetMarkerSize(0);
+        FR_SS_muon_EE_unc.SetTitle("endcap uncorrected");
+
+        gStyle.SetEndErrorSize(0)
+
+        leg_ele = TLegend()
+        leg_muon = TLegend()
+        c_ele.cd()
+        mg_electrons.Draw("AP");
+	mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
+	mg_electrons.GetYaxis().SetTitle("Fake Rate")
+	mg_electrons.SetTitle("Electron fake rate")
+        mg_electrons.SetMaximum(0.35);
+        leg_ele = CreateLegend_FR("left",FR_SS_electron_EB_unc,FR_SS_electron_EB,FR_SS_electron_EE_unc,FR_SS_electron_EE)
+        leg_ele.Draw()
+        SavePlots(c_ele, "Plots/FR_SS_electrons")
+
+        c_mu.cd();
+        mg_muons.Draw("AP");
+	mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
+	mg_muons.GetYaxis().SetTitle("Fake Rate");
+	mg_muons.SetTitle("Muon fake rate");
+        mg_muons.SetMaximum(0.35);
+        leg_mu = CreateLegend_FR("left",FR_SS_muon_EB_unc,FR_SS_muon_EB,FR_SS_muon_EE_unc,FR_SS_muon_EE);
+        leg_mu.Draw();
+        SavePlots(c_mu, "Plots/FR_SS_muons");

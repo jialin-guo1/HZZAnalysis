@@ -32,10 +32,10 @@ def LoadNtuples(ana_cfg,year):
 
 
 def AddHistos(histos,ana_cfg,var_name,year):
-    tmpSimhisto = TH1D("Sim"+var_name+year,"Sim"+var_name+year,25,70,170)
+    tmpSimhisto = TH1D("Sim"+var_name+year,"Sim"+var_name+year,680,100,3500)
     tmpSimhisto.SetFillColor(kRed-7)
     tmpSimhisto.Sumw2()
-    tmpGGZZhisto = TH1D("GGZZ"+var_name+year,"GGZZ"+var_name+year,25,70,170)
+    tmpGGZZhisto = TH1D("GGZZ"+var_name+year,"GGZZ"+var_name+year,680,100,3500)
     tmpGGZZhisto.SetFillColor(kAzure -1)
     tmpGGZZhisto.Sumw2()
     for sample in ana_cfg.sig_names:
@@ -58,7 +58,8 @@ def MakeStack(histos, ana_cfg, var_name,Simhisto,GGZZhisto,SumZX,SumqqZZ):
 
 
 def CreateCanvas(canv_name):
-    canv = TCanvas(canv_name, canv_name,800,800)
+    canv = TCanvas(canv_name, canv_name,650,500)
+    canv.SetLogx()
     return canv
 
 
@@ -140,6 +141,7 @@ def MakeLegend(plt_cfg, histos,Simhito,GGZZhito):
 
 def DrawOnCanv(canv, var_name, plt_cfg, stacks, histos, scaled_sig,legend, lumi_label, cms_label):
     canv.cd()
+
     #histos['data'].GetXaxis().SetTitle(var_name)
     #hist.GetXaxis().SetTitleSize(0.20)
     #histos['data'].GetYaxis().SetTitle('Events / %.2f' %histos['data'].GetBinWidth(1))
@@ -166,6 +168,21 @@ def DrawOnCanv(canv, var_name, plt_cfg, stacks, histos, scaled_sig,legend, lumi_
     cms_label.Draw('same')
     lumi_label.DrawLatexNDC(0.90, 0.91, '%s fb^{-1} (13 TeV)' %plt_cfg.lumi)
     lumi_label.Draw('same')
+
+    # draw x label
+    x_low = 100
+    x_up =3500
+    step = 10
+    latex={}
+    label_margin = -0.40
+    for i in range(100,3500,step):
+        if(i==200 or i==300 or i==400 or i==500 or i==1000 or i==2000 or i==3000):
+            i_x = i
+            latex[i] = TLatex(i_x,label_margin,"%.0f"%i_x)
+            latex[i].SetTextAlign(23)
+            latex[i].SetTextFont (42)
+            latex[i].SetTextSize (0.04)
+            latex[i].Draw()
     #histos['data'].Draw('SAME PE')
     #scaled_sig.Draw('SAMEPE')
     #histos['data'].Draw('SAME E1')
