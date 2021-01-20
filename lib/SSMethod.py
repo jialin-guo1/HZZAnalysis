@@ -29,6 +29,12 @@ class SSMethod:
         self.vector_EY={}
         self.a=1
 
+        self.File_RFhisto=TFile()
+        self.File_RFGragh=TFile()
+
+        self.mg_electrons=TMultiGraph()
+        self.mg_muons=TMultiGraph()
+
         self.Constructor()
 
     #===========================================================================
@@ -338,11 +344,12 @@ class SSMethod:
     #================= Get FR Histos============================================
     #===========================================================================
     def GetFRHistos(self,year):
-        self.a=2
+        #self.a=2
         filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
-        inputfile = TFile.Open(filename)
-        if(inputfile):
-            print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
+        #inputfile = TFile.Open(filename)
+        self.File_RFhisto=TFile(filename)
+        #if(inputfile):
+        #    print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
         #for var_name in self.var_names:
         #    for iprocess in self.nprocess:
         #        self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
@@ -352,15 +359,17 @@ class SSMethod:
             self.passing[iprocess]={}
             self.failing[iprocess]={}
             for var_name in self.var_names:
-                self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
-                self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+                #self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+                #self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+                self.passing[iprocess][var_name]=self.File_RFhisto.Get('pass'+iprocess+var_name)
+                self.failing[iprocess][var_name]=self.File_RFhisto.Get('failing'+iprocess+var_name)
                 print "[INFO] get histos="+iprocess+var_name
 
         self.passing['Total']['el'].Draw()
 
         print "[INFO] All FakeRate histograms retrieved from file."
         #return self.passing
-        
+
     def Test(self):
         self.passing['Total']['el'].Draw()
 
@@ -369,26 +378,26 @@ class SSMethod:
     #============================================================================
     def SSFRproduce(self,year,process):
 
-        filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
-        inputfile = TFile(filename)
-        if(inputfile):
-            print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
+        #filename="../RawHistos/FRHistos_SS_%s_Legacy.root"%year
+        #inputfile = TFile(filename)
+        #if(inputfile):
+        #    print "[INFO] successfully handle file FRHistos_SS_%s_Legacy.root"%year
         #for var_name in self.var_names:
         #    for iprocess in self.nprocess:
         #        self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
         #        self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
 
-        for iprocess in self.nprocess:
-            self.passing[iprocess]={}
-            self.failing[iprocess]={}
-            for var_name in self.var_names:
-                self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
-                self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
-                print "[INFO] get histos="+iprocess+var_name
+        #for iprocess in self.nprocess:
+        #    self.passing[iprocess]={}
+        #    self.failing[iprocess]={}
+        #    for var_name in self.var_names:
+        #        self.passing[iprocess][var_name]=inputfile.Get('pass'+iprocess+var_name)
+        #        self.failing[iprocess][var_name]=inputfile.Get('failing'+iprocess+var_name)
+        #        print "[INFO] get histos="+iprocess+var_name
 
-        print "enter produce FR function"
+        #print "enter produce FR function"
 
-        print "[INFO] All FakeRate histograms retrieved from file."
+        #print "[INFO] All FakeRate histograms retrieved from file."
         c=TCanvas()
         self.passing['Total']['mu'].Draw()
         c.SaveAs("SStest_total.png")
@@ -573,15 +582,15 @@ class SSMethod:
     #===========================================================================
     def SaveFRGragh(self,outfilename):
 
-        print "[INFO] check value of vector ele in SaveFRGragh function "
-        c=TCanvas()
-        self.FR_SS_electron_EB_unc.Draw()
-        c.SaveAs("FR_SS_electron_EB_unc")
+        #print "[INFO] check value of vector ele in SaveFRGragh function "
+        #c=TCanvas()
+        #self.FR_SS_electron_EB_unc.Draw()
+        #c.SaveAs("FR_SS_electron_EB_unc")
 
 
 
-        OutFRFile=TFile(outfilename,"RECREATE")
-        OutFRFile.cd()
+        self.File_RFGragh=TFile(outfilename,"RECREATE")
+        self.File_RFGragh.cd()
         self.FR_SS_electron_EB_unc.Write()
         self.FR_SS_electron_EE_unc.Write()
         self.FR_SS_muon_EE_unc.Write()
@@ -590,7 +599,7 @@ class SSMethod:
         self.FR_SS_electron_EE.Write()
         self.FR_SS_muon_EE.Write()
         self.FR_SS_muon_EB.Write()
-        OutFRFile.Close()
+        self.File_RFGragh.Close()
 
         print "[INFO] All FakeRate histograms were saved."
 
@@ -615,48 +624,48 @@ class SSMethod:
 
         c_ele=TCanvas("FR_ele", "FR_ele", 600,600)
         c_muon=TCanvas("FR_muon","FRmuon",600,600)
-        mg_electrons=TMultiGraph()
-        mg_muons=TMultiGraph()
+        #mg_electrons=TMultiGraph()
+        #mg_muons=TMultiGraph()
 
-        mg_electrons.Add(self.FR_SS_electron_EB_unc)
+        self.mg_electrons.Add(self.FR_SS_electron_EB_unc)
         self.FR_SS_electron_EB_unc.SetLineColor(kBlue)
         self.FR_SS_electron_EB_unc.SetLineStyle(1)
         self.FR_SS_electron_EB_unc.SetMarkerSize(0)
         self.FR_SS_electron_EB_unc.SetTitle("barel uncorrected")
-        mg_electrons.Add(self.FR_SS_electron_EE_unc)
+        self.mg_electrons.Add(self.FR_SS_electron_EE_unc)
         self.FR_SS_electron_EE_unc.SetLineColor(kRed);
         self.FR_SS_electron_EE_unc.SetLineStyle(1);
         self.FR_SS_electron_EE_unc.SetMarkerSize(0);
         self.FR_SS_electron_EE_unc.SetTitle("endcap uncorrected")
 
-        mg_electrons.Add(self.FR_SS_electron_EB)
+        self.mg_electrons.Add(self.FR_SS_electron_EB)
         self.FR_SS_electron_EB.SetLineColor(kBlue)
         self.FR_SS_electron_EB.SetLineStyle(2)
         self.FR_SS_electron_EB.SetMarkerSize(0)
         self.FR_SS_electron_EB.SetTitle("barel corrected")
-        mg_electrons.Add(self.FR_SS_electron_EE)
+        self.mg_electrons.Add(self.FR_SS_electron_EE)
         self.FR_SS_electron_EE.SetLineColor(kRed);
         self.FR_SS_electron_EE.SetLineStyle(2);
         self.FR_SS_electron_EE.SetMarkerSize(0);
         self.FR_SS_electron_EE.SetTitle("endcap corrected")
 
-        mg_muons.Add(self.FR_SS_muon_EB_unc)
+        self.mg_muons.Add(self.FR_SS_muon_EB_unc)
         self.FR_SS_muon_EB_unc.SetLineColor(kBlue)
         self.FR_SS_muon_EB_unc.SetLineStyle(1)
         self.FR_SS_muon_EB_unc.SetMarkerSize(0)
         self.FR_SS_muon_EB_unc.SetTitle("barel uncorrected")
-        mg_muons.Add(self.FR_SS_muon_EE_unc)
+        self.mg_muons.Add(self.FR_SS_muon_EE_unc)
         self.FR_SS_muon_EE_unc.SetLineColor(kRed)
         self.FR_SS_muon_EE_unc.SetLineStyle(1)
         self.FR_SS_muon_EE_unc.SetMarkerSize(0)
         self.FR_SS_muon_EE_unc.SetTitle("endcap uncorrected")
 
-        mg_muons.Add(self.FR_SS_muon_EB)
+        self.mg_muons.Add(self.FR_SS_muon_EB)
         self.FR_SS_muon_EB.SetLineColor(kBlue)
         self.FR_SS_muon_EB.SetLineStyle(2)
         self.FR_SS_muon_EB.SetMarkerSize(0)
         self.FR_SS_muon_EB.SetTitle("barel corrected")
-        mg_muons.Add(self.FR_SS_muon_EE)
+        self.mg_muons.Add(self.FR_SS_muon_EE)
         self.FR_SS_muon_EE.SetLineColor(kRed)
         self.FR_SS_muon_EE.SetLineStyle(2)
         self.FR_SS_muon_EE.SetMarkerSize(0)
@@ -667,20 +676,20 @@ class SSMethod:
         leg_ele = TLegend()
         leg_muon = TLegend()
         c_ele.cd()
-        mg_electrons.Draw("AP");
-	mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
-	mg_electrons.GetYaxis().SetTitle("Fake Rate")
-	mg_electrons.SetTitle("Electron fake rate")
+        self.mg_electrons.Draw("AP");
+	self.mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
+	self.mg_electrons.GetYaxis().SetTitle("Fake Rate")
+	self.mg_electrons.SetTitle("Electron fake rate")
         #mg_electrons.SetMaximum(0.35);
         leg_ele = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_electron_EB_unc,self.FR_SS_electron_EE_unc,self.FR_SS_electron_EB,self.FR_SS_electron_EE)
         leg_ele.Draw()
         SSMethod.SavePlots(self,c_ele, "plot/FR_SS_electrons")
 
         c_muon.cd();
-        mg_muons.Draw("AP");
-	mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
-	mg_muons.GetYaxis().SetTitle("Fake Rate");
-	mg_muons.SetTitle("Muon fake rate");
+        self.mg_muons.Draw("AP");
+	self.mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
+	self.mg_muons.GetYaxis().SetTitle("Fake Rate");
+	self.mg_muons.SetTitle("Muon fake rate");
         #mg_muons.SetMaximum(0.35);
         leg_mu = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_muon_EB_unc,self.FR_SS_muon_EE_unc,self.FR_SS_muon_EB,self.FR_SS_muon_EE);
         leg_mu.Draw();
