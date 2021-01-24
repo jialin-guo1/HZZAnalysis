@@ -9,7 +9,9 @@ class SSMethod:
         self.cat_states=['corrected','uncorrected']
         self.cat_names=['EE','EB']
         self.var_names=['el','mu']
-        self.nprocess=['data','WZ','Total']
+        self.nprocess=['data','WZ','TT','DY','Total']
+        self.cat_CRnames=['4e', '4mu', '2mu2e', '2e2mu']
+
 
         self.FR_SS_electron_EB_unc=TGraphErrors()
         self.FR_SS_electron_EE_unc=TGraphErrors()
@@ -23,11 +25,12 @@ class SSMethod:
         self.passing={}
         self.failing={}
 
+        self.CRHistos={}
+
         self.vector_X={}
         self.vector_Y={}
         self.vector_EX={} #errors
         self.vector_EY={}
-        self.a=1
 
         self.File_RFhisto=TFile()
         self.File_RFGragh=TFile()
@@ -41,13 +44,20 @@ class SSMethod:
     #==============initialize variables=========================================
     #===========================================================================
     def Constructor(self):
+        #book pass/fail histo for FR calculation
         for iprocess in self.nprocess:
             self.passing[iprocess]={}
             self.failing[iprocess]={}
             for var_name in self.var_names:
                 self.passing[iprocess][var_name]=TH2D('pass'+iprocess+var_name,'pass'+iprocess+var_name,80, 0, 80, 2, 0, 2)
                 self.failing[iprocess][var_name]=TH2D('failing'+iprocess+var_name,'failing'+iprocess+var_name,80, 0, 80, 2, 0, 2)
+        #book CR histos
+        for iprocess in self.nprocess:
+            self.CRHistos[iprocess]={}
+            for cat_name in self.cat_CRnames:
+                self.CRHistos[cat_name][iprocess]=TH1D("SSCR"+cat_name+iprocess,"SSCR"+cat_name+iprocess,40,70,870)
 
+        #book Gragh variables for FR plots
         for cat_state in self.cat_states:
             self.vector_X[cat_state]={}
             self.vector_Y[cat_state]={}
@@ -64,6 +74,16 @@ class SSMethod:
                     self.vector_EX[cat_state][cat_name][var_name]=array('f',[])
                     self.vector_EY[cat_state][cat_name][var_name]=array('f',[])
 
+    #============================================================================
+    #====================Fill SS Control Region histos===========================
+    #============================================================================
+    def FillCRHistos(self,file,process):
+        inputfile = TFile(file)
+        if(process='WZ'):
+            inputTree=inputfile.Ana.Get("passedEvents")
+            sumWeights = inputfile.Ana.Get("sumWeights").GetBinContent(1)
+        else:
+            inputTree=inputfile.Ana.Get("passedEvents")
 
 
     #============================================================================
@@ -208,114 +228,49 @@ class SSMethod:
     #================Fill passing/failling histos===============================
     #===========================================================================
     def FillFRHistos(self,file,process):
-        print "[INFO] Get file:"+" "+file
+        #call same variables for output
         inputfile = TFile(file)
-        inputTree = inputfile.Get("passedEvents")
-        #self.passing[process]={}
-        #self.failing[process]={}
-        #for var_name in self.var_names:
-        #    self.passing[process][var_name]=TH2D('pass'+process+var_name,'pass'+process+var_name,80, 0, 80, 2, 0, 2)
-        #    self.failing[process][var_name]=TH2D('failing'+process+var_name,'failing'+process+var_name,80, 0, 80, 2, 0, 2)
+        if(process=='WZ'):
+            inputTree = inputfile.Ana.Get("passedEvents")
+            sumWeights = inputfile.Ana.Get("sumWeights").GetBinContent(1)
+        else:
+            inputTree = inputfile.Get("passedEvents")
 
-        #initialize a pt distrubtion checking histos
-        passingeleEE = TH1D("passingeleEE","passingeleEE",80,0,80)
-        failingeleEE = TH1D("failingeleEE","failingeleEE",80,0,80)
+        if(inputfile):
+            print "[INFO] get file"+" "+str(file)
 
-
-        #loop events and save passing and failing hitos
         for ievent,event in enumerate(inputTree):
-            #if(ievent==100): break
             if(not event.passedZ1LSelection): continue
+            if(event.met>25): continue
+            #if(event.lep_Sip[event.lep_Hindex[2]]>4.0): continue
             if(process=='WZ'):
-                weight = 59.7*1000*4.67*event.eventWeight/32584720.0
-                weight = 59.7*1000*4.67*event.eventWeight/3110669.0
+                weight = 59.7*1000*4.67*event.eventWeight/sumWeights
             else:
                 weight = 1
-            l1 = TLorentzVector()
-            l2 = TLorentzVector()
-            l3 = TLorentzVector()
-            l1.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[0]],event.lepFSR_phi[event.lep_Hindex[0]],event.lepFSR_mass[event.lep_Hindex[0]])
-            l2.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[1]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[1]],event.lepFSR_mass[event.lep_Hindex[1]])
-            l3.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[2]])
-            Z1 = TLorentzVector()
-            Z1 = l1+l2
-            if(Z1.M()<40 or Z1.M()>120):continue
-            if(event.lepFSR_pt[event.lep_Hindex[0]]<20 or event.lepFSR_pt[event.lep_Hindex[1]]<10): continue
-            if(event.met>25.0):continue
-            if(event.lep_Sip[event.lep_Hindex[2]]>4.0): continue
-            if(event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
+            if(event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35 and event.lep_tightId[event.lep_Hindex[2]]):
                 if(abs(event.lep_id[event.lep_Hindex[2]])==11):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
-                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)  #0.5 for EB 1.5 for EE
-                        passingeleEE.Fill(event.lep_pt[event.lep_Hindex[2]])
                     if(event.lep_isEB[event.lep_Hindex[2]]):
+                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)  #0.5 for EB 1.5 for EE
+                    if(event.lep_isEE[event.lep_Hindex[2]]):
                         self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
                     if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
                         self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
                     if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
                         self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-                    #if(event.lep_isEE[event.lep_Hindex[2]]):
-                    #    self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    #if(event.lep_isEB[event.lep_Hindex[2]]):
-                    #    self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
             else:
                 if(abs(event.lep_id[event.lep_Hindex[2]])==11):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
-                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                        failingeleEE.Fill(event.lep_pt[event.lep_Hindex[2]])
                     if(event.lep_isEB[event.lep_Hindex[2]]):
+                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    if(event.lep_isEE[event.lep_Hindex[2]]):
                         self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
                 if(abs(event.lep_id[event.lep_Hindex[2]])==13):
                     if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
                         self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
                     if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
                         self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-                    #if(event.lep_isEE[event.lep_Hindex[2]]):
-                    #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    #if(event.lep_isEB[event.lep_Hindex[2]]):
-                    #    self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
 
-        #if(process=='data'):
-        #    c1=TCanvas()
-        #    passingeleEE.Draw()
-        #    c1.SaveAs("passingeleEE.png")
-        #    failingeleEE.Draw()
-        #    c1.SaveAs("failingeleEE.png")
         print "[INFO] passing and failing histos have been created"
-
-    def FillFRHistosTest(self,file,process):
-        print "[INFO] Get file:"+" "+file
-        inputfile = TFile(file)
-        inputTree = inputfile.Get("passedEvents")
-        for ievent,event in enumerate(inputTree):
-            if(not event.passedZ1LSelection): continue
-            if(process=='WZ'):
-                weight = 59.7*1000*4.67*event.eventWeight/32584720.0
-            else:
-                weight = 1
-            if(event.met<25.0 and event.lep_Sip[event.lep_Hindex[2]]<4.0 and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
-                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
-                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)  #0.5 for EB 1.5 for EE
-                    if(event.lep_isEB[event.lep_Hindex[2]]):
-                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
-                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
-                        self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
-                        self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-            else:
-                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
-                    if(event.lep_isEE[event.lep_Hindex[2]]):
-                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    if(event.lep_isEB[event.lep_Hindex[2]]):
-                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
-                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
-                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
-                        self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
-                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
-                        self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
 
 
 
@@ -467,19 +422,21 @@ class SSMethod:
             temp_error_NF = 0.0
             for var_name in self.var_names:
                 if(var_name=='el' and i_pt_bin==0): continue #electrons do not have 5 - 7 GeV bin
-                tempNPaxis = self.passing['Total'][var_name].GetXaxis()
-                tempNFaxis = self.failing['Total'][var_name].GetXaxis()
+                #tempNPaxis = self.passing['Total'][var_name].GetXaxis()
+                #tempNFaxis = self.failing['Total'][var_name].GetXaxis()
 
                 #print "pt_bins[i_pt_bin] = "+ str(pt_bins[i_pt_bin])
                 #print "pt_bins[i_pt_bin]+1 = "+str(pt_bins[i_pt_bin+1])
                 #print "bin number of pt_bins[i_pt_bin] = "+ str(tempNPaxis.FindBin(pt_bins[i_pt_bin]))
                 #print "bin number of pt_bins[i_pt_bin+1]-1 = "+str(tempNPaxis.FindBin(pt_bins[i_pt_bin+1])-1)
 
-                temp_NP = self.passing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
-                temp_NF = self.failing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                #temp_NP = self.passing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                #temp_NF = self.failing['Total'][var_name].IntegralAndError(tempNPaxis.FindBin(pt_bins[i_pt_bin]),tempNPaxis.FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                temp_error_NP = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,1)
+                temp_error_NF = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,1)
 
-                #temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NP)
-                #temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, temp_error_NF)
 
                 self.vector_X['corrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['corrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
@@ -488,6 +445,8 @@ class SSMethod:
 
                 temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
                 temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
+                temp_error_NP = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,2)
+                temp_error_NF = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,2)
 
                 self.vector_X['corrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['corrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
@@ -497,6 +456,8 @@ class SSMethod:
                 #Just for fake rate plots calculate the same for histograms without WZ subtraction
                 temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
                 temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                temp_error_NP = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,1)
+                temp_error_NF = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,1)
 
                 self.vector_X['uncorrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['uncorrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
@@ -505,6 +466,8 @@ class SSMethod:
 
                 temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
                 temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
+                temp_error_NP = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,2)
+                temp_error_NF = SSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,2)
 
                 self.vector_X['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
                 self.vector_Y['uncorrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
@@ -519,7 +482,7 @@ class SSMethod:
         print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
         print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
         print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
-        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
 
         print "[INFO] check value of vector muon after append value"
         print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
@@ -613,6 +576,45 @@ class SSMethod:
 
         #print "[INFO] All FakeRate histograms were saved."
 
+    #===========================================================================
+    #===================calculate Error from Every bin==========================
+    #===========================================================================
+    def GetErorr(self,pt_bin,i_pt_bin,process,var_name,cat,loc):
+        if(cat):
+            ispass=True
+        else:
+            ispass=False
+        if(loc==1):
+            isEB=True
+        else:
+            isEB=False
+        error = 0.0
+        for x_pt in range(pt_bin[i_pt_bin],pt_bin[i_pt_bin+1]):
+            print "x_pt = "+str(x_pt)
+            if(isEB):
+                if(ispass):
+                    x_bin = self.passing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.passing[process][var_name].GetBinError(x_bin,1)*self.passing[process][var_name].GetBinError(x_bin,1)
+                else:
+                    x_bin = self.failing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.failing[process][var_name].GetBinError(x_bin,1)*self.failing[process][var_name].GetBinError(x_bin,1)
+            else:
+                if(ispass):
+                    x_bin = self.passing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.passing[process][var_name].GetBinError(x_bin,2)*self.passing[process][var_name].GetBinError(x_bin,2)
+                else:
+                    x_bin = self.failing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.failing[process][var_name].GetBinError(x_bin,2)*self.failing[process][var_name].GetBinError(x_bin,2)
+
+        return math.sqrt(error)
+
+
+
+
+
+
+
+
 
     #===========================================================================
     #===================save raw FakeRates Gragh================================
@@ -664,8 +666,8 @@ class SSMethod:
         #print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
         #print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
 
-        c_ele=TCanvas("FR_ele", "FR_ele", 600,600)
-        c_muon=TCanvas("FR_muon","FRmuon",600,600)
+        c_ele=TCanvas("FR_ele", "FR_ele", 700,700)
+        c_muon=TCanvas("FR_muon","FRmuon",700,700)
         #mg_electrons=TMultiGraph()
         #mg_muons=TMultiGraph()
 
@@ -721,8 +723,9 @@ class SSMethod:
         self.mg_electrons.Draw("AP");
 	self.mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
 	self.mg_electrons.GetYaxis().SetTitle("Fake Rate")
+        self.mg_electrons.GetYaxis().SetTitleSize(0.029)
 	self.mg_electrons.SetTitle("Electron fake rate")
-        #mg_electrons.SetMaximum(0.35);
+        self.mg_electrons.SetMaximum(0.35);
         leg_ele = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_electron_EB_unc,self.FR_SS_electron_EE_unc,self.FR_SS_electron_EB,self.FR_SS_electron_EE)
         leg_ele.Draw()
         SSMethod.SavePlots(self,c_ele, "plot/FR_SS_electrons")
@@ -731,8 +734,9 @@ class SSMethod:
         self.mg_muons.Draw("AP");
 	self.mg_muons.GetXaxis().SetTitle("p_{T} [GeV]");
 	self.mg_muons.GetYaxis().SetTitle("Fake Rate");
+        self.mg_muons.GetYaxis().SetTitleSize(0.029)
 	self.mg_muons.SetTitle("Muon fake rate");
-        #mg_muons.SetMaximum(0.35);
+        self.mg_muons.SetMaximum(0.35);
         leg_mu = SSMethod.CreateLegend_FR(self,"left",self.FR_SS_muon_EB_unc,self.FR_SS_muon_EE_unc,self.FR_SS_muon_EB,self.FR_SS_muon_EE);
         leg_mu.Draw();
         SSMethod.SavePlots(self,c_muon, "plot/FR_SS_muons");
@@ -742,9 +746,9 @@ class SSMethod:
     #=============================================================================
     def CreateLegend_FR(self,position,EB_unc,EE_unc,EB_cor,EE_cor):
         if(position=='right'):
-            leg = TLegend( .64, .65, .97, .9 )
+            leg = TLegend( .64, .65, .97, .85 )
         elif(position=='left'):
-            leg=TLegend(.18,.65,.51,.9)
+            leg=TLegend(.18,.65,.51,.85)
         else:
             print "[Error] Please enter \"left\" or \"right\" "
         leg.AddEntry( EB_unc, "barrel uncorrected", "l" )
