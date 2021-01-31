@@ -5,7 +5,7 @@ import Analyzer_Configs as AC
 import Plot_Configs     as PC
 from Plot_Helper import *
 from deltaR import *
-from SSMethod import *
+from OSMethod import *
 import FakeRates as FR
 
 datafile = "/cms/user/guojl/Sample/skimed/2018_noDuplicates.root"
@@ -16,33 +16,17 @@ Zjetfile = "/cms/user/guojl/Sample/DYJetsToLL_M-50_TuneCP5_13TeV_2018_filter2lCo
 TTbarfile = "/cms/user/guojl/Sample/TTTo2L2Nu_TuneCP5_13TeV_2018_filter2l.root"
 qqZZfile = "/cms/user/guojl/Sample/qqZZ_2018.root"
 FakeRateFile = "/cms/user/guojl/CMSSW_10_6_12/src/HToZZ4lRepeat/RawHistos/FakeRates_SS_2018_Legacy.root"
-SS=SSMethod(2018)
+OS=OSMethod(2018)
 
 #===============================================================================
 #=============produce SSCR samples==============================================
 #===============================================================================
-SS.FillCRHistos(datafile,'data')
-#SS.FillCRHistos(WZfile,'WZ')
-#SS.FillCRHistos(TTbarfile,'TT')
-#SS.FillCRHistos(qqZZfile,'qqZZ')
-SS.FillCRHistos(Zjetfile,'DY')
-SS.SaveCRHistos()
+OS.FillCRHistos(datafile,'data')
+OS.FillCRHistos(WZfile,'WZ')
+OS.FillCRHistos(TTbarfile,'TT')
+OS.FillCRHistos(qqZZfile,'qqZZ')
+OS.FillCRHistos(Zjetfile,'DY')
+OS.SaveCRHistos()
 
-SS.GetCRHistos()
-SS.PlotCR()
-
-#================================================================================
-#=================produce FakeRates==============================================
-#================================================================================
-
-#SS.FillFRHistos(datafile,'data')
-#SS.FillFRHistos(WZfile,'WZ')
-#SS.SaveFRHistos(True,'Remove_NegBins_FR')
-
-#SS.GetFRHistos()
-#SS.SSFRproduce('data')
-
-#================================================================================
-#===========================ZX estimate==========================================
-#================================================================================
-#SS.FillZXHistos(FakeRateFile,datafile)
+OS.GetCRHistos()
+OS.PlotCR()
