@@ -7,6 +7,7 @@ import sys
 
 class SSMethod:
     def __init__(self,year):
+        self.Datafile = "/cms/user/guojl/Sample/skimed/2018_noDuplicates.root"
         self.year = year
         self.lumi = 0
         self.cat_states=['corrected','uncorrected']
@@ -31,6 +32,10 @@ class SSMethod:
         self.nMissingHits={}
         self.npassing={}
         self.nfailing={}
+
+        self.n_OSevents = {}
+        self.n_SSevents = {}
+        self.R_OS_over_SS = {}
 
         self.passing={}
         self.failing={}
@@ -66,11 +71,18 @@ class SSMethod:
             for var_name in self.var_names:
                 self.passing[iprocess][var_name]=TH2D('pass'+iprocess+var_name,'pass'+iprocess+var_name,80, 0, 80, 2, 0, 2)
                 self.failing[iprocess][var_name]=TH2D('failing'+iprocess+var_name,'failing'+iprocess+var_name,80, 0, 80, 2, 0, 2)
+
         #book CR histos
         for cat_name in self.cat_CRnames:
             self.CRHistos[cat_name]={}
             for iprocess in self.nprocess:
                 self.CRHistos[cat_name][iprocess]=TH1D("SSCR"+cat_name+iprocess,"SSCR"+cat_name+iprocess,40,70,870)
+
+        #book OS and SS number dir for ratio calculation
+        for cat_name in self.cat_CRnames:
+            self.n_OSevents[cat_name]=0.0
+            self.n_SSevents[cat_name]=0.0
+            self.R_OS_over_SS[cat_name]=0.0
 
         #book ZX histos
         for cat_name in self.cat_CRnames:
@@ -372,10 +384,10 @@ class SSMethod:
              self.CRHistos[cat_name]['data'].SetLineColor(kBlack)
 
              stack = THStack("stack","stack")
-             stack.Add(self.CRHistos[cat_name]['WZ'])
              stack.Add(self.CRHistos[cat_name]['qqZZ'])
-             stack.Add(self.CRHistos[cat_name]['DY'])
+             stack.Add(self.CRHistos[cat_name]['WZ'])
              stack.Add(self.CRHistos[cat_name]['TT'])
+             stack.Add(self.CRHistos[cat_name]['DY'])
              stack.Draw("histo")
 
              data_max = self.CRHistos[cat_name]['data'].GetBinContent(self.CRHistos[cat_name]['data'].GetMaximumBin())
@@ -386,7 +398,7 @@ class SSMethod:
              if(cat_name=='4e'): label="m_{4#font[12]{e}} (GeV)"
              if(cat_name=='4mu'): label="m_{4#font[12]{#mu}} (GeV)"
              if(cat_name=='2e2mu'): label="m_{2#font[12]{e}2#font[12]{#mu}} (GeV)"
-             if(cat_name=='4e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
+             if(cat_name=='2mu2e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
 
              stack.GetXaxis().SetTitle(label)
              stack.GetXaxis().SetTitleSize(0.04)
@@ -409,6 +421,7 @@ class SSMethod:
              cms_label.Draw('same')
 
              plotname = "plot/SSCR_"+cat_name+"_%s"%str(self.year)
+             #plotname = "SSCR_"+cat_name+"_%s"%str(self.year)
              SSMethod.SavePlots(self,c,plotname)
 
     #============================================================================
@@ -450,6 +463,29 @@ class SSMethod:
         leg.AddEntry(self.CRHistos[cat_name]['DY'],"Z + jets",'f')
 
         return leg
+
+
+    #============================================================================
+    #=================calculate MC ratio of SS and OS Control Region=============
+    #============================================================================
+    def Calculate_SSOS_Ratio(self,OSCRfile):
+        file = TFile(OSCRfile)
+        temp_OS_CRhistos = {}
+        for cat_name in self.cat_CRnames:
+            temp_OS_CRhistos[cat_name]={}
+            for iprocess in self.nprocess:
+                temp_OS_CRhistos[cat_name][iprocess]=file.Get("OSCR"+"2P2F"+cat_name+iprocess)
+
+        for cat_name in self.cat_CRnames:
+            for iprocess in self.nprocess:
+                if(iprocess=='data' or iprocess == 'qqZZ'):continue
+                self.n_OSevents[cat_name] += temp_OS_CRhistos[cat_name][iprocess].Integral()
+                self.n_SSevents[cat_name] += self.CRHistos[cat_name][iprocess].Integral()
+
+        for cat_name in self.cat_CRnames:
+            self.R_OS_over_SS[cat_name] = self.n_OSevents[cat_name]/self.n_SSevents[cat_name]
+            print "[INFO] OS/SS in %s final state = "%cat_name + str(self.n_OSevents[cat_name]/self.n_SSevents[cat_name]) + "+/-" + str(math.sqrt(1.0/self.n_OSevents[cat_name]+1.0/self.n_SSevents[cat_name]))
+
 
 
     #===========================================================================
@@ -855,6 +891,8 @@ class SSMethod:
 
 
 
+
+
     #============================================================================
     #==================Draw FR plots=============================================
     #============================================================================
@@ -991,23 +1029,23 @@ class SSMethod:
             mass4l = (l1+l2+l3+l4).M()
 
             #fill inclusive
-            self.ZXHistos['inclusive']['data'].Fill(mass4l,weight)
+            self.ZXHistos['inclusive']['data'].Fill(mass4l,weight*self.R_OS_over_SS['inclusive'])
             ninclusive+=1
             #fill 4e, 4mu, 2e2mu, 2mu2e
             if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
-                self.ZXHistos['4e']['data'].Fill(mass4l,weight)
+                self.ZXHistos['4e']['data'].Fill(mass4l,weight*self.R_OS_over_SS['4e'])
                 if(0<=mass4l<=300):
                     n4e+=1
             if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
-                self.ZXHistos['4mu']['data'].Fill(mass4l,weight)
+                self.ZXHistos['4mu']['data'].Fill(mass4l,weight*self.R_OS_over_SS['4mu'])
                 if(0<=mass4l<=300):
                     n4mu+=1
             if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
-                self.ZXHistos['2e2mu']['data'].Fill(mass4l,weight)
+                self.ZXHistos['2e2mu']['data'].Fill(mass4l,weight*self.R_OS_over_SS['2e2mu'])
                 if(0<=mass4l<=300):
                     n2e2mu+=1
             if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
-                self.ZXHistos['2mu2e']['data'].Fill(mass4l,weight)
+                self.ZXHistos['2mu2e']['data'].Fill(mass4l,weight*self.R_OS_over_SS['2mu2e'])
                 if(0<=mass4l<=300):
                     n2mu2e+=1
 

@@ -118,7 +118,7 @@ class OSMethod:
             #if(ievent==100): break
             self.passedOSCRselection = False
             if(event.lep_pt.size()<4): continue
-            
+
             OSMethod.foundOSCRCandidate(self,event)
             if(not self.passedOSCRselection): continue
             if(process=='WZ'):
@@ -361,10 +361,10 @@ class OSMethod:
                 self.CRHistos[cat_failname][cat_name]['data'].SetLineColor(kBlack)
 
                 stack = THStack("stack","stack")
-                stack.Add(self.CRHistos[cat_failname][cat_name]['WZ'])
                 stack.Add(self.CRHistos[cat_failname][cat_name]['qqZZ'])
-                stack.Add(self.CRHistos[cat_failname][cat_name]['DY'])
+                stack.Add(self.CRHistos[cat_failname][cat_name]['WZ'])
                 stack.Add(self.CRHistos[cat_failname][cat_name]['TT'])
+                stack.Add(self.CRHistos[cat_failname][cat_name]['DY'])
                 stack.Draw("histo")
 
                 data_max = self.CRHistos[cat_failname][cat_name]['data'].GetBinContent(self.CRHistos[cat_failname][cat_name]['data'].GetMaximumBin())
@@ -375,7 +375,7 @@ class OSMethod:
                 if(cat_name=='4e'): label="m_{4#font[12]{e}} (GeV)"
                 if(cat_name=='4mu'): label="m_{4#font[12]{#mu}} (GeV)"
                 if(cat_name=='2e2mu'): label="m_{2#font[12]{e}2#font[12]{#mu}} (GeV)"
-                if(cat_name=='4e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
+                if(cat_name=='2mu2e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
 
                 stack.GetXaxis().SetTitle(label)
                 stack.GetXaxis().SetTitleSize(0.04)
@@ -440,6 +440,12 @@ class OSMethod:
         leg.AddEntry(self.CRHistos[cat_failname][cat_name]['DY'],"Z + jets",'f')
 
         return leg
+
+
+    #===========================================================================
+    #============
+    #===========================================================================
+    #def
 
 
     #============================================================================
