@@ -13,23 +13,25 @@ class OSMethod:
         self.var_names=['el','mu']
         self.nprocess=['data','WZ','TT','DY','qqZZ','Total']
         self.cat_CRnames=['4e', '4mu', '2mu2e', '2e2mu','inclusive']
+        self.cat_CRtoSRnames=['2P2F_SR','3P1F','3P1F_bkg','3P1F_ZZ']
         self.cat_failnames = ['3P1F','2P2F']
         self.lep_CRindex=[0,0,0,0]
         self.passedOSCRselection = False
 
-        self.FR_SS_electron_EB_unc=TGraphErrors()
-        self.FR_SS_electron_EE_unc=TGraphErrors()
-        self.FR_SS_muon_EB_unc=TGraphErrors()
-        self.FR_SS_muon_EE_unc=TGraphErrors()
-        self.FR_SS_electron_EB=TGraphErrors()
-        self.FR_SS_electron_EE=TGraphErrors()
-        self.FR_SS_muon_EB=TGraphErrors()
-        self.FR_SS_muon_EE=TGraphErrors()
+        self.FR_OS_electron_EB_unc=TGraphErrors()
+        self.FR_OS_electron_EE_unc=TGraphErrors()
+        self.FR_OS_muon_EB_unc=TGraphErrors()
+        self.FR_OS_muon_EE_unc=TGraphErrors()
+        self.FR_OS_electron_EB=TGraphErrors()
+        self.FR_OS_electron_EE=TGraphErrors()
+        self.FR_OS_muon_EB=TGraphErrors()
+        self.FR_OS_muon_EE=TGraphErrors()
 
         self.passing={}
         self.failing={}
 
         self.CRHistos={}
+        self.HFromCRHisto={}
         self.ZXHistos={}
 
         self.vector_X={}
@@ -43,6 +45,8 @@ class OSMethod:
 
         self.mg_electrons=TMultiGraph()
         self.mg_muons=TMultiGraph()
+
+        self.Zmass = 91.1876
 
         self.Constructor()
 
@@ -60,15 +64,26 @@ class OSMethod:
         #book CR histos
         for cat_failname in self.cat_failnames:
             self.CRHistos[cat_failname]={}
-            for cat_name in self.cat_CRnames:
-                self.CRHistos[cat_failname][cat_name]={}
+            for cat_CRname in self.cat_CRnames:
+                self.CRHistos[cat_failname][cat_CRname]={}
                 for iprocess in self.nprocess:
-                    self.CRHistos[cat_failname][cat_name][iprocess]=TH1D("OSCR"+cat_failname+cat_name+iprocess,"OSCR"+cat_failname+cat_name+iprocess,40,70,870)
+                    self.CRHistos[cat_failname][cat_CRname][iprocess]=TH1D("OSCR"+cat_failname+cat_CRname+iprocess,"OSCR"+cat_failname+cat_CRname+iprocess,40,70,870)
+
+        #book CRtoSR histos
+        for cat_name in self.cat_CRtoSRnames:
+            self.HFromCRHisto[cat_name]={}
+            for cat_CRname in self.cat_CRnames:
+                self.HFromCRHisto[cat_name][cat_CRname]=TH1D("OSmidCR"+cat_CRname+cat_name,"OSmidCR"+cat_CRname+cat_name,40,70,870)
+
 
         #book ZX histos
         for cat_name in self.cat_CRnames:
             self.ZXHistos[cat_name]={}
-            self.ZXHistos[cat_name]['data']=TH1D("ZX"+cat_name+'data',"ZX"+cat_name+'data',150,0,300)
+            self.ZXHistos[cat_name]['data']=TH1D("ZX"+cat_name+'data',"ZX"+cat_name+'data',40,70,870)
+            self.ZXHistos[cat_name]['qqZZ']=TH1D("ZX"+cat_name+'qqZZ',"ZX"+cat_name+'qqZZ',40,70,870)
+            self.ZXHistos[cat_name]['data'].Sumw2()
+            self.ZXHistos[cat_name]['qqZZ'].Sumw2()
+
 
         #book Gragh variables for FR plots
         for cat_state in self.cat_states:
@@ -136,10 +151,6 @@ class OSMethod:
             l2 = TLorentzVector()
             l3 = TLorentzVector()
             l4 = TLorentzVector()
-            #print "passedSSCRselection="+str(self.passedSSCRselection)
-            #print "lep_CRindex="+str(self.lep_CRindex)
-            #print "lep_pt="+str(event.lepFSR_pt)
-            #print "pt 2 ="+str(event.lepFSR_pt[3])
             l1.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[0]],event.lepFSR_eta[self.lep_CRindex[0]],event.lepFSR_phi[self.lep_CRindex[0]],event.lepFSR_mass[self.lep_CRindex[0]])
             l2.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[1]],event.lepFSR_eta[self.lep_CRindex[1]],event.lepFSR_phi[self.lep_CRindex[1]],event.lepFSR_mass[self.lep_CRindex[1]])
             l3.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lepFSR_phi[self.lep_CRindex[2]],event.lepFSR_mass[self.lep_CRindex[2]])
@@ -172,6 +183,54 @@ class OSMethod:
                     self.CRHistos['2P2F']['2e2mu'][process].Fill(mass4l,weight)
                 if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.CRHistos['2P2F']['2mu2e'][process].Fill(mass4l,weight)
+
+    def FillCRHistosTest(self,file,process):
+        inputfile = TFile(file)
+        if (process=='data'):
+            inputTree=inputfile.Get("passedEvents")
+        else:
+            inputTree=inputfile.Ana.Get("passedEvents")
+            sumWeights = inputfile.Ana.Get("sumWeights").GetBinContent(1)
+
+        if(inputfile):
+            print "[INFO] get file"+" "+str(file)+" "+"for filling CR histos"
+
+        #loop evnet to Fill
+        for ievent, event in enumerate(inputTree):
+            #if(ievent==100):break
+            if(not event.passedZXCRSelection): continue
+            if(process=='WZ'):
+                weight= self.lumi*1000*4.67*event.eventWeight/sumWeights
+            elif(process=='DY'):
+                weight = self.lumi*1000*6225.4*event.eventWeight/sumWeights
+            elif(process=='TT'):
+                weight = self.lumi*1000*87.31*event.eventWeight/sumWeights
+            elif(process=='qqZZ'):
+                weight= self.lumi*1000*event.crossSection*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
+            else:
+                weight=1
+            if(event.nZXCRFailedLeptons==1):
+                self.CRHistos['3P1F']['inclusive'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.CRHistos['3P1F']['4e'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.CRHistos['3P1F']['4mu'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.CRHistos['3P1F']['2e2mu'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.CRHistos['3P1F']['2mu2e'][process].Fill(event.mass4l,weight)
+            if(event.nZXCRFailedLeptons==2):
+                self.CRHistos['2P2F']['inclusive'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.CRHistos['2P2F']['4e'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.CRHistos['2P2F']['4mu'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.CRHistos['2P2F']['2e2mu'][process].Fill(event.mass4l,weight)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.CRHistos['2P2F']['2mu2e'][process].Fill(event.mass4l,weight)
+
+
 
 
     #===========================================================================
@@ -443,9 +502,688 @@ class OSMethod:
 
 
     #===========================================================================
-    #============
+    #============Fill FakeRates histos==========================================
     #===========================================================================
-    #def
+    def FillFRHistos(self,file,process):
+        inputfile = TFile(file)
+        if(process=='WZ'):
+            inputTree = inputfile.Ana.Get("passedEvents")
+            sumWeights = inputfile.Ana.Get("sumWeights").GetBinContent(1)
+        else:
+            inputTree = inputfile.Get("passedEvents")
+
+        if(inputfile):
+            print "[INFO] get file"+" "+str(file)+" "+"for filling pass/fail histos"
+
+        for ievent,event in enumerate(inputTree):
+            #if(ievent==100):break
+            if(not event.passedZ1LSelection): continue
+            if(event.met>25): continue
+            #check |Z1-Zm|<7 to reduce effiection of photon conversion
+            l1 = TLorentzVector()
+            l2 = TLorentzVector()
+            l1.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[0]],event.lepFSR_phi[event.lep_Hindex[0]],event.lepFSR_mass[event.lep_Hindex[0]])
+            l2.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[1]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[1]],event.lepFSR_mass[event.lep_Hindex[1]])
+            Z1 = TLorentzVector()
+            Z1 = l1+l2
+            if(abs(Z1.M()-self.Zmass)>7): continue
+            if(process=='WZ'):
+                weight = 59.7*1000*4.67*event.eventWeight/sumWeights
+            else:
+                weight = 1
+            if(event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35 and event.lep_tightId[event.lep_Hindex[2]]):
+                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
+                    if(event.lep_isEB[event.lep_Hindex[2]]):
+                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)  #0.5 for EB 1.5 for EE
+                    if(event.lep_isEE[event.lep_Hindex[2]]):
+                        self.passing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
+                        self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
+                        self.passing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+            else:
+                if(abs(event.lep_id[event.lep_Hindex[2]])==11):
+                    if(event.lep_isEB[event.lep_Hindex[2]]):
+                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    if(event.lep_isEE[event.lep_Hindex[2]]):
+                        self.failing[process]['el'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+                if(abs(event.lep_id[event.lep_Hindex[2]])==13):
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])<1.2):
+                        self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],0.5,weight)
+                    if(abs(event.lep_eta[event.lep_Hindex[2]])>=1.2):
+                        self.failing[process]['mu'].Fill(event.lep_pt[event.lep_Hindex[2]],1.5,weight)
+
+        print "[INFO] passing and failing histos have been created"
+
+
+    #===========================================================================
+    #=================Save Raw passing and failing histos=======================
+    #===========================================================================
+    def SaveFRHistos(self,subtractWZ,remove_negative_bins):
+        outfilename="../RawHistos/FRHistos_OS_%s_Legacy.root"%str(self.year)
+        outfile = TFile(outfilename,"recreate")
+        outfile.cd()
+        for var_name in self.var_names:
+            self.passing['Total'][var_name].Add(self.passing['data'][var_name],1.)
+            self.failing['Total'][var_name].Add(self.failing['data'][var_name],1.)
+
+        # Subtract WZ contribution from MC estimate
+        if(subtractWZ):
+            OSMethod.subtractWZ(self)
+
+        if(remove_negative_bins):
+            for var_name in self.var_names:
+                OSMethod.RemoveNegativeBins2D(self,self.passing['Total'][var_name])
+                OSMethod.RemoveNegativeBins2D(self,self.passing['Total'][var_name])
+            print "[INFO] Negative bins removed."
+
+
+        # that will clear up histos, so when we want to use them again, we should handle them from where we stroe
+        for var_name in self.var_names:
+            for iprocess in self.nprocess:
+                self.passing[iprocess][var_name].Write()
+                self.failing[iprocess][var_name].Write()
+
+        outfile.Close()
+        print "[INFO] All FakeRate histograms saved."
+
+
+    #===========================================================================
+    #==================Subtract WZ contribution from MC estimate================
+    #===========================================================================
+    def subtractWZ(self):
+        for var_name in self.var_names:
+            self.passing['Total'][var_name].Sumw2()
+            self.failing['Total'][var_name].Sumw2()
+            self.passing['Total'][var_name].Add(self.passing['WZ'][var_name],-1.)
+            self.failing['Total'][var_name].Add(self.failing['WZ'][var_name],-1.)
+        print "[INFO] WZ contribution subtracted."
+
+
+    #===========================================================================
+    #==================Remove Negative Bins=====================================
+    #===========================================================================
+    def  RemoveNegativeBins2D(self,histo):
+        for i_bin_x in range(1,histo.GetXaxis().GetNbins()):
+            for i_bin_y in range(1,histo.GetYaxis().GetNbins()):
+                if(histo.GetBinContent(i_bin_x,i_bin_y)<0):
+                    histo.SetBinContent(i_bin_x,i_bin_y,0.0)
+
+
+    #===========================================================================
+    #================= Get FR Histos============================================
+    #===========================================================================
+    def GetFRHistos(self):
+
+        filename="../RawHistos/FRHistos_OS_%s_Legacy.root"%str(self.year)
+        self.File_RFhisto=TFile(filename)
+
+        for iprocess in self.nprocess:
+            self.passing[iprocess]={}
+            self.failing[iprocess]={}
+            for var_name in self.var_names:
+                self.passing[iprocess][var_name]=self.File_RFhisto.Get('pass'+iprocess+var_name)
+                self.failing[iprocess][var_name]=self.File_RFhisto.Get('failing'+iprocess+var_name)
+
+        print "[INFO] All FakeRate histograms retrieved from file."
+
+
+
+    #============================================================================
+    #==================prodece FakeRate from data================================
+    #============================================================================
+    def OSFRproduce(self,process):
+
+        outfilename="../RawHistos/FakeRates_OS_%s_Legacy.root"%str(self.year)
+
+        #calculate FakeRates and save Gragh
+        pt_bins=[5, 7, 10, 20, 30, 40, 50, 80]
+        n_pt_bins=8
+        for i_pt_bin in range(n_pt_bins-1):
+            temp_NP = 0
+            temp_NF = 0
+            temp_error_x = 0
+            temp_error_NP = 0.0
+            temp_error_NF = 0.0
+            for var_name in self.var_names:
+                if(var_name=='el' and i_pt_bin==0): continue #electrons do not have 5 - 7 GeV bin
+                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                temp_error_NP = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,1)
+                temp_error_NF = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,1)
+
+
+                self.vector_X['corrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
+                self.vector_Y['corrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
+                self.vector_EX['corrected']['EB'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
+                self.vector_EY['corrected']['EB'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
+
+                temp_NP = self.passing['Total'][var_name].IntegralAndError(self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
+                temp_NF = self.failing['Total'][var_name].IntegralAndError(self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['Total'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
+                temp_error_NP = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,2)
+                temp_error_NF = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,2)
+
+                self.vector_X['corrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
+                self.vector_Y['corrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
+                self.vector_EX['corrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
+                self.vector_EY['corrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*pow(temp_error_NF,2)))
+
+                #Just for fake rate plots calculate the same for histograms without WZ subtraction
+                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NP))
+                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 1, 1, Double(temp_error_NF))
+                temp_error_NP = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,1)
+                temp_error_NF = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,1)
+
+                self.vector_X['uncorrected']['EB'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
+                self.vector_Y['uncorrected']['EB'][var_name].append(temp_NP/(temp_NP+temp_NF))
+                self.vector_EX['uncorrected']['EB'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
+                self.vector_EY['uncorrected']['EB'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
+
+                temp_NP = self.passing['data'][var_name].IntegralAndError(self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.passing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NP))
+                temp_NF = self.failing['data'][var_name].IntegralAndError(self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin]),self.failing['data'][var_name].GetXaxis().FindBin(pt_bins[i_pt_bin+1]) - 1, 2, 2, Double(temp_error_NF))
+                temp_error_NP = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,True,2)
+                temp_error_NF = OSMethod.GetErorr(self,pt_bins,i_pt_bin,process,var_name,False,2)
+
+                self.vector_X['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin] + pt_bins[i_pt_bin + 1])/2)
+                self.vector_Y['uncorrected']['EE'][var_name].append(temp_NP/(temp_NP+temp_NF))
+                self.vector_EX['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
+                self.vector_EY['uncorrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
+
+        print "[INFO] check type "
+        print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
+
+
+        print "[INFO] check value of vector ele after append value"
+        print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
+        print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
+        print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
+
+        print "[INFO] check value of vector muon after append value"
+        print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
+        print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
+        print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
+        print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
+
+
+        self.FR_OS_electron_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['el']),
+											  self.vector_X['uncorrected']['EB']['el'],
+											  self.vector_Y['uncorrected']['EB']['el'],
+											  self.vector_EX['uncorrected']['EB']['el'],
+											  self.vector_EY['uncorrected']['EB']['el'])
+        self.FR_OS_electron_EB_unc.SetName("FR_OS_electron_EB_unc")
+
+        self.FR_OS_electron_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['el']),
+											  self.vector_X['uncorrected']['EE']['el'],
+											  self.vector_Y['uncorrected']['EE']['el'],
+											  self.vector_EX['uncorrected']['EE']['el'],
+											  self.vector_EY['uncorrected']['EE']['el'])
+        self.FR_OS_electron_EE_unc.SetName("FR_OS_electron_EE_unc")
+
+        self.FR_OS_muon_EE_unc = TGraphErrors (len(self.vector_X['uncorrected']['EE']['mu']),
+										  self.vector_X['uncorrected']['EE']['mu'],
+										  self.vector_Y['uncorrected']['EE']['mu'],
+										  self.vector_EX['uncorrected']['EE']['mu'],
+										  self.vector_EY['uncorrected']['EE']['mu'])
+        self.FR_OS_muon_EE_unc.SetName("FR_OS_muon_EE_unc")
+
+        self.FR_OS_muon_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['mu']),
+										  self.vector_X['uncorrected']['EB']['mu'],
+										  self.vector_Y['uncorrected']['EB']['mu'],
+										  self.vector_EX['uncorrected']['EB']['mu'],
+										  self.vector_EY['uncorrected']['EB']['mu'])
+        self.FR_OS_muon_EB_unc.SetName("FR_OS_muon_EB_unc")
+
+        self.FR_OS_muon_EE = TGraphErrors (len(self.vector_X['corrected']['EE']['mu']),
+										  self.vector_X['corrected']['EE']['mu'],
+										  self.vector_Y['corrected']['EE']['mu'],
+										  self.vector_EX['corrected']['EE']['mu'],
+										  self.vector_EY['corrected']['EE']['mu'])
+        self.FR_OS_muon_EE.SetName("FR_OS_muon_EE")
+
+        self.FR_OS_muon_EB = TGraphErrors (len(self.vector_X['corrected']['EB']['mu']),
+										  self.vector_X['corrected']['EB']['mu'],
+										  self.vector_Y['corrected']['EB']['mu'],
+										  self.vector_EX['corrected']['EB']['mu'],
+										  self.vector_EY['corrected']['EB']['mu'])
+        self.FR_OS_muon_EB.SetName("FR_OS_muon_EB")
+
+        self.FR_OS_electron_EB = TGraphErrors (len(self.vector_X['corrected']['EB']['el']),
+											  self.vector_X['corrected']['EB']['el'],
+											  self.vector_Y['corrected']['EB']['el'],
+											  self.vector_EX['corrected']['EB']['el'],
+											  self.vector_EY['corrected']['EB']['el'])
+        self.FR_OS_electron_EB.SetName("FR_OS_electron_EB")
+
+        self.FR_OS_electron_EE = TGraphErrors (len(self.vector_X['corrected']['EE']['el']),
+											  self.vector_X['corrected']['EE']['el'],
+											  self.vector_Y['corrected']['EE']['el'],
+											  self.vector_EX['corrected']['EE']['el'],
+											  self.vector_EY['corrected']['EE']['el'])
+        self.FR_OS_electron_EE.SetName("FR_OS_electron_EE")
+
+
+
+        OSMethod.plotFR(self)
+        OSMethod.SaveFRGragh(self,outfilename)
+
+    #===========================================================================
+    #===================calculate Error from Every bin==========================
+    #===========================================================================
+    def GetErorr(self,pt_bin,i_pt_bin,process,var_name,cat,loc):
+        if(cat):
+            ispass=True
+        else:
+            ispass=False
+        if(loc==1):
+            isEB=True
+        else:
+            isEB=False
+        error = 0.0
+        for x_pt in range(pt_bin[i_pt_bin],pt_bin[i_pt_bin+1]):
+            #print "x_pt = "+str(x_pt)
+            if(isEB):
+                if(ispass):
+                    x_bin = self.passing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.passing[process][var_name].GetBinError(x_bin,1)*self.passing[process][var_name].GetBinError(x_bin,1)
+                else:
+                    x_bin = self.failing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.failing[process][var_name].GetBinError(x_bin,1)*self.failing[process][var_name].GetBinError(x_bin,1)
+            else:
+                if(ispass):
+                    x_bin = self.passing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.passing[process][var_name].GetBinError(x_bin,2)*self.passing[process][var_name].GetBinError(x_bin,2)
+                else:
+                    x_bin = self.failing[process][var_name].GetXaxis().FindBin(x_pt)
+                    error += self.failing[process][var_name].GetBinError(x_bin,2)*self.failing[process][var_name].GetBinError(x_bin,2)
+
+        return math.sqrt(error)
+
+
+    #============================================================================
+    #==================Draw FR plots=============================================
+    #============================================================================
+    def plotFR(self):
+        c_ele=TCanvas("FR_ele", "FR_ele", 700,700)
+        c_muon=TCanvas("FR_muon","FRmuon",700,700)
+
+        self.mg_electrons.Add(self.FR_OS_electron_EB_unc)
+        self.FR_OS_electron_EB_unc.SetLineColor(kBlue)
+        self.FR_OS_electron_EB_unc.SetLineStyle(1)
+        self.FR_OS_electron_EB_unc.SetMarkerSize(0)
+        self.FR_OS_electron_EB_unc.SetTitle("barel uncorrected")
+        self.mg_electrons.Add(self.FR_OS_electron_EE_unc)
+        self.FR_OS_electron_EE_unc.SetLineColor(kRed);
+        self.FR_OS_electron_EE_unc.SetLineStyle(1);
+        self.FR_OS_electron_EE_unc.SetMarkerSize(0);
+        self.FR_OS_electron_EE_unc.SetTitle("endcap uncorrected")
+
+        self.mg_electrons.Add(self.FR_OS_electron_EB)
+        self.FR_OS_electron_EB.SetLineColor(kBlue)
+        self.FR_OS_electron_EB.SetLineStyle(2)
+        self.FR_OS_electron_EB.SetMarkerSize(0)
+        self.FR_OS_electron_EB.SetTitle("barel corrected")
+        self.mg_electrons.Add(self.FR_OS_electron_EE)
+        self.FR_OS_electron_EE.SetLineColor(kRed);
+        self.FR_OS_electron_EE.SetLineStyle(2);
+        self.FR_OS_electron_EE.SetMarkerSize(0);
+        self.FR_OS_electron_EE.SetTitle("endcap corrected")
+
+        self.mg_muons.Add(self.FR_OS_muon_EB_unc)
+        self.FR_OS_muon_EB_unc.SetLineColor(kBlue)
+        self.FR_OS_muon_EB_unc.SetLineStyle(1)
+        self.FR_OS_muon_EB_unc.SetMarkerSize(0)
+        self.FR_OS_muon_EB_unc.SetTitle("barel uncorrected")
+        self.mg_muons.Add(self.FR_OS_muon_EE_unc)
+        self.FR_OS_muon_EE_unc.SetLineColor(kRed)
+        self.FR_OS_muon_EE_unc.SetLineStyle(1)
+        self.FR_OS_muon_EE_unc.SetMarkerSize(0)
+        self.FR_OS_muon_EE_unc.SetTitle("endcap uncorrected")
+
+        self.mg_muons.Add(self.FR_OS_muon_EB)
+        self.FR_OS_muon_EB.SetLineColor(kBlue)
+        self.FR_OS_muon_EB.SetLineStyle(2)
+        self.FR_OS_muon_EB.SetMarkerSize(0)
+        self.FR_OS_muon_EB.SetTitle("barel corrected")
+        self.mg_muons.Add(self.FR_OS_muon_EE)
+        self.FR_OS_muon_EE.SetLineColor(kRed)
+        self.FR_OS_muon_EE.SetLineStyle(2)
+        self.FR_OS_muon_EE.SetMarkerSize(0)
+        self.FR_OS_muon_EE.SetTitle("endcap corrected")
+
+        gStyle.SetEndErrorSize(0)
+
+        leg_ele = TLegend()
+        leg_muon = TLegend()
+        c_ele.cd()
+        self.mg_electrons.Draw("AP")
+        self.mg_electrons.GetXaxis().SetTitle("p_{T} [GeV]")
+        self.mg_electrons.GetYaxis().SetTitle("Fake Rate")
+        self.mg_electrons.GetYaxis().SetTitleSize(0.029)
+        self.mg_electrons.SetTitle("Electron fake rate")
+        self.mg_electrons.SetMaximum(0.35)
+        leg_ele = OSMethod.CreateLegend_FR(self,"left",self.FR_OS_electron_EB_unc,self.FR_OS_electron_EE_unc,self.FR_OS_electron_EB,self.FR_OS_electron_EE)
+        leg_ele.Draw()
+        OSMethod.SavePlots(self,c_ele, "plot/FR_OS_electrons")
+
+        c_muon.cd()
+        self.mg_muons.Draw("AP")
+        self.mg_muons.GetXaxis().SetTitle("p_{T} [GeV]")
+        self.mg_muons.GetYaxis().SetTitle("Fake Rate")
+        self.mg_muons.GetYaxis().SetTitleSize(0.029)
+        self.mg_muons.SetTitle("Muon fake rate")
+        self.mg_muons.SetMaximum(0.35)
+        leg_mu = OSMethod.CreateLegend_FR(self,"left",self.FR_OS_muon_EB_unc,self.FR_OS_muon_EE_unc,self.FR_OS_muon_EB,self.FR_OS_muon_EE)
+        leg_mu.Draw()
+        OSMethod.SavePlots(self,c_muon, "plot/FR_OS_muons")
+
+
+    #===========================================================================
+    #===================Create Legend for FakeRates=============================
+    #===========================================================================
+    def CreateLegend_FR(self,position,EB_unc,EE_unc,EB_cor,EE_cor):
+        if(position=='right'):
+            leg = TLegend( .64, .65, .97, .85 )
+        elif(position=='left'):
+            leg=TLegend(.18,.65,.51,.85)
+        else:
+            print "[Error] Please enter \"left\" or \"right\" "
+        leg.AddEntry( EB_unc, "barrel uncorrected", "l" )
+        leg.AddEntry( EB_cor, "barrel corrected","l")
+        leg.AddEntry( EE_unc, "endcap uncorrected", "l" )
+        leg.AddEntry( EE_cor, "endcap corrected", "l" )
+        return leg
+
+
+
+    #===========================================================================
+    #===================save raw FakeRates Gragh================================
+    #===========================================================================
+    def SaveFRGragh(self,outfilename):
+        self.File_RFGragh=TFile(outfilename,"RECREATE")
+        self.File_RFGragh.cd()
+        self.FR_OS_electron_EB_unc.Write()
+        self.FR_OS_electron_EE_unc.Write()
+        self.FR_OS_muon_EE_unc.Write()
+        self.FR_OS_muon_EB_unc.Write()
+        self.FR_OS_electron_EB.Write()
+        self.FR_OS_electron_EE.Write()
+        self.FR_OS_muon_EE.Write()
+        self.FR_OS_muon_EB.Write()
+        self.File_RFGragh.Close()
+
+        print "[INFO] All FakeRate histograms were saved."
+
+
+    #============================================================================
+    #=======================make ZX histos=======================================
+    #============================================================================
+    def MakeHistogramsZX(self,FRfile,datafile,qqZZfile):
+        OSMethod.GetZZ3P1F(self,qqZZfile,FRfile)
+        FakeRate= FR.FakeRates(FRfile)
+        file  = TFile(datafile)
+        if(file):
+            print"[INFO] get datafile to produce ZX"
+        tree = file.Get("passedEvents")
+
+        for ievent,event in enumerate(tree):
+            #if(ievent==100):break
+            self.passedOSCRselection = False
+            OSMethod.foundOSCRCandidate(self,event)
+            if(not self.passedOSCRselection): continue
+            #f3 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
+            #f4 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
+            f3 = FakeRate.GetFakeRate(event.lep_pt[self.lep_CRindex[2]],event.lep_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
+            f4 = FakeRate.GetFakeRate(event.lep_pt[self.lep_CRindex[3]],event.lep_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
+            weight_2P2F_SR = (f3/(1-f3))*(f4/(1-f4))
+            weight_3P1F_bkg = (f3/(1-f3))+(f4/(1-f4))
+
+            l1 = TLorentzVector()
+            l2 = TLorentzVector()
+            l3 = TLorentzVector()
+            l4 = TLorentzVector()
+            l1.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[0]],event.lepFSR_eta[self.lep_CRindex[0]],event.lepFSR_phi[self.lep_CRindex[0]],event.lepFSR_mass[self.lep_CRindex[0]])
+            l2.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[1]],event.lepFSR_eta[self.lep_CRindex[1]],event.lepFSR_phi[self.lep_CRindex[1]],event.lepFSR_mass[self.lep_CRindex[1]])
+            l3.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lepFSR_phi[self.lep_CRindex[2]],event.lepFSR_mass[self.lep_CRindex[2]])
+            l4.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lepFSR_phi[self.lep_CRindex[3]],event.lepFSR_mass[self.lep_CRindex[3]])
+            mass4l = (l1+l2+l3+l4).M()
+
+            #check number of failing
+            nZXCRFailedLeptons = 0
+            for i in range(0,4):
+                if(not (event.lep_tightId[self.lep_CRindex[i]] and event.lep_RelIsoNoFSR[self.lep_CRindex[i]]<0.35)):
+                    nZXCRFailedLeptons+=1
+
+            #find which lep failed in 3P1F case
+            if(not (event.lep_tightId[self.lep_CRindex[2]] and event.lep_RelIsoNoFSR[self.lep_CRindex[2]]<0.35)):
+                weight_3P1F_toSR = f3/(1-f3)
+            if(not (event.lep_tightId[self.lep_CRindex[3]] and event.lep_RelIsoNoFSR[self.lep_CRindex[3]]<0.35)):
+                weight_3P1F_toSR = f4/(1-f4)
+
+            #fill histos
+            if(nZXCRFailedLeptons==1):
+                self.HFromCRHisto['3P1F']['inclusive'].Fill(mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.HFromCRHisto['3P1F']['4e'].Fill(mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.HFromCRHisto['3P1F']['4mu'].Fill(mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.HFromCRHisto['3P1F']['2e2mu'].Fill(mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.HFromCRHisto['3P1F']['2mu2e'].Fill(mass4l,weight_3P1F_toSR)
+            if(nZXCRFailedLeptons==2):
+                self.HFromCRHisto['2P2F_SR']['inclusive'].Fill(mass4l,weight_2P2F_SR)
+                self.HFromCRHisto['3P1F_bkg']['inclusive'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.HFromCRHisto['2P2F_SR']['4e'].Fill(mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['4e'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.HFromCRHisto['2P2F_SR']['4mu'].Fill(mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['4mu'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.HFromCRHisto['2P2F_SR']['2e2mu'].Fill(mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['2e2mu'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.HFromCRHisto['2P2F_SR']['2mu2e'].Fill(mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['2mu2e'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+
+        #Remove 3P1F_SR Negative bins
+        #for cat_name in self.cat_CRtoSRnames:
+        #    for cat_CRname in self.cat_CRnames:
+        #        OSMethod.RemoveNegativeBins1D(self,self.HFromCRHisto[cat_name][cat_CRname])
+
+        #fill ZX histos
+        for cat_name in self.cat_CRnames:
+            self.ZXHistos[cat_name]['data'].Add(self.ZXHistos[cat_name]['qqZZ'],-1)
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['3P1F'][cat_name],1)
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['3P1F_bkg'][cat_name],-1)
+            #difference N_3P1F-N_3P1F_bkg-N_3P1F_qqZZ may be Negative.
+            OSMethod.RemoveNegativeBins1D(self,self.ZXHistos[cat_name]['data'])
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['2P2F_SR'][cat_name],1)
+
+        #count events for each channel
+        OSMethod.CountEvents(self)
+
+    def MakeHistogramsZX_test(self,FRfile,datafile,qqZZfile):
+        OSMethod.GetZZ3P1F(self,qqZZfile,FRfile)
+        FakeRate= FR.FakeRates(FRfile)
+        file  = TFile(datafile)
+        if(file):
+            print"[INFO] get datafile to produce ZX"
+        tree = file.Get("passedEvents")
+
+        for ievent,event in enumerate(tree):
+            #if(ievent==100):break
+            if(not event.passedZXCRSelection): continue
+            f3 = FakeRate.GetFakeRate(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lep_id[event.lep_Hindex[2]])
+            f4 = FakeRate.GetFakeRate(event.lepFSR_pt[event.lep_Hindex[3]],event.lepFSR_eta[event.lep_Hindex[3]],event.lep_id[event.lep_Hindex[3]])
+            weight_2P2F_SR = (f3/(1-f3))*(f4/(1-f4))
+            weight_3P1F_bkg = (f3/(1-f3))+(f4/(1-f4))
+
+            #l1 = TLorentzVector()
+            #l2 = TLorentzVector()
+            #l3 = TLorentzVector()
+            #l4 = TLorentzVector()
+            #l1.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[0]],event.lepFSR_phi[event.lep_Hindex[0]],event.lepFSR_mass[event.lep_Hindex[0]])
+            #l2.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[1]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[1]],event.lepFSR_mass[event.lep_Hindex[1]])
+            #l3.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[2]])
+            #l4.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[3]],event.lepFSR_eta[event.lep_Hindex[3]],event.lepFSR_phi[event.lep_Hindex[3]],event.lepFSR_mass[event.lep_Hindex[3]])
+            #mass4l = (l1+l2+l3+l4).M()
+
+            #find which lep failed in 3P1F case
+            if(not (event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35)):
+                weight_3P1F_toSR = f3/(1-f3)
+            if(not (event.lep_tightId[event.lep_Hindex[3]] and event.lep_RelIsoNoFSR[event.lep_Hindex[3]]<0.35)):
+                weight_3P1F_toSR = f4/(1-f4)
+
+            #fill histos
+            if(event.nZXCRFailedLeptons==1):
+                self.HFromCRHisto['3P1F']['inclusive'].Fill(event.mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.HFromCRHisto['3P1F']['4e'].Fill(event.mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['3P1F']['4mu'].Fill(event.mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['3P1F']['2e2mu'].Fill(event.mass4l,weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.HFromCRHisto['3P1F']['2mu2e'].Fill(event.mass4l,weight_3P1F_toSR)
+            if(event.nZXCRFailedLeptons==2):
+                self.HFromCRHisto['2P2F_SR']['inclusive'].Fill(event.mass4l,weight_2P2F_SR)
+                self.HFromCRHisto['3P1F_bkg']['inclusive'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.HFromCRHisto['2P2F_SR']['4e'].Fill(event.mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['4e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['2P2F_SR']['4mu'].Fill(event.mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['4mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['2P2F_SR']['2e2mu'].Fill(event.mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['2e2mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.HFromCRHisto['2P2F_SR']['2mu2e'].Fill(event.mass4l,weight_2P2F_SR)
+                    self.HFromCRHisto['3P1F_bkg']['2mu2e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+
+        #Remove 3P1F_SR Negative bins
+        #for cat_name in self.cat_CRtoSRnames:
+        #    for cat_CRname in self.cat_CRnames:
+        #        OSMethod.RemoveNegativeBins1D(self,self.HFromCRHisto[cat_name][cat_CRname])
+
+        #fill ZX histos
+        for cat_name in self.cat_CRnames:
+            self.ZXHistos[cat_name]['data'].Add(self.ZXHistos[cat_name]['qqZZ'],-1)
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['3P1F'][cat_name],1)
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['3P1F_bkg'][cat_name],-1)
+            #difference N_3P1F-N_3P1F_bkg-N_3P1F_qqZZ may be Negative.
+            OSMethod.RemoveNegativeBins1D(self,self.ZXHistos[cat_name]['data'])
+            self.ZXHistos[cat_name]['data'].Add(self.HFromCRHisto['2P2F_SR'][cat_name],1)
+
+        #count events for each channel
+        OSMethod.CountEvents(self)
+
+
+
+
+
+    #===========================================================================
+    #===================Add weighted ZZ 3P1F distrbution to ZX=================
+    #===========================================================================
+    def GetZZ3P1F(self,qqZZfile,FRfile):
+        FakeRate = FR.FakeRates(FRfile)
+        file  = TFile(qqZZfile)
+        if(file):
+            print "[INFO] get qqZZ file to produce weighted ZZ 3P1F distrbution for ZX"
+        tree = file.Ana.Get("passedEvents")
+        sumWeights = file.Ana.Get("sumWeights").GetBinContent(1)
+
+        for ievent,event in enumerate(tree):
+            #if(ievent==100):break
+            self.passedOSCRselection = False
+            OSMethod.foundOSCRCandidate(self,event)
+            if(not self.passedOSCRselection): continue
+
+            weight= self.lumi*1000*1.256*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
+            f3 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
+            f4 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
+
+            l1 = TLorentzVector()
+            l2 = TLorentzVector()
+            l3 = TLorentzVector()
+            l4 = TLorentzVector()
+            l1.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[0]],event.lepFSR_eta[self.lep_CRindex[0]],event.lepFSR_phi[self.lep_CRindex[0]],event.lepFSR_mass[self.lep_CRindex[0]])
+            l2.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[1]],event.lepFSR_eta[self.lep_CRindex[1]],event.lepFSR_phi[self.lep_CRindex[1]],event.lepFSR_mass[self.lep_CRindex[1]])
+            l3.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lepFSR_phi[self.lep_CRindex[2]],event.lepFSR_mass[self.lep_CRindex[2]])
+            l4.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lepFSR_phi[self.lep_CRindex[3]],event.lepFSR_mass[self.lep_CRindex[3]])
+            mass4l = (l1+l2+l3+l4).M()
+
+            #check number of failing
+            nZXCRFailedLeptons = 0
+            for i in range(0,4):
+                if(not (event.lep_tightId[self.lep_CRindex[i]] and event.lep_RelIsoNoFSR[self.lep_CRindex[i]]<0.35)):
+                    nZXCRFailedLeptons+=1
+
+            #find which lep failed
+            if(not (event.lep_tightId[self.lep_CRindex[2]] and event.lep_RelIsoNoFSR[self.lep_CRindex[2]]<0.35)):
+                weight_3P1F_toSR = f3/(1-f3)
+            if(not (event.lep_tightId[self.lep_CRindex[3]] and event.lep_RelIsoNoFSR[self.lep_CRindex[3]]<0.35)):
+                weight_3P1F_toSR = f4/(1-f4)
+
+            #fill histos
+            if(nZXCRFailedLeptons==1):
+                self.ZXHistos['inclusive']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.ZXHistos['4e']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.ZXHistos['4mu']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                    self.ZXHistos['2e2mu']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                    self.ZXHistos['2mu2e']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+
+        print "[INFO] weighted qqZZ 3P1F has been stored in ZX histos"
+
+
+
+    #===========================================================================
+    #==================Remove Negative Bins for TH1D============================
+    #===========================================================================
+    def RemoveNegativeBins1D(self,histo):
+        for i_bin_x in range(1,histo.GetXaxis().GetNbins()):
+            if(histo.GetBinContent(i_bin_x)<0):
+                histo.SetBinContent(i_bin_x,0.0)
+
+
+
+    #============================================================================
+    #=======================count events from Histos=============================
+    #============================================================================
+    def CountEvents(self):
+        ninclusive = self.ZXHistos['inclusive']['data'].Integral()
+        n4e = self.ZXHistos['4e']['data'].Integral()
+        n4mu = self.ZXHistos['4mu']['data'].Integral()
+        n2e2mu = self.ZXHistos['2e2mu']['data'].Integral()
+        n2mu2e = self.ZXHistos['2mu2e']['data'].Integral()
+        print "[INFO] MassWindow number of inclusive ZX backgrounds estimation = "+str(ninclusive)
+        print "[INFO] MassWindow number of 4e channel ZX backgrounds estimation = "+str(n4e)
+        print "[INFO] MassWindow number of 4mu channel ZX backgrounds estimation = "+str(n4mu)
+        print "[INFO] MassWindow number of 2e2mu channel ZX backgrounds estimation = "+str(n2e2mu)
+        print "[INFO] MassWindow number of 4mu2e channel ZX backgrounds estimation = "+str(n2mu2e)
+
+    #===========================================================================
+    #===============Save raw ZX histo===========================================
+    #===========================================================================
+    def SaveZXHistos(self):
+        outfilename = "../RawHistos/ZXHistos_OS_%s_Legacy.root"%str(self.year)
+        outfile = TFile(outfilename)
+        for cat_name in self.cat_CRtoSRnames:
+            for cat_CRname in self.cat_CRnames:
+                self.HFromCRHisto[cat_name][cat_CRname].Write()
+        for cat_name in self.cat_CRnames:
+            self.ZXHistos[cat_name]['data'].Write()
+            self.ZXHistos[cat_name]['qqZZ'].Write()
+
+
+
 
 
     #============================================================================
