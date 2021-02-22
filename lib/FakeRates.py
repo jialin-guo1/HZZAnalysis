@@ -11,18 +11,21 @@ class FakeRates():
         self.FakeRates_Constructor()
 
     def FakeRates_Constructor(self):
+        print "[INFO] Get FakeRate file: %s"%self.filename
         if(self.filename.find('OS')!=-1):
+            print "[INFO] Get OS FakeRate file "
             self.g_FR_mu_EB = self.input_file_FR.Get("FR_OS_muon_EB")
             self.g_FR_mu_EE = self.input_file_FR.Get("FR_OS_muon_EE")
             self.g_FR_e_EB = self.input_file_FR.Get("FR_OS_electron_EB")
             self.g_FR_e_EE = self.input_file_FR.Get("FR_OS_electron_EE")
         if(self.filename.find('SS')!=-1):
+            print "[INFO] Get SS FakeRate file "
             self.g_FR_mu_EB = self.input_file_FR.Get("FR_SS_muon_EB")
             self.g_FR_mu_EE = self.input_file_FR.Get("FR_SS_muon_EE")
-            #self.g_FR_e_EB = self.input_file_FR.Get("FR_SS_electron_EB")
-            #self.g_FR_e_EE = self.input_file_FR.Get("FR_SS_electron_EE")
-            self.g_FR_e_EB = self.input_file_FR.Get("FR_SS_electron_EB_unc")
-            self.g_FR_e_EE = self.input_file_FR.Get("FR_SS_electron_EE_unc")
+            self.g_FR_e_EB = self.input_file_FR.Get("FR_SS_electron_EB")
+            self.g_FR_e_EE = self.input_file_FR.Get("FR_SS_electron_EE")
+            #self.g_FR_e_EB = self.input_file_FR.Get("FR_SS_electron_EB_unc")
+            #self.g_FR_e_EE = self.input_file_FR.Get("FR_SS_electron_EE_unc")
 
     #============================================================================
     #==================Get FakeRate from existing file===========================

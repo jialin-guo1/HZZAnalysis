@@ -22,7 +22,8 @@ class Analyzer_Config:
             self.sig_names  = ['GluGluHToZZTo4L','VBF_HToZZTo4L','WminusH_HToZZTo4L','WplusH_HToZZTo4L','ZH_HToZZ_4L','ttH_HToZZ']
     	    #self.bkg_names  = ['qqZZ','WZ','TT','DY']
             self.bkg_names  = ['ZX','GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau','ZZTo4L']
-    	    self.samp_names = self.bkg_names + self.sig_names + ['data']
+    	    #self.samp_names = self.bkg_names + self.sig_names + ['data']
+            self.samp_names =['data']
     	else:
     	    print "channel is invalid: channel = %s" %self.channel
     	    sys.exit()

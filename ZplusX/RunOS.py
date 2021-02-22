@@ -26,17 +26,17 @@ OS=OSMethod(2018)
 #OS.FillCRHistos(TTbarfile,'TT')
 #OS.FillCRHistos(qqZZfile,'qqZZ')
 #OS.FillCRHistos(Zjetfile,'DY')
-OS.FillCRHistosTest(datafile,'data')
-OS.FillCRHistosTest(WZfile,'WZ')
-OS.FillCRHistosTest(TTbarfile,'TT')
-OS.FillCRHistosTest(qqZZfile,'qqZZ')
-OS.FillCRHistosTest(Zjetfile,'DY')
-OS.SaveCRHistos()
+#OS.FillCRHistosTest(datafile,'data')
+#OS.FillCRHistosTest(WZfile,'WZ')
+#OS.FillCRHistosTest(TTbarfile,'TT')
+#OS.FillCRHistosTest(qqZZfile,'qqZZ')
+#OS.FillCRHistosTest(Zjetfile,'DY')
+#OS.SaveCRHistos()
 
 
 
-OS.GetCRHistos()
-OS.PlotCR()
+#OS.GetCRHistos()
+#OS.PlotCR()
 #===============================================================================
 #=====================FakeRates=================================================
 #===============================================================================
@@ -50,5 +50,5 @@ OS.OSFRproduce('data')
 #===============================================================================
 #========================ZX=====================================================
 #===============================================================================
-OS.MakeHistogramsZX_test(FakeRateFile,datafile,qqZZfile)
-OS.SaveZXHistos()
+#OS.MakeHistogramsZX_test(FakeRateFile,datafile,qqZZfile)
+#OS.SaveZXHistos()

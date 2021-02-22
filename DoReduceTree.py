@@ -26,7 +26,7 @@ def processCmd(cmd, quite = 0):
     else:
         return output
 
-keeplist  = "met lep_Sip GENlep_pt GENlep_eta GENlep_phi GENlep_mass GENlep_id GENlep_Hindex GENmass4l lep_id lep_pt lep_eta lep_phi lep_mass lepFSR_pt lepFSR_eta lepFSR_phi lepFSR_mass lep_Hindex lep_pterr lep_pterrold lep_ecalEnergy lep_isEB lep_isEE lep_tightId lep_Sip lep_RelIsoNoFSR passedFullSelection passedZ1LSelection passedZXCRSelection nZXCRFailedLeptons eventWeight mass4l k_ggZZ k_qqZZ_qcd_dPhi k_qqZZ_qcd_M k_qqZZ_ewk k_qqZZ_qcd_Pt crossSection EventCat Run Event LumiSect"
+keeplist  = "met lep_Sip GENlep_pt GENlep_eta GENlep_phi GENlep_mass GENlep_id GENlep_Hindex GENmass4l lep_id lep_pt lep_eta lep_phi lep_mass lepFSR_pt lepFSR_eta lepFSR_phi lepFSR_mass lep_Hindex lep_pterr lep_pterrold lep_ecalEnergy lep_isEB lep_isEE lep_tightId lep_Sip lep_RelIsoNoFSR passedFullSelection passedZ1LSelection passedZXCRSelection nZXCRFailedLeptons passedZ4lZXCRSelection eventWeight mass4l k_ggZZ k_qqZZ_qcd_dPhi k_qqZZ_qcd_M k_qqZZ_ewk k_qqZZ_qcd_Pt crossSection EventCat Run Event LumiSect"
 filenamesInput = "/cms/user/guojl/Sample/{}".format(args.inputfiles)
 filenameOutput = "/cms/user/guojl/Sample/skimed/{}".format(args.outputfile)
 tree = "passedEvents"

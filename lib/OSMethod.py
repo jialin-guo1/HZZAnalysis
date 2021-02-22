@@ -1174,7 +1174,7 @@ class OSMethod:
     #===========================================================================
     def SaveZXHistos(self):
         outfilename = "../RawHistos/ZXHistos_OS_%s_Legacy.root"%str(self.year)
-        outfile = TFile(outfilename)
+        outfile = TFile(outfilename,"recreate")
         for cat_name in self.cat_CRtoSRnames:
             for cat_CRname in self.cat_CRnames:
                 self.HFromCRHisto[cat_name][cat_CRname].Write()

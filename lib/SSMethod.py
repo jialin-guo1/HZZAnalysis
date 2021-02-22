@@ -162,7 +162,7 @@ class SSMethod:
 
         #loop event to Fill
         for ievent,event in enumerate(inputTree):
-            #if(ievent==1000): break
+            #if(ievent==100): break
             self.passedSSCRselection=False
             if(event.lep_pt.size()<4): continue
 
@@ -432,7 +432,8 @@ class SSMethod:
              cms_label.DrawLatexNDC(0.10, 0.91, '#scale[1.5]{CMS}#font[12]{preliminary}')
              cms_label.Draw('same')
 
-             plotname = "plot/SSCR_"+cat_name+"_%s"%str(self.year)
+             #plotname = "plot/SSCR_"+cat_name+"_%s"%str(self.year)
+             plotname = "plot/SSCR_"+cat_name
              #plotname = "SSCR_"+cat_name+"_%s"%str(self.year)
              SSMethod.SavePlots(self,c,plotname)
 
@@ -945,6 +946,8 @@ class SSMethod:
                 self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].Draw("AP")
                 SSMethod.SavePlots(self,c,"Fit"+gragh_name)
 
+        print "[INFO] Fit Completed"
+
 
 
 
@@ -1016,7 +1019,7 @@ class SSMethod:
                 else:
                     failing[current_eta_bin][current_pt_bin]+=1
 
-        #crrecte
+        #correct
         for i_pt in range(0,self.n_pt_bins-2):
             sigma = 0.0
             avgMissingHits['EB'][self.pt_bins[i_pt]] = nMissingHits['EB'][self.pt_bins[i_pt]]/(passing['EB'][self.pt_bins[i_pt]]+failling['EB'][self.pt_bins[i_pt]])
@@ -1032,6 +1035,8 @@ class SSMethod:
             self.vector_Y['corrected']['EE']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]])
             self.vector_EX['corrected']['EE']['el']=(self.pt_bins[i_pt+1]+self.pt_bins[i_pt+2])/2
             self.vector_EY['corrected']['EE']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]])-self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]]-sigma)
+
+        print "[INFO] Complete electron FR correction"
 
 
 
