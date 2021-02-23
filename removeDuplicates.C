@@ -5,7 +5,7 @@
 #include <TTree.h>
 
 void removeDuplicates() {
-    TString prefix = "/cms/user/guojl/Sample/raw/MuonEG_Run2018A_DoubleMuon_Run2018A";
+    TString prefix = "/cms/user/guojl/Sample/raw/passedData/2018";
     TString filename = prefix+".root";
 
     std::cout<<filename<<std::endl;
@@ -63,9 +63,4 @@ TTree *oldtree = (TTree*)gDirectory->Get("passedEvents");
     newtree->AutoSave();
     //delete oldfile;
     delete newfile;
-}
-
-int main(int argc, char const *argv[]) {
-  removeDuplicates();
-  return 0;
 }

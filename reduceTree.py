@@ -12,7 +12,7 @@ parser.add_argument("filenamesInput", help="Path to the input Tag-And-Probe ROOT
 parser.add_argument("filenameOutput", help="Path to the output Tag-And-Probe ROOT file")
 parser.add_argument("-d", "--directory", default="", help="Directory in the input ROOT file which contains the Tag-And-Probe tree")
 parser.add_argument("-t", "--tree", default="fitter_tree", help="Name of the tree holding the variables")
-parser.add_argument("-c", "--cut", default="", help="Cut string which is used on input tree (applied as CopyTree() argument), e.g., \"pt>30 && abseta<2.4\"")
+parser.add_argument("-c", "--cut", default="passedZ4lZ1LSelection || passedZ4lZXCRSelection || passedZXCRSelection", help="Cut string which is used on input tree (applied as CopyTree() argument), e.g., \"pt>30 && abseta<2.4\"")
 parser.add_argument("-r", "--remove", default="", help="List of branches, which are removed from tree, e.g., \"pt eta abseta\" or \"tag_*\", all removes them all unless something is kept with --keep")
 parser.add_argument("-k", "--keep", default="", help="List of branches, which are explicitly kept in tree, e.g., \"pt eta abseta\". This option deactivates the 'remove' argument for the specified branches")
 parser.add_argument("-v", "--verbosity", default=1, help="Increase or decrease output verbosity for input/output tree properties")
@@ -43,6 +43,16 @@ for filename in args.filenamesInput.split(' '):
 if args.verbosity == 1:
     print('')
 
+#get sumWeights if deel with MC
+file = TFile(filename)
+sumWeights = file.Ana.Get("sumWeights")
+nEvents = file.Ana.Get("nEvents")
+sumWeightsPU = file.Ana.Get("sumWeightsPU")
+nVtx = file.Ana.Get("nVtx")
+nVtx_ReWeighted = file.Ana.Get("nVtx_ReWeighted")
+nInteractions = file.Ana.Get("nInteractions")
+nInteraction_ReWeighted = file.Ana.Get("nInteraction_ReWeighted")
+
 # Deactivate and reactivate branches from 'remove' and 'keep' arguments
 if args.remove == 'all':
     for branch in treeInput.GetListOfBranches():
@@ -63,7 +73,14 @@ if branchesKeep != ['']:
 # Make output directory and copy input tree
 fileOutput = TFile.Open(args.filenameOutput, "recreate")
 dirOutput = fileOutput.mkdir(args.directory)
-#dirOutput.cd()
+dirOutput.cd()
+sumWeights.Write()
+nEvents.Write()
+sumWeightsPU.Write()
+nVtx.Write()
+nVtx_ReWeighted.Write()
+nInteractions.Write()
+nInteraction_ReWeighted.Write()
 treeOutput = treeInput.CopyTree(args.cut)
 
 # Print some info if verbosity is set to 1
