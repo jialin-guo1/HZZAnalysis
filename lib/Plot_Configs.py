@@ -11,7 +11,7 @@ class Plot_Config:
     	#self.lumi    = '59.7'
         #self.lumi    = '41.5'
         #self.lumi    = '35.9'
-        self.lumi    = '137'
+        self.lumi    = '59.7'
     	self.sig_scale  = 50
 	self.LoadColors()
 

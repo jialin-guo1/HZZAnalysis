@@ -143,7 +143,7 @@ class OSMethod:
             elif(process=='TT'):
                 weight = self.lumi*1000*87.31*event.eventWeight/sumWeights
             elif(process=='qqZZ'):
-                weight= self.lumi*1000*event.crossSection*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
+                weight= self.lumi*1000*1.256*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
             else:
                 weight=1
 
@@ -206,7 +206,7 @@ class OSMethod:
             elif(process=='TT'):
                 weight = self.lumi*1000*87.31*event.eventWeight/sumWeights
             elif(process=='qqZZ'):
-                weight= self.lumi*1000*event.crossSection*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
+                weight= self.lumi*1000*1.256*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
             else:
                 weight=1
             if(event.nZXCRFailedLeptons==1):

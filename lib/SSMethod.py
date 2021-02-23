@@ -175,7 +175,7 @@ class SSMethod:
             elif(process=='TT'):
                 weight = self.lumi*1000*87.31*event.eventWeight/sumWeights
             elif(process=='qqZZ'):
-                weight= self.lumi*1000*event.crossSection*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
+                weight= self.lumi*1000*1.256*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
             else:
                 weight=1
 
@@ -861,7 +861,7 @@ class SSMethod:
         for ievent,event in enumerate(inputTree):
             if(not event.passedZ1LSelection): continue
             if(event.met>25): continue
-            if(abs(event.lep_id[evnet.lep_Hindex[2]])!=11): continue # only consider electron
+            if(abs(event.lep_id[event.lep_Hindex[2]])!=11): continue # only consider electron
             current_pt_bin = Find_pt_bin(event.lepFSR_pt[event.lep_Hindex[2]])
             current_eta_bin  = Find_eta_bin(event.lepFSR_eta[event.lep_Hindex[2]])
             l1 = TLorentzVector()
@@ -1038,6 +1038,27 @@ class SSMethod:
 
         print "[INFO] Complete electron FR correction"
 
+
+    #============================================================================
+    #====================find pt bin=============================================
+    #============================================================================
+    def Find_pt_bin(self,pt):
+        for i_pt in range(0,n_pt_bins-1):
+            if(pt>self.pt_bins[i_pt] and pt<self.pt_bins[i_pt+1]):
+                bin = self.pt_bins[i_pt]
+            if(pt>80):
+                bin = 50
+        return bin
+
+    #============================================================================
+    #=======================find eta bin=========================================
+    #============================================================================
+    def Find_eta_bin(self,eta):
+        if(abs(eta)<1.479):
+            bin = "EB"
+        else:
+            bin = "EE"
+        return bin
 
 
 
@@ -1230,5 +1251,5 @@ class SSMethod:
         c.SaveAs(name+".png")
 
     #============================================================================
-    #==============check lep size in file========================================
+    #==============find pt bin===================================================
     #============================================================================

@@ -11,12 +11,12 @@ gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(False)
 
 def main():
-        save_dir = 'plot'
+        save_dir = '..'
         analyzer_cfg = AC.Analyzer_Config('inclusive')
-        ntuples = LoadNtuples(analyzer_cfg)
-        print "get ntuples done "
-        print "start test ntuple"
-        print "number of events after loading = " +str(ntuples['DY'].GetEntries())
+        ntuples = LoadNtuples(analyzer_cfg,'2018')
+        #print "get ntuples done "
+        #print "start test ntuple"
+        #print "number of events after loading = " +str(ntuples['DY'].GetEntries())
 
         cat_names = ['4e2P2F', '4mu2P2F', '2mu2e2P2F', '2e2mu2P2F','4e3P1F', '4mu3P1F', '2mu2e3P1F', '2e2mu3P1F']
         plot_cfg = PC.Plot_Config(analyzer_cfg)
@@ -44,7 +44,7 @@ def main():
             #print "get ntuple"
             #print ntuples[sample].GetEntries()
             for ievent,event in enumerate(ntup):
-                #if(ievent==100000): break
+                if(ievent==100): break
                 if(sample=='DY'):
                     #weight = 35.9*1000*6104*event.eventWeight/event.crossSection/81781072.0
                     #weight = 59.7*1000*6225.4*event.eventWeight/130939680.0
@@ -93,9 +93,9 @@ def main():
         cms_label  = MakeCMSDASLabel()
 
         for cat_name in cat_names:
-            stacks = MakeStack(histos[cat_name], analyzer_cfg, cat_name)
-            scaled_data = MakeDataLabel(stacks['data'],cat_name)
-            legend = MakeLegend(plot_cfg, histos[cat_name])
+            #stacks = MakeStack(histos[cat_name], analyzer_cfg, cat_name)
+            #scaled_data = MakeDataLabel(stacks['data'],cat_name)
+            #legend = MakeLegend(plot_cfg, histos[cat_name])
 
             canv = CreateCanvas(cat_name)
             DrawOnCanv(canv, cat_name, plot_cfg, stacks, histos[cat_name], scaled_data,legend, lumi_label, cms_label)

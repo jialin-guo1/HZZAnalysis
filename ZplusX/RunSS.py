@@ -8,7 +8,7 @@ from deltaR import *
 from SSMethod import *
 import FakeRates as FR
 
-datafile = "/cms/user/guojl/Sample/skimed/2018_noDuplicates.root"
+datafile = "/cms/user/guojl/Sample/raw/passedData/2018_noDuplicates.root"
 WZfile = "/cms/user/guojl/Sample/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIIAutumn18MiniAOD-102X_2018_filter2l_new.root"
 #Zjetfile = "/cms/user/guojl/Sample/DY_2018.root"
 #Zjetfile = "/cms/user/guojl/Sample/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_2018_filter2l.root"
@@ -23,31 +23,31 @@ SS=SSMethod(2018)
 #===============================================================================
 #=============produce SSCR samples==============================================
 #===============================================================================
-SS.FillCRHistos(datafile,'data')
-SS.FillCRHistos(WZfile,'WZ')
-SS.FillCRHistos(TTbarfile,'TT')
-SS.FillCRHistos(qqZZfile,'qqZZ')
-SS.FillCRHistos(Zjetfile,'DY')
-SS.SaveCRHistos()
+#SS.FillCRHistos(datafile,'data')
+#SS.FillCRHistos(WZfile,'WZ')
+#SS.FillCRHistos(TTbarfile,'TT')
+#SS.FillCRHistos(qqZZfile,'qqZZ')
+#SS.FillCRHistos(Zjetfile,'DY')
+#SS.SaveCRHistos()
 
-SS.GetCRHistos()
-SS.PlotCR()
+#SS.GetCRHistos()
+#SS.PlotCR()
 
 #===============================================================================
 #=================calculate OS/SS ratio=========================================
 #===============================================================================
-SS.Calculate_SSOS_Ratio(OSCRfile)
+#SS.Calculate_SSOS_Ratio(OSCRfile)
 
 #================================================================================
 #=================produce FakeRates==============================================
 #================================================================================
 
-#SS.FillFRHistos(datafile,'data')
-#SS.FillFRHistos(WZfile,'WZ')
-#SS.SaveFRHistos(True,'Remove_NegBins_FR')
+SS.FillFRHistos(datafile,'data')
+SS.FillFRHistos(WZfile,'WZ')
+SS.SaveFRHistos(True,'Remove_NegBins_FR')
 
-#SS.GetFRHistos()
-#SS.SSFRproduce('data',datafile)
+SS.GetFRHistos()
+SS.SSFRproduce('data',datafile)
 
 #================================================================================
 #===========================ZX estimate==========================================
