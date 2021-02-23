@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(description="A simple ttree plotter")
 parser.add_argument("-i", "--inputfiles", dest="inputfiles", default="Sync_1031_2018_ttH_v2.root", help="List of input files")
 parser.add_argument("-o", "--outputfile", dest="outputfile", default="plots.root", help="Output file containing plots")
 parser.add_argument("-t", "--ttree", dest="ttree", default="Ana/passedEvents", help="TTree Name")
-parser.add_argument("-v","--verbosity",dest="verbosity",default=True, help="True is data False is MC")
+parser.add_argument("-v","--verbosity",dest="verbosity",default=False, help="True is data False is MC")
 args = parser.parse_args()
 
 print args.verbosity
@@ -26,9 +26,9 @@ def processCmd(cmd, quite = 0):
     else:
         return output
 
-keeplist  = "met lep_Sip GENlep_pt GENlep_eta GENlep_phi GENlep_mass GENlep_id GENlep_Hindex GENmass4l lep_id lep_pt lep_eta lep_phi lep_mass lepFSR_pt lepFSR_eta lepFSR_phi lepFSR_mass lep_Hindex lep_pterr lep_pterrold lep_ecalEnergy lep_isEB lep_isEE lep_tightId lep_Sip lep_RelIsoNoFSR passedFullSelection passedZ1LSelection passedZXCRSelection nZXCRFailedLeptons passedZ4lZXCRSelection eventWeight mass4l k_ggZZ k_qqZZ_qcd_dPhi k_qqZZ_qcd_M k_qqZZ_ewk k_qqZZ_qcd_Pt crossSection EventCat Run Event LumiSect"
+keeplist  = "met lep_id lep_pt lep_eta lep_phi lep_mass lepFSR_pt lepFSR_eta lepFSR_phi lepFSR_mass lep_Hindex lep_pterr lep_pterrold lep_ecalEnergy lep_isEB lep_isEE lep_tightId lep_Sip lep_RelIsoNoFSR passedFullSelection passedZ1LSelection passedZXCRSelection nZXCRFailedLeptons passedZ4lZ1LSelection passedZ4lZXCRSelection passedZ4lSelection eventWeight mass4l k_ggZZ k_qqZZ_qcd_dPhi k_qqZZ_qcd_M k_qqZZ_ewk k_qqZZ_qcd_Pt crossSection EventCat Run Event LumiSect genWeight dataMCWeight nVtx finalState massZ2 met_phi lep_matchedR03_PdgId lep_matchedR03_MomId lep_matchedR03_MomMomId "
 filenamesInput = "/cms/user/guojl/Sample/{}".format(args.inputfiles)
-filenameOutput = "/cms/user/guojl/Sample/skimed/{}".format(args.outputfile)
+filenameOutput = "/cms/user/guojl/Sample/skimed/MC2018/{}".format(args.outputfile)
 tree = "passedEvents"
 if(isData!=True):
     directory = "Ana/"
