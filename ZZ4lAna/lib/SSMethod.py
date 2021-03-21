@@ -53,7 +53,7 @@ class SSMethod:
 
         self.File_CRhisto=TFile()
         self.File_RFhisto=TFile()
-        self.File_RFGragh=TFile()
+        self.File_RFgraph=TFile()
 
         self.mg_electrons=TMultiGraph()
         self.mg_muons=TMultiGraph()
@@ -96,7 +96,7 @@ class SSMethod:
             self.ZXHistos[cat_name]['data'].Sumw2()
 
 
-        #book Gragh variables for FR plots
+        #book graph variables for FR plots
         for cat_state in self.cat_states:
             self.vector_X[cat_state]={}
             self.vector_Y[cat_state]={}
@@ -122,12 +122,12 @@ class SSMethod:
                 self.nMissingHits[ZmassWindow][cat_name]={}
                 self.npassing[ZmassWindow][cat_name]={}
                 self.nfailing[ZmassWindow][cat_name]={}
-                for i_pt in range(self.n_pt_bins-2):
+                for i_pt in range(self.n_pt_bins-1):
                     self.nMissingHits[ZmassWindow][cat_name][self.pt_bins[i_pt]]=0.0
                     self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]=0.0
                     self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]=0.0
-        #book Gragh for electron correction
-        for i_pt in range(0,self.n_pt_bins-2):
+        #book graph for electron correction
+        for i_pt in range(0,self.n_pt_bins-1):
             self.FR_MissingHits[self.pt_bins[i_pt]]={}
             self.ele_FR_correction_function[self.pt_bins[i_pt]]={}
             for cat_name in self.cat_names:
@@ -502,7 +502,7 @@ class SSMethod:
 
 
     #===========================================================================
-    #================Fill passing/failling histos===============================
+    #================Fill passing/failing histos===============================
     #===========================================================================
     def FillFRHistos(self,file,process):
         inputfile = TFile(file)
@@ -641,7 +641,7 @@ class SSMethod:
     def SSFRproduce(self,process,file):
 
         outfilename="../RawHistos/FakeRates_SS_%s_Legacy.root"%str(self.year)
-        #calculate FakeRates and save Gragh
+        #calculate FakeRates and save graph
         pt_bins=[5, 7, 10, 20, 30, 40, 50, 80]
         n_pt_bins=8
         for i_pt_bin in range(n_pt_bins-1):
@@ -694,21 +694,21 @@ class SSMethod:
                 self.vector_EX['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
                 self.vector_EY['uncorrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
 
-        print "[INFO] check type "
-        print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
+        #print "[INFO] check type "
+        #print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
 
 
-        print "[INFO] check value of vector ele after append value"
-        print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
-        print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
-        print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
-        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
+        #print "[INFO] check value of vector ele after append value"
+        #print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
+        #print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
+        #print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        #print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
 
-        print "[INFO] check value of vector muon after append value"
-        print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
-        print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
-        print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
-        print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
+        #print "[INFO] check value of vector muon after append value"
+        #print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
+        #print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
+        #print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
+        #print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
 
 
         self.FR_SS_electron_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['el']),
@@ -763,17 +763,17 @@ class SSMethod:
 											  self.vector_EY['corrected']['EB']['el'])
         self.FR_SS_electron_EB.SetName("FR_SS_electron_EB")
 
-        self.FR_SS_electron_EE = TGraphErrors (len(self.vector_X['uncorrected']['EE']['el']),
-											  self.vector_X['uncorrected']['EE']['el'],
-											  self.vector_Y['uncorrected']['EE']['el'],
-											  self.vector_EX['uncorrected']['EE']['el'],
-											  self.vector_EY['uncorrected']['EE']['el'])
+        self.FR_SS_electron_EE = TGraphErrors (len(self.vector_X['corrected']['EE']['el']),
+											  self.vector_X['corrected']['EE']['el'],
+											  self.vector_Y['corrected']['EE']['el'],
+											  self.vector_EX['corrected']['EE']['el'],
+											  self.vector_EY['corrected']['EE']['el'])
         self.FR_SS_electron_EE.SetName("FR_SS_electron_EE")
 
 
 
         SSMethod.plotFR(self)
-        SSMethod.SaveFRGragh(self,outfilename)
+        SSMethod.SaveFRgraph(self,outfilename)
 
 
 
@@ -811,19 +811,19 @@ class SSMethod:
 
 
     #===========================================================================
-    #===================save raw FakeRates Gragh================================
+    #===================save raw FakeRates graph================================
     #===========================================================================
-    def SaveFRGragh(self,outfilename):
+    def SaveFRgraph(self,outfilename):
 
-        #print "[INFO] check value of vector ele in SaveFRGragh function "
+        #print "[INFO] check value of vector ele in SaveFRgraph function "
         #c=TCanvas()
         #self.FR_SS_electron_EB_unc.Draw()
         #c.SaveAs("FR_SS_electron_EB_unc")
 
 
 
-        self.File_RFGragh=TFile(outfilename,"RECREATE")
-        self.File_RFGragh.cd()
+        self.File_RFgraph=TFile(outfilename,"RECREATE")
+        self.File_RFgraph.cd()
         self.FR_SS_electron_EB_unc.Write()
         self.FR_SS_electron_EE_unc.Write()
         self.FR_SS_muon_EE_unc.Write()
@@ -832,7 +832,7 @@ class SSMethod:
         self.FR_SS_electron_EE.Write()
         self.FR_SS_muon_EE.Write()
         self.FR_SS_muon_EB.Write()
-        self.File_RFGragh.Close()
+        self.File_RFgraph.Close()
 
         print "[INFO] All FakeRate histograms were saved."
 
@@ -862,8 +862,11 @@ class SSMethod:
             if(not event.passedZ1LSelection): continue
             if(event.met>25): continue
             if(abs(event.lep_id[event.lep_Hindex[2]])!=11): continue # only consider electron
-            current_pt_bin = Find_pt_bin(event.lepFSR_pt[event.lep_Hindex[2]])
-            current_eta_bin  = Find_eta_bin(event.lepFSR_eta[event.lep_Hindex[2]])
+            index_misHits = SSMethod.Find_misHitsIndex_Z1L(self,event) # Math the missHit index
+            #print "[TEST] len of this nMissingHits = "+str(event.lep_missingHits.size())
+            #print "[TEST] value of this lep index = "+str(event.lep_Hindex[2])
+            current_pt_bin = SSMethod.Find_pt_bin(self,event.lepFSR_pt[event.lep_Hindex[2]])
+            current_eta_bin  = SSMethod.Find_eta_bin(self,event.lepFSR_eta[event.lep_Hindex[2]])
             l1 = TLorentzVector()
             l2 = TLorentzVector()
             l3 = TLorentzVector()
@@ -872,26 +875,26 @@ class SSMethod:
             l3.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[2]])
             Z1mass = (l1+l2).M()
             if(Z1mass>40 and Z1mass<120):
-                self.nMissingHits['_40_MZ1_120'][current_eta_bin][current_pt_bin]+=evnet.lep_missingHits[event.lep_Hindex[2]]
-                if(event.lep_tightId[lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
+                self.nMissingHits['_40_MZ1_120'][current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits]
+                if(event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[index_misHits]<0.35):
                     self.npassing['_40_MZ1_120'][current_eta_bin][current_pt_bin]+=1
                 else:
                     self.nfailing['_40_MZ1_120'][current_eta_bin][current_pt_bin]+=1
             if(abs(Z1mass-self.Zmass)<7):
-                self.nMissingHits['_MZ1mMZtrue_7'][current_eta_bin][current_pt_bin]+=evnet.lep_missingHits[event.lep_Hindex[2]]
-                if(event.lep_tightId[lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
+                self.nMissingHits['_MZ1mMZtrue_7'][current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits]
+                if(event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[index_misHits]<0.35):
                     self.npassing['_MZ1mMZtrue_7'][current_eta_bin][current_pt_bin]+=1
                 else:
                     self.nfailing['_MZ1mMZtrue_7'][current_eta_bin][current_pt_bin]+=1
-            if(Z1mass>40 and Z1mass<120):
-                self.nMissingHits['_60_MZ1_120'][current_eta_bin][current_pt_bin]+=evnet.lep_missingHits[event.lep_Hindex[2]]
-                if(event.lep_tightId[lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
+            if(Z1mass>60 and Z1mass<120):
+                self.nMissingHits['_60_MZ1_120'][current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits]
+                if(event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[index_misHits]<0.35):
                     self.npassing['_60_MZ1_120'][current_eta_bin][current_pt_bin]+=1
                 else:
                     self.nfailing['_60_MZ1_120'][current_eta_bin][current_pt_bin]+=1
             if(abs((l1+l2+l3).M()-self.Zmass)<5):
-                self.nMissingHits['_MZ1EmMZtrue_5'][current_eta_bin][current_pt_bin]+=evnet.lep_missingHits[event.lep_Hindex[2]]
-                if(event.lep_tightId[lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35):
+                self.nMissingHits['_MZ1EmMZtrue_5'][current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits]
+                if(event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[index_misHits]<0.35):
                     self.npassing['_MZ1EmMZtrue_5'][current_eta_bin][current_pt_bin]+=1
                 else:
                     self.nfailing['_MZ1EmMZtrue_5'][current_eta_bin][current_pt_bin]+=1
@@ -905,46 +908,55 @@ class SSMethod:
             vector_EX[cat_name]={}
             vector_Y[cat_name]={}
             vector_EY[cat_name]={}
-            for i_pt in range(0,self.n_pt_bins-2):
+            for i_pt in range(0,self.n_pt_bins-1):
                 vector_X[cat_name][self.pt_bins[i_pt]]=array('f',[])
                 vector_EX[cat_name][self.pt_bins[i_pt]]=array('f',[])
                 vector_Y[cat_name][self.pt_bins[i_pt]]=array('f',[])
                 vector_EY[cat_name][self.pt_bins[i_pt]]=array('f',[])
-        for i_pt in range(0,self.n_pt_bins-2):
+        for i_pt in range(0,self.n_pt_bins-1):
+            if(self.pt_bins[i_pt]==5): continue
             for cat_name in self.cat_names:
                 for ZmassWindow in self.ZmassWindows:
+                    #print " this ZmassWindow cat_name pt_bins = "+str(ZmassWindow)+" "+str(cat_name)+" "+str(self.pt_bins[i_pt])
+                    #print " this denominator = "+str((self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]))
                     vector_X[cat_name][self.pt_bins[i_pt]].append(self.nMissingHits[ZmassWindow][cat_name][self.pt_bins[i_pt]]/(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]))
                     vector_EX[cat_name][self.pt_bins[i_pt]].append(math.sqrt(math.pow(1.0/math.pow(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]],1),2)*self.nMissingHits[ZmassWindow][cat_name][self.pt_bins[i_pt]]+math.pow(self.nMissingHits[ZmassWindow][cat_name][self.pt_bins[i_pt]]/math.pow(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]],2),2)*(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]])))
 
                     vector_Y[cat_name][self.pt_bins[i_pt]].append(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]/(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]))
                     vector_EY[cat_name][self.pt_bins[i_pt]].append(math.sqrt(math.pow(self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]/math.pow(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]],2),2)*self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+math.pow(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]/math.pow(self.npassing[ZmassWindow][cat_name][self.pt_bins[i_pt]]+self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]],2),2)*self.nfailing[ZmassWindow][cat_name][self.pt_bins[i_pt]]))
 
-        for i_pt in range(0,self.n_pt_bins-2):
+        for i_pt in range(0,self.n_pt_bins-1):
+            if(self.pt_bins[i_pt]==5): continue
             for cat_name in self.cat_names:
                 self.FR_MissingHits[self.pt_bins[i_pt]][cat_name]=TGraphErrors(len(vector_X[cat_name][self.pt_bins[i_pt]]),vector_X[cat_name][self.pt_bins[i_pt]],vector_Y[cat_name][self.pt_bins[i_pt]],vector_EX[cat_name][self.pt_bins[i_pt]],vector_EY[cat_name][self.pt_bins[i_pt]])
 
 
     #============================================================================
-    #=================fit electron FR Gragh======================================
+    #=================fit electron FR graph======================================
     #============================================================================
     def Fit_FRnMH_graphs(self):
-        for i_pt in range(0,self.n_pt_bins-2):
+        for i_pt in range(0,self.n_pt_bins-1):
+            if(self.pt_bins[i_pt]==5): continue
             for cat_name in self.cat_names:
-                func_name = "FR_MissingHits_func_{0:s}_{1:s}".format(str(self.n_pt_bins[i_pt]),cat_name)
-                self.ele_FR_correction_function[self.n_pt_bins[i_pt]][cat_name]=TF1(func_name,"[0]*x+[1]",0,3)
-                self.ele_FR_correction_function[self.n_pt_bins[i_pt]][cat_name].SetParameter(0,1.)
-                self.ele_FR_correction_function[self.n_pt_bins[i_pt]][cat_name].SetParameter(1.,0)
+                func_name = "FR_MissingHits_func_{0:s}_{1:s}".format(str(self.pt_bins[i_pt]),cat_name)
+                self.ele_FR_correction_function[self.pt_bins[i_pt]][cat_name]=TF1(func_name,"[0]*x+[1]",0,3)
+                self.ele_FR_correction_function[self.pt_bins[i_pt]][cat_name].SetParameter(0,1.)
+                self.ele_FR_correction_function[self.pt_bins[i_pt]][cat_name].SetParameter(1,0.)
 
-                self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].Fit(self.ele_FR_correction_function[self.n_pt_bins[i_pt]][cat_name],"Q")
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].Fit(self.ele_FR_correction_function[self.pt_bins[i_pt]][cat_name],"Q")
 
-                gragh_name = "FR_MissingHits_gragh_{0:s}_{1:s}".format(str(self.n_pt_bins[i_pt]),cat_name)
-                self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].SetName(graph_name)
-                self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].GetXaxis().SetTitle("<# Missing Hits>")
-                self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].GetYaxis().SetTitle("Fake Rate")
+                graph_name = "FR_MissingHits_graph_{0:s}_{1:s}".format(str(self.pt_bins[i_pt]),cat_name)
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].SetName(graph_name)
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].GetXaxis().SetTitle("<# Missing Hits>")
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].GetYaxis().SetTitle("Fake Rate")
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].GetYaxis().SetLabelSize(0.03)
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].GetYaxis().SetTitleSize(0.025)
 
-                c = TCanvas(gragh_name,gragh_name,900,900)
-                self.FR_MissingHits[self.n_pt_bins[i_pt]][cat_name].Draw("AP")
-                SSMethod.SavePlots(self,c,"Fit"+gragh_name)
+
+
+                c = TCanvas(graph_name,graph_name,900,900)
+                self.FR_MissingHits[self.pt_bins[i_pt]][cat_name].Draw("AP")
+                SSMethod.SavePlots(self,c,"plot/Fit"+graph_name)
 
         print "[INFO] Fit Completed"
 
@@ -973,7 +985,7 @@ class SSMethod:
             avgMissingHits[cat_name]={}
             passing[cat_name]={}
             failing[cat_name]={}
-            for i_pt in range(0,self.n_pt_bins-2):
+            for i_pt in range(0,self.n_pt_bins-1):
                 nMissingHits[cat_name][self.pt_bins[i_pt]]=0.0
                 avgMissingHits[cat_name][self.pt_bins[i_pt]]=0.0
                 passing[cat_name][self.pt_bins[i_pt]]=0.0
@@ -992,10 +1004,6 @@ class SSMethod:
             l2 = TLorentzVector()
             l3 = TLorentzVector()
             l4 = TLorentzVector()
-            #print "passedSSCRselection="+str(self.passedSSCRselection)
-            #print "lep_CRindex="+str(self.lep_CRindex)
-            #print "lep_pt="+str(event.lepFSR_pt)
-            #print "pt 2 ="+str(event.lepFSR_pt[3])
             l1.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[0]],event.lepFSR_eta[self.lep_CRindex[0]],event.lepFSR_phi[self.lep_CRindex[0]],event.lepFSR_mass[self.lep_CRindex[0]])
             l2.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[1]],event.lepFSR_eta[self.lep_CRindex[1]],event.lepFSR_phi[self.lep_CRindex[1]],event.lepFSR_mass[self.lep_CRindex[1]])
             l3.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lepFSR_phi[self.lep_CRindex[2]],event.lepFSR_mass[self.lep_CRindex[2]])
@@ -1003,38 +1011,44 @@ class SSMethod:
             mass4l = (l1+l2+l3+l4).M()
             if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
 
-                current_pt_bin = Find_pt_bin(event.lepFSR_pt[self.lep_CRindex[2]])
-                current_eta_bin = Find_eta_bin(event.lepFSR_eta[self.lep_CRindex[2]])
-                nMissingHits[current_eta_bin][current_pt_bin]+=event.lep_missingHits[self.lep_CRindex[2]]
+                index_misHits = SSMethod.Find_misHitsIndex_SSCR(self,event)
+
+                current_pt_bin = SSMethod.Find_pt_bin(self,event.lepFSR_pt[self.lep_CRindex[2]])
+                current_eta_bin = SSMethod.Find_eta_bin(self,event.lepFSR_eta[self.lep_CRindex[2]])
+                nMissingHits[current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits[0]]
                 if(event.lep_tightId[self.lep_CRindex[2]] and event.lep_RelIsoNoFSR[self.lep_CRindex[2]]<0.35):
                     passing[current_eta_bin][current_pt_bin]+=1
                 else:
                     failing[current_eta_bin][current_pt_bin]+=1
 
-                current_pt_bin = Find_pt_bin(event.lepFSR_pt[self.lep_CRindex[3]])
-                current_eta_bin = Find_eta_bin(event.lepFSR_eta[self.lep_CRindex[3]])
-                nMissingHits[current_eta_bin][current_pt_bin]+=event.lep_missingHits[self.lep_CRindex[3]]
+                current_pt_bin = SSMethod.Find_pt_bin(self,event.lepFSR_pt[self.lep_CRindex[3]])
+                current_eta_bin = SSMethod.Find_eta_bin(self,event.lepFSR_eta[self.lep_CRindex[3]])
+                nMissingHits[current_eta_bin][current_pt_bin]+=event.lep_missingHits[index_misHits[1]]
                 if(event.lep_tightId[self.lep_CRindex[3]] and event.lep_RelIsoNoFSR[self.lep_CRindex[3]]<0.35):
                     passing[current_eta_bin][current_pt_bin]+=1
                 else:
                     failing[current_eta_bin][current_pt_bin]+=1
 
         #correct
-        for i_pt in range(0,self.n_pt_bins-2):
+        for i_pt in range(0,self.n_pt_bins-1):
+            if(self.pt_bins[i_pt]==5): continue
             sigma = 0.0
-            avgMissingHits['EB'][self.pt_bins[i_pt]] = nMissingHits['EB'][self.pt_bins[i_pt]]/(passing['EB'][self.pt_bins[i_pt]]+failling['EB'][self.pt_bins[i_pt]])
-            sigma = math.sqrt(math.pow((1./pow(failing['EB'][self.pt_bins[i_pt]]+passing['EB'][self.pt_bins[i_pt]],1)),2)*nMissingHits['EB'][self.pt_bins[i_pt]] + math.pow((nMissingHits['EB'][self.pt_bins[i_pt]]/math.pow(failing['EB'][i_pt]+passing['EB'][self.pt_bins[i_pt]],2)),2)*(failing['EB'][self.pt_bins[i_pt]]+passing['EB'][self.pt_bins[i_pt]]))
-            self.vector_X['corrected']['EB']['el']=(self.pt_bins[i_pt+1]+self.pt_bins[i_pt+2])/2
-            self.vector_Y['corrected']['EB']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]])
-            self.vector_EX['corrected']['EB']['el']=(self.pt_bins[i_pt+1]+self.pt_bins[i_pt+2])/2
-            self.vector_EY['corrected']['EB']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]])-self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]]-sigma)
+            avgMissingHits['EB'][self.pt_bins[i_pt]] = nMissingHits['EB'][self.pt_bins[i_pt]]/(passing['EB'][self.pt_bins[i_pt]]+failing['EB'][self.pt_bins[i_pt]])
+            print "[TEST] failing key information: "+str(failing['EB'][self.pt_bins[i_pt]])
+            print "[TEST] passing key information: "+str(passing['EB'][self.pt_bins[i_pt]])
+            print "[TEST] nMissingHits key information: "+str(nMissingHits['EB'][self.pt_bins[i_pt]])
+            sigma = math.sqrt(math.pow((1./pow(failing['EB'][self.pt_bins[i_pt]]+passing['EB'][self.pt_bins[i_pt]],1)),2)*nMissingHits['EB'][self.pt_bins[i_pt]] + math.pow((nMissingHits['EB'][self.pt_bins[i_pt]]/math.pow(failing['EB'][self.pt_bins[i_pt]]+passing['EB'][self.pt_bins[i_pt]],2)),2)*(failing['EB'][self.pt_bins[i_pt]]+passing['EB'][self.pt_bins[i_pt]]))
+            self.vector_X['corrected']['EB']['el'].append((self.pt_bins[i_pt]+self.pt_bins[i_pt+1])/2)
+            self.vector_Y['corrected']['EB']['el'].append(self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]]))
+            self.vector_EX['corrected']['EB']['el'].append((self.pt_bins[i_pt+1]-self.pt_bins[i_pt])/2)
+            self.vector_EY['corrected']['EB']['el'].append(self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]])-self.ele_FR_correction_function[self.pt_bins[i_pt]]['EB'].Eval(avgMissingHits['EB'][self.pt_bins[i_pt]]-sigma))
 
-            avgMissingHits['EE'][self.pt_bins[i_pt]] = nMissingHits['EE'][self.pt_bins[i_pt]]/(passing['EE'][self.pt_bins[i_pt]]+failling['EE'][self.pt_bins[i_pt]])
-            sigma = math.sqrt(math.pow((1./pow(failing['EE'][self.pt_bins[i_pt]]+passing['EE'][self.pt_bins[i_pt]],1)),2)*nMissingHits['EE'][self.pt_bins[i_pt]] + math.pow((nMissingHits['EE'][self.pt_bins[i_pt]]/math.pow(failing['EE'][i_pt]+passing['EE'][self.pt_bins[i_pt]],2)),2)*(failing['EE'][self.pt_bins[i_pt]]+passing['EE'][self.pt_bins[i_pt]]))
-            self.vector_X['corrected']['EE']['el']=(self.pt_bins[i_pt+1]+self.pt_bins[i_pt+2])/2
-            self.vector_Y['corrected']['EE']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]])
-            self.vector_EX['corrected']['EE']['el']=(self.pt_bins[i_pt+1]+self.pt_bins[i_pt+2])/2
-            self.vector_EY['corrected']['EE']['el']=self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]])-self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]]-sigma)
+            avgMissingHits['EE'][self.pt_bins[i_pt]] = nMissingHits['EE'][self.pt_bins[i_pt]]/(passing['EE'][self.pt_bins[i_pt]]+failing['EE'][self.pt_bins[i_pt]])
+            sigma = math.sqrt(math.pow((1./pow(failing['EE'][self.pt_bins[i_pt]]+passing['EE'][self.pt_bins[i_pt]],1)),2)*nMissingHits['EE'][self.pt_bins[i_pt]] + math.pow((nMissingHits['EE'][self.pt_bins[i_pt]]/math.pow(failing['EE'][self.pt_bins[i_pt]]+passing['EE'][self.pt_bins[i_pt]],2)),2)*(failing['EE'][self.pt_bins[i_pt]]+passing['EE'][self.pt_bins[i_pt]]))
+            self.vector_X['corrected']['EE']['el'].append((self.pt_bins[i_pt]+self.pt_bins[i_pt+1])/2)
+            self.vector_Y['corrected']['EE']['el'].append(self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]]))
+            self.vector_EX['corrected']['EE']['el'].append((self.pt_bins[i_pt+1]-self.pt_bins[i_pt])/2)
+            self.vector_EY['corrected']['EE']['el'].append(self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]])-self.ele_FR_correction_function[self.pt_bins[i_pt]]['EE'].Eval(avgMissingHits['EE'][self.pt_bins[i_pt]]-sigma))
 
         print "[INFO] Complete electron FR correction"
 
@@ -1043,7 +1057,7 @@ class SSMethod:
     #====================find pt bin=============================================
     #============================================================================
     def Find_pt_bin(self,pt):
-        for i_pt in range(0,n_pt_bins-1):
+        for i_pt in range(0,self.n_pt_bins-1):
             if(pt>self.pt_bins[i_pt] and pt<self.pt_bins[i_pt+1]):
                 bin = self.pt_bins[i_pt]
             if(pt>80):
@@ -1059,6 +1073,62 @@ class SSMethod:
         else:
             bin = "EE"
         return bin
+
+    #============================================================================
+    #==============math the right misHits index in Z1L Region====================
+    #============================================================================
+    def Find_misHitsIndex_Z1L(self,event):
+        nele = 0
+        index = 0
+        nlep = event.lep_pt.size()
+
+        for i in range(nlep):
+            if(abs(event.lep_id[i])==11):
+                nele += 1
+
+        if(nele == 1):
+            index = 0
+        else:
+            this_pt = event.lepFSR_pt[event.lep_Hindex[2]]
+            this_eta = event.lepFSR_eta[event.lep_Hindex[2]]
+            this_id = event.lep_id[event.lep_Hindex[2]]
+            this_mass = event.lepFSR_mass[event.lep_Hindex[2]]
+            for i in range(nele):
+                if(event.lepFSR_pt[i]==this_pt and event.lepFSR_eta[i]==this_eta and event.lep_id[i]==this_id and event.lepFSR_mass[i]==this_mass):
+                    index = i
+
+        return index
+
+    #============================================================================
+    #========math the righ misHits index in SSCR Region==========================
+    #============================================================================
+    def Find_misHitsIndex_SSCR(self,event):
+        nele = 0
+        index = [0,0]
+        nlep = event.lep_pt.size()
+
+        for i in range(nlep):
+            if(abs(event.lep_id[i])==11):
+                nele += 1
+
+        lep1_pt = event.lepFSR_pt[self.lep_CRindex[2]]
+        lep1_eta = event.lepFSR_eta[self.lep_CRindex[2]]
+        lep1_mass = event.lepFSR_mass[self.lep_CRindex[2]]
+        lep1_id = event.lep_id[self.lep_CRindex[2]]
+        lep2_pt = event.lepFSR_pt[self.lep_CRindex[3]]
+        lep2_eta = event.lepFSR_eta[self.lep_CRindex[3]]
+        lep2_mass = event.lepFSR_mass[self.lep_CRindex[3]]
+        lep2_id = event.lep_id[self.lep_CRindex[3]]
+
+        for i in range(nele):
+            if(event.lepFSR_pt[i]==lep1_pt and event.lepFSR_eta[i]==lep1_eta and event.lepFSR_mass[i]==lep1_mass and event.lep_id[i]==lep1_id):
+                index[0] = i
+            if(event.lepFSR_pt[i]==lep2_pt and event.lepFSR_eta[i]==lep2_eta and event.lepFSR_mass[i]==lep2_mass and event.lep_id[i]==lep2_id):
+                index[1] = i
+
+        return index
+
+
 
 
 

@@ -13,7 +13,7 @@ class OSMethod:
         self.var_names=['el','mu']
         self.nprocess=['data','WZ','TT','DY','qqZZ','Total']
         self.cat_CRnames=['4e', '4mu', '2mu2e', '2e2mu','inclusive']
-        self.cat_CRtoSRnames=['2P2F_SR','3P1F','3P1F_bkg','3P1F_ZZ']
+        self.cat_CRtoSRnames=['2P2F_SR','3P1F','3P1F_bkg','3P1F_ZZ','2P2F_To3P1F']
         self.cat_failnames = ['3P1F','2P2F']
         self.lep_CRindex=[0,0,0,0]
         self.passedOSCRselection = False
@@ -419,12 +419,17 @@ class OSMethod:
                 self.CRHistos[cat_failname][cat_name]['data'].SetBinErrorOption(TH1.kPoisson)
                 self.CRHistos[cat_failname][cat_name]['data'].SetLineColor(kBlack)
 
+                self.HFromCRHisto['2P2F_To3P1F'][cat_name].SetLineColor(kRed)
+
                 stack = THStack("stack","stack")
                 stack.Add(self.CRHistos[cat_failname][cat_name]['qqZZ'])
                 stack.Add(self.CRHistos[cat_failname][cat_name]['WZ'])
                 stack.Add(self.CRHistos[cat_failname][cat_name]['TT'])
                 stack.Add(self.CRHistos[cat_failname][cat_name]['DY'])
                 stack.Draw("histo")
+
+                if(cat_failname=='3P1F'):
+                    self.HFromCRHisto['2P2F_To3P1F'][cat_name].Draw("histo same")
 
                 data_max = self.CRHistos[cat_failname][cat_name]['data'].GetBinContent(self.CRHistos[cat_failname][cat_name]['data'].GetMaximumBin())
                 data_max_error = self.CRHistos[cat_failname][cat_name]['data'].GetBinErrorUp(self.CRHistos[cat_failname][cat_name]['data'].GetMaximumBin())
@@ -437,11 +442,11 @@ class OSMethod:
                 if(cat_name=='2mu2e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
 
                 stack.GetXaxis().SetTitle(label)
-                stack.GetXaxis().SetTitleSize(0.04)
-                stack.GetXaxis().SetLabelSize(0.04)
+                stack.GetXaxis().SetTitleSize(0.025)
+                stack.GetXaxis().SetLabelSize(0.03)
                 stack.GetYaxis().SetTitle("Event/%s GeV"%str(self.CRHistos[cat_failname][cat_name]['data'].GetBinWidth(1)))
-                stack.GetYaxis().SetTitleSize(0.04)
-                stack.GetYaxis().SetLabelSize(0.04)
+                stack.GetYaxis().SetTitleSize(0.025)
+                stack.GetYaxis().SetLabelSize(0.03)
 
                 self.CRHistos[cat_failname][cat_name]['data'].Draw("SAME p E1 X0")
 
@@ -497,6 +502,7 @@ class OSMethod:
         leg.AddEntry(self.CRHistos[cat_failname][cat_name]['TT'],"t#bar{t} + jets",'f')
         leg.AddEntry(self.CRHistos[cat_failname][cat_name]['qqZZ'],"Z#gamma*, ZZ",'f')
         leg.AddEntry(self.CRHistos[cat_failname][cat_name]['DY'],"Z + jets",'f')
+        leg.AddEntry(self.HFromCRHisto['2P2F_To3P1F'][cat_name], "2P2F extr.", "l" )
 
         return leg
 
@@ -690,21 +696,21 @@ class OSMethod:
                 self.vector_EX['uncorrected']['EE'][var_name].append((pt_bins[i_pt_bin + 1] - pt_bins[i_pt_bin])/2)
                 self.vector_EY['uncorrected']['EE'][var_name].append(math.sqrt(math.pow((temp_NF/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NP,2) + math.pow((temp_NP/math.pow(temp_NF+temp_NP,2)),2)*math.pow(temp_error_NF,2)))
 
-        print "[INFO] check type "
-        print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
+        #print "[INFO] check type "
+        #print "vector_X['uncorrected']['EB']['el'][0]  = " +str(self.vector_X['uncorrected']['EB']['el'][0])
 
 
-        print "[INFO] check value of vector ele after append value"
-        print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
-        print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
-        print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
-        print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
+        #print "[INFO] check value of vector ele after append value"
+        #print "vector_X['uncorrected']['EB']['el'] = "+str(self.vector_X['uncorrected']['EB']['el'])
+        #print "vector_Y['uncorrected']['EB']['el']= "+str(self.vector_Y['uncorrected']['EB']['el'])
+        #print "vector_EX['uncorrected']['EB']['el'] = "+str(self.vector_EX['uncorrected']['EB']['el'])
+        #print "vector_EY['uncorrected']['EB']['el'] = "+str(self.vector_EY['uncorrected']['EB']['el'])
 
-        print "[INFO] check value of vector muon after append value"
-        print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
-        print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
-        print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
-        print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
+        #print "[INFO] check value of vector muon after append value"
+        #print "vector_X['uncorrected']['EE']['mu'] = "+str(self.vector_X['uncorrected']['EE']['mu'])
+        #print "vector_Y['uncorrected']['EE']['mu'] = "+str(self.vector_Y['uncorrected']['EE']['mu'])
+        #print "vector_EX['uncorrected']['EE']['mu'] = "+str(self.vector_EX['uncorrected']['EE']['mu'])
+        #print "vector_EY['uncorrected']['EE']['mu'] = "+str(self.vector_EY['uncorrected']['EE']['mu'])
 
 
         self.FR_OS_electron_EB_unc = TGraphErrors (len(self.vector_X['uncorrected']['EB']['el']),
@@ -975,18 +981,23 @@ class OSMethod:
             if(nZXCRFailedLeptons==2):
                 self.HFromCRHisto['2P2F_SR']['inclusive'].Fill(mass4l,weight_2P2F_SR)
                 self.HFromCRHisto['3P1F_bkg']['inclusive'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                self.HFromCRHisto['2P2F_To3P1F']['inclusive'].Fill(mass4l,weight_3P1F_bkg)
                 if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['4e'].Fill(mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4e'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                    self.HFromCRHisto['2P2F_To3P1F']['4e'].Fill(mass4l,weight_3P1F_bkg)
                 if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['4mu'].Fill(mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4mu'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                    self.HFromCRHisto['2P2F_To3P1F']['4mu'].Fill(mass4l,weight_3P1F_bkg)
                 if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['2e2mu'].Fill(mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2e2mu'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                    self.HFromCRHisto['2P2F_To3P1F']['2e2mu'].Fill(mass4l,weight_3P1F_bkg)
                 if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['2mu2e'].Fill(mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2mu2e'].Fill(mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                    self.HFromCRHisto['2P2F_To3P1F']['2mu2e'].Fill(mass4l,weight_3P1F_bkg)
 
         #Remove 3P1F_SR Negative bins
         #for cat_name in self.cat_CRtoSRnames:
@@ -1040,29 +1051,34 @@ class OSMethod:
             #fill histos
             if(event.nZXCRFailedLeptons==1):
                 self.HFromCRHisto['3P1F']['inclusive'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['3P1F']['4e'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['3P1F']['4mu'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['3P1F']['2e2mu'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['3P1F']['2mu2e'].Fill(event.mass4l,weight_3P1F_toSR)
             if(event.nZXCRFailedLeptons==2):
                 self.HFromCRHisto['2P2F_SR']['inclusive'].Fill(event.mass4l,weight_2P2F_SR)
                 self.HFromCRHisto['3P1F_bkg']['inclusive'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                self.HFromCRHisto['2P2F_To3P1F']['inclusive'].Fill(event.mass4l,weight_3P1F_bkg)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['4e'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['2P2F_To3P1F']['4e'].Fill(event.mass4l,weight_3P1F_bkg)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['4mu'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.HFromCRHisto['2P2F_To3P1F']['4mu'].Fill(event.mass4l,weight_3P1F_bkg)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['2e2mu'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2e2mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
-                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.HFromCRHisto['2P2F_To3P1F']['2e2mu'].Fill(event.mass4l,weight_3P1F_bkg)
+                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['2mu2e'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2mu2e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
+                    self.HFromCRHisto['2P2F_To3P1F']['2mu2e'].Fill(event.mass4l,weight_3P1F_bkg)
 
         #Remove 3P1F_SR Negative bins
         #for cat_name in self.cat_CRtoSRnames:
