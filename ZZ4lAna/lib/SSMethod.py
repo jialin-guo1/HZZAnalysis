@@ -413,11 +413,11 @@ class SSMethod:
              if(cat_name=='2mu2e'): label="m_{2#font[12]{#mu}2#font[12]{e}} (GeV)"
 
              stack.GetXaxis().SetTitle(label)
-             stack.GetXaxis().SetTitleSize(0.04)
-             stack.GetXaxis().SetLabelSize(0.04)
+             stack.GetXaxis().SetTitleSize(0.03)
+             stack.GetXaxis().SetLabelSize(0.03)
              stack.GetYaxis().SetTitle("Event/%s GeV"%str(self.CRHistos[cat_name]['data'].GetBinWidth(1)))
-             stack.GetYaxis().SetTitleSize(0.04)
-             stack.GetYaxis().SetLabelSize(0.04)
+             stack.GetYaxis().SetTitleSize(0.025)
+             stack.GetYaxis().SetLabelSize(0.03)
 
              self.CRHistos[cat_name]['data'].Draw("SAME p E1 X0")
 
