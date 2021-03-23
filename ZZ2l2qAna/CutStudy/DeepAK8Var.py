@@ -130,7 +130,8 @@ for sample in samples:
             if (not event.lep_tightId[Z1_lepindex[1]]): continue
 
             # check the masswindow
-            if(Z1.M()<40 or Z1.M()>120): continue
+            if(Z1.M()<76 or Z1.M()>106): continue
+            if(Z1.Pt()<200): continue
             if(Z1DeltaM<minZ1DeltaM):
                 minZ1DeltaM = Z1DeltaM
                 massZ1 = Z1.M()
@@ -163,7 +164,7 @@ for sample in samples:
                 thispho = TLorentzVector()
                 thispho.SetPtEtaPhiM(event.fsrPhotons_pt[j],event.fsrPhotons_eta[j],event.fsrPhotons_phi[j],0.0)
                 tempDeltaR = deltaR(event.mergedjet_eta[i],event.mergedjet_phi[i],thispho.Eta(),thispho.Phi())
-                if(tempDeltaR>0.8):
+                if(tempDeltaR<0.8):
                     isclean_H4l = False
 
             #only passed leptons clear jets
