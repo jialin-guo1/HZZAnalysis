@@ -6,8 +6,8 @@ from deltaR import *
 from plotHelper import *
 
 
-samples = ['ZZ','DYJets']
-var_names = ['ZvsQCD','tau21','tau1','tau2']
+samples = ['ZZ','WW','DYJets']
+var_names = ['ZvsQCD','tau21','tau1','tau2','WvsQCD']
 var_tau1 = ['tau1_notZero_mass','tau1_notZero_SDmass','tau1_notZero_pt','tau1_notZero_eta','Z1_mass']
 PH = plotHelper(samples,2017) #initialize a plot class
 
@@ -23,10 +23,10 @@ for sample in samples:
     histos[sample]['tau1_notZero_eta'] = TH1D(sample+'_tau1_notZero_eta',sample+'_tau1_notZero_eta',10,-5,5)
     histos[sample]['tau1_notZero_SDmass'] = TH1D(sample+'_tau1_notZero_SDmass',sample+'_tau1_notZero_SDmass',80,-5,155)
     histos[sample]['tau1_notZero_mass'] = TH1D(sample+'_tau1_notZero_mass',sample+'_tau1_notZero_mass',80,-5,155)
-    histos[sample]['tau1_Zero_pt'] = TH1D(sample+'_tau1_Zero_pt',sample+'_tau1_Zero_pt',30,200,800)
-    histos[sample]['tau1_Zero_eta'] = TH1D(sample+'_tau1_Zero_eta',sample+'_tau1_Zero_eta',10,-5,5)
-    histos[sample]['tau1_Zero_SDmass'] = TH1D(sample+'_tau1_Zero_SDmass',sample+'_tau1_Zero_SDmass',80,-5,155)
-    histos[sample]['tau1_Zero_mass'] = TH1D(sample+'_tau1_Zero_mass',sample+'_tau1_Zero_mass',80,-5,155)
+    #histos[sample]['tau1_Zero_pt'] = TH1D(sample+'_tau1_Zero_pt',sample+'_tau1_Zero_pt',30,200,800)
+    #histos[sample]['tau1_Zero_eta'] = TH1D(sample+'_tau1_Zero_eta',sample+'_tau1_Zero_eta',10,-5,5)
+    #histos[sample]['tau1_Zero_SDmass'] = TH1D(sample+'_tau1_Zero_SDmass',sample+'_tau1_Zero_SDmass',80,-5,155)
+    #histos[sample]['tau1_Zero_mass'] = TH1D(sample+'_tau1_Zero_mass',sample+'_tau1_Zero_mass',80,-5,155)
     histos[sample]['Z1_mass'] = TH1D(sample+'_Z1mass',sample+'_Z1mass',60,40,160)
     for var_name in var_names:
         histos[sample][var_name]=TH1D(sample+"_"+var_name,sample+"_"+var_name,50,0,1)
@@ -193,6 +193,7 @@ for sample in samples:
                     else:
                         ntau1_notZero_DYJets +=1
                     histos[sample]['ZvsQCD'].Fill(event.mergedjet_ZvsQCD[leadingIndex])
+                    histos[sample]['WvsQCD'].Fill(event.mergedjet_WvsQCD[leadingIndex])
                     histos[sample]['tau21'].Fill(temptau2/temptau1)
                     histos[sample]['tau1_notZero_pt'].Fill(event.mergedjet_pt[leadingIndex])
                     histos[sample]['tau1_notZero_eta'].Fill(event.mergedjet_eta[leadingIndex])
@@ -205,9 +206,6 @@ for sample in samples:
                     histos[sample]['tau1_notZero_SDmass'].Fill(Sumsubjet.M())
 
 #======================================================================================
-
-#print cot flow
-print "[INFO] "
 
 #Write raw histograms into rootfile
 outfile.cd()
