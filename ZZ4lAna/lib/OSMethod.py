@@ -938,7 +938,7 @@ class OSMethod:
             self.passedOSCRselection = False
             OSMethod.foundOSCRCandidate(self,event)
             if(not self.passedOSCRselection): continue
-            #f3 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
+            #f3 = FakeRate.GetFakeRate(event.lepFSR_pt[[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
             #f4 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
             f3 = FakeRate.GetFakeRate(event.lep_pt[self.lep_CRindex[2]],event.lep_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
             f4 = FakeRate.GetFakeRate(event.lep_pt[self.lep_CRindex[3]],event.lep_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
@@ -1032,15 +1032,6 @@ class OSMethod:
             weight_2P2F_SR = (f3/(1-f3))*(f4/(1-f4))
             weight_3P1F_bkg = (f3/(1-f3))+(f4/(1-f4))
 
-            #l1 = TLorentzVector()
-            #l2 = TLorentzVector()
-            #l3 = TLorentzVector()
-            #l4 = TLorentzVector()
-            #l1.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[0]],event.lepFSR_eta[event.lep_Hindex[0]],event.lepFSR_phi[event.lep_Hindex[0]],event.lepFSR_mass[event.lep_Hindex[0]])
-            #l2.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[1]],event.lepFSR_eta[event.lep_Hindex[1]],event.lepFSR_phi[event.lep_Hindex[1]],event.lepFSR_mass[event.lep_Hindex[1]])
-            #l3.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lepFSR_phi[event.lep_Hindex[2]],event.lepFSR_mass[event.lep_Hindex[2]])
-            #l4.SetPtEtaPhiM(event.lepFSR_pt[event.lep_Hindex[3]],event.lepFSR_eta[event.lep_Hindex[3]],event.lepFSR_phi[event.lep_Hindex[3]],event.lepFSR_mass[event.lep_Hindex[3]])
-            #mass4l = (l1+l2+l3+l4).M()
 
             #find which lep failed in 3P1F case
             if(not (event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35)):
@@ -1051,31 +1042,31 @@ class OSMethod:
             #fill histos
             if(event.nZXCRFailedLeptons==1):
                 self.HFromCRHisto['3P1F']['inclusive'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
                     self.HFromCRHisto['3P1F']['4e'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
                     self.HFromCRHisto['3P1F']['4mu'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
                     self.HFromCRHisto['3P1F']['2e2mu'].Fill(event.mass4l,weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
                     self.HFromCRHisto['3P1F']['2mu2e'].Fill(event.mass4l,weight_3P1F_toSR)
             if(event.nZXCRFailedLeptons==2):
                 self.HFromCRHisto['2P2F_SR']['inclusive'].Fill(event.mass4l,weight_2P2F_SR)
                 self.HFromCRHisto['3P1F_bkg']['inclusive'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
                 self.HFromCRHisto['2P2F_To3P1F']['inclusive'].Fill(event.mass4l,weight_3P1F_bkg)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['4e'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
                     self.HFromCRHisto['2P2F_To3P1F']['4e'].Fill(event.mass4l,weight_3P1F_bkg)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['4mu'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['4mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
                     self.HFromCRHisto['2P2F_To3P1F']['4mu'].Fill(event.mass4l,weight_3P1F_bkg)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
                     self.HFromCRHisto['2P2F_SR']['2e2mu'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2e2mu'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
                     self.HFromCRHisto['2P2F_To3P1F']['2e2mu'].Fill(event.mass4l,weight_3P1F_bkg)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
                     self.HFromCRHisto['2P2F_SR']['2mu2e'].Fill(event.mass4l,weight_2P2F_SR)
                     self.HFromCRHisto['3P1F_bkg']['2mu2e'].Fill(event.mass4l,weight_3P1F_bkg*weight_3P1F_toSR)
                     self.HFromCRHisto['2P2F_To3P1F']['2mu2e'].Fill(event.mass4l,weight_3P1F_bkg)
@@ -1116,45 +1107,35 @@ class OSMethod:
             #if(ievent==100):break
             self.passedOSCRselection = False
             OSMethod.foundOSCRCandidate(self,event)
-            if(not self.passedOSCRselection): continue
+            if(not event.passedZXCRSelection): continue
 
             weight= self.lumi*1000*1.256*event.k_qqZZ_ewk*event.k_qqZZ_qcd_M*event.eventWeight/sumWeights
-            f3 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lep_id[self.lep_CRindex[2]])
-            f4 = FakeRate.GetFakeRate(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lep_id[self.lep_CRindex[3]])
-
-            l1 = TLorentzVector()
-            l2 = TLorentzVector()
-            l3 = TLorentzVector()
-            l4 = TLorentzVector()
-            l1.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[0]],event.lepFSR_eta[self.lep_CRindex[0]],event.lepFSR_phi[self.lep_CRindex[0]],event.lepFSR_mass[self.lep_CRindex[0]])
-            l2.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[1]],event.lepFSR_eta[self.lep_CRindex[1]],event.lepFSR_phi[self.lep_CRindex[1]],event.lepFSR_mass[self.lep_CRindex[1]])
-            l3.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[2]],event.lepFSR_eta[self.lep_CRindex[2]],event.lepFSR_phi[self.lep_CRindex[2]],event.lepFSR_mass[self.lep_CRindex[2]])
-            l4.SetPtEtaPhiM(event.lepFSR_pt[self.lep_CRindex[3]],event.lepFSR_eta[self.lep_CRindex[3]],event.lepFSR_phi[self.lep_CRindex[3]],event.lepFSR_mass[self.lep_CRindex[3]])
-            mass4l = (l1+l2+l3+l4).M()
+            f3 = FakeRate.GetFakeRate(event.lepFSR_pt[event.lep_Hindex[2]],event.lepFSR_eta[event.lep_Hindex[2]],event.lep_id[event.lep_Hindex[2]])
+            f4 = FakeRate.GetFakeRate(event.lepFSR_pt[event.lep_Hindex[3]],event.lepFSR_eta[event.lep_Hindex[3]],event.lep_id[event.lep_Hindex[3]])
 
             #check number of failing
             nZXCRFailedLeptons = 0
             for i in range(0,4):
-                if(not (event.lep_tightId[self.lep_CRindex[i]] and event.lep_RelIsoNoFSR[self.lep_CRindex[i]]<0.35)):
+                if(not (event.lep_tightId[event.lep_Hindex[i]] and event.lep_RelIsoNoFSR[event.lep_Hindex[i]]<0.35)):
                     nZXCRFailedLeptons+=1
 
             #find which lep failed
-            if(not (event.lep_tightId[self.lep_CRindex[2]] and event.lep_RelIsoNoFSR[self.lep_CRindex[2]]<0.35)):
+            if(not (event.lep_tightId[event.lep_Hindex[2]] and event.lep_RelIsoNoFSR[event.lep_Hindex[2]]<0.35)):
                 weight_3P1F_toSR = f3/(1-f3)
-            if(not (event.lep_tightId[self.lep_CRindex[3]] and event.lep_RelIsoNoFSR[self.lep_CRindex[3]]<0.35)):
+            if(not (event.lep_tightId[event.lep_Hindex[3]] and event.lep_RelIsoNoFSR[event.lep_Hindex[3]]<0.35)):
                 weight_3P1F_toSR = f4/(1-f4)
 
             #fill histos
             if(nZXCRFailedLeptons==1):
-                self.ZXHistos['inclusive']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
-                    self.ZXHistos['4e']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
-                    self.ZXHistos['4mu']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==11 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==13):
-                    self.ZXHistos['2e2mu']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
-                if(abs(event.lep_id[self.lep_CRindex[0]])==abs(event.lep_id[self.lep_CRindex[1]])==13 and abs(event.lep_id[self.lep_CRindex[2]])==abs(event.lep_id[self.lep_CRindex[3]])==11):
-                    self.ZXHistos['2mu2e']['qqZZ'].Fill(mass4l,weight*weight_3P1F_toSR)
+                self.ZXHistos['inclusive']['qqZZ'].Fill(event.mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.ZXHistos['4e']['qqZZ'].Fill(event.mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.ZXHistos['4mu']['qqZZ'].Fill(event.mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==11 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==13):
+                    self.ZXHistos['2e2mu']['qqZZ'].Fill(event.mass4l,weight*weight_3P1F_toSR)
+                if(abs(event.lep_id[event.lep_Hindex[0]])==abs(event.lep_id[event.lep_Hindex[1]])==13 and abs(event.lep_id[event.lep_Hindex[2]])==abs(event.lep_id[event.lep_Hindex[3]])==11):
+                    self.ZXHistos['2mu2e']['qqZZ'].Fill(event.mass4l,weight*weight_3P1F_toSR)
 
         print "[INFO] weighted qqZZ 3P1F has been stored in ZX histos"
 
@@ -1174,6 +1155,8 @@ class OSMethod:
     #=======================count events from Histos=============================
     #============================================================================
     def CountEvents(self):
+
+        #count the final extimation
         ninclusive = self.ZXHistos['inclusive']['data'].Integral()
         n4e = self.ZXHistos['4e']['data'].Integral()
         n4mu = self.ZXHistos['4mu']['data'].Integral()
@@ -1184,6 +1167,26 @@ class OSMethod:
         print "[INFO] MassWindow number of 4mu channel ZX backgrounds estimation = "+str(n4mu)
         print "[INFO] MassWindow number of 2e2mu channel ZX backgrounds estimation = "+str(n2e2mu)
         print "[INFO] MassWindow number of 4mu2e channel ZX backgrounds estimation = "+str(n2mu2e)
+
+        #count intermediate number
+        for cat_name in self.cat_CRnames:
+
+            Number = self.HFromCRHisto['2P2F_SR'][cat_name].Integral()
+            print "[INFO] MassWindow number of %s channel in 2P2F to SR  = "%cat_name + str(Number)
+
+            Number = self.HFromCRHisto['3P1F'][cat_name].Integral()
+            print "[INFO] MassWindow number of %s channel in 3P1F to SR without reduce ZZ = "%cat_name + str(Number)
+
+            Number = self.ZXHistos[cat_name]['qqZZ'].Integral()
+            print "[INFO] MassWindow number of %s channel in ZZ 3P1F to SR = "%cat_name + str(Number)
+
+            print "[INFO] MassWindow number of %s channel in 3P1F to SR = "%cat_name + str(self.HFromCRHisto['3P1F'][cat_name].Integral()-self.ZXHistos[cat_name]['qqZZ'].Integral())
+
+
+
+
+
+
 
     #===========================================================================
     #===============Save raw ZX histo===========================================
