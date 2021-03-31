@@ -14,7 +14,7 @@ class plotHelper:
         self.sample_names = samples
         self.sample_paths = ["/cms/user/guojl/Sample/ZZ_TuneCP5_13TeV-pythia8_RunIISummer19UL17MiniAOD-106X_mc2017_realistic_v6-v2_skimed.root",
                               "/cms/user/guojl/Sample/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer19UL17MiniAOD-106X_skimed.root",
-                              "/cms/user/guojl/Sample/WW_TuneCP5_13TeV-pythia8_RunIISummer19UL17MiniAOD-106X_mc2017_realistic_v6-v2_skimed.root"]
+                              "/cms/user/guojl/Sample/WZ_TuneCP5_13TeV-pythia8_RunIISummer19UL17MiniAOD-106X_mc2017_realistic_v6-v2_skimed.root"]
         self.colors = {}
         self.Constructor()
 
@@ -31,7 +31,7 @@ class plotHelper:
         self.colors["Data"] = kBlack
         self.colors["ZZ"] = kMagenta
         self.colors["DYJets"] = kGreen + 1
-        self.colors["WW"] = kBlue
+        self.colors["WZ"] = kBlue
 
         if(self.year==2016):
             self.lumi = 35.9
@@ -75,8 +75,14 @@ class plotHelper:
         return cms,lumi
 
 
-    def MakeLegend(self):
-        leg = TLegend( .70, .70, .97, .85 )
+    def MakeLegend(self,position):
+        if(position=='right'):
+            leg = TLegend( .70, .70, .97, .85 )
+        elif(position=='left'):
+            leg=TLegend(.18,.65,.51,.85)
+        else:
+            print "[Error] Please enter \"left\" or \"right\" "
+
         leg.SetFillColor(0)
         leg.SetBorderSize(0)
         leg.SetFillStyle(0)
@@ -93,7 +99,7 @@ class plotHelper:
         c = TCanvas(var_name,var_name,600,600)
 
         cms_label,lumi_label = plotHelper.MakeCMSandLumiLabel(self)
-        legend = plotHelper.MakeLegend(self)
+        legend = plotHelper.MakeLegend(self,'right')
 
         #find max value of histos
         Draw_max = 0
@@ -106,7 +112,7 @@ class plotHelper:
         for sample in samples:
             if(sample=='ZZ'): legend.AddEntry(histos[sample][var_name],"ZZ",'f')
             if(sample=="DYJets"): legend.AddEntry(histos[sample][var_name],"Z + Jets",'f')
-            if(sample=='WW'): legend.AddEntry(histos[sample][var_name],"WW", 'f')
+            if(sample=='WZ'): legend.AddEntry(histos[sample][var_name],"WZ", 'f')
             histos[sample][var_name].SetMaximum(Draw_max*1.1)
             if(samples.index(sample)==0):
                 histos[sample][var_name].Draw('histo')
