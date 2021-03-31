@@ -1,13 +1,14 @@
 from ROOT import *
 import os,sys
 import time
+import math
 sys.path.append("%s/../lib" %os.getcwd())
 from deltaR import *
 from plotHelper import *
 
 
-samples = ['ZZ','WW','DYJets']
-var_names = ['ZvsQCD','tau21','tau1','tau2','WvsQCD']
+samples = ['ZZ','DYJets','WZ']
+var_names = ['ZvsQCD','tau21','tau1','tau2','WvsQCD','ZvsQCD_de','WvsQCD_de','tau21_DDT']
 var_tau1 = ['tau1_notZero_mass','tau1_notZero_SDmass','tau1_notZero_pt','tau1_notZero_eta','Z1_mass']
 PH = plotHelper(samples,2017) #initialize a plot class
 
@@ -141,11 +142,31 @@ for sample in samples:
         number[sample]['Z1_cut'] +=1
         histos[sample]['Z1_mass'].Fill(massZ1)
 
-        #leptons and photons clear
+        #mergedjet analysis
         for i in range(0,nmergedjets):
             tempDeltaR = 999.0
             isclean_H4l = True
 
+            #select the leading jet
+            #temp_pt = 0.0
+            leadingIndex = 0
+            #for k in range(0,nmergedjets):
+            #    if(event.mergedjet_pt[k]>temp_pt):
+            #        temp_pt = event.mergedjet_pt[k]
+            #        leadingIndex = k
+
+            #select the jetmass closest Zmass
+            deltaM=9999.9
+            for k in range(0,nmergedjets):
+                if(abs(event.mergedjet_softdropmass[k]-Zmass)<deltaM):
+                    deltaM = abs(event.mergedjet_softdropmass[k]-Zmass)
+                    leadingIndex = k
+
+            #MassWindow check
+            if(event.mergedjet_softdropmass[leadingIndex]>105 or event.mergedjet_softdropmass[leadingIndex]<65): continue
+
+
+            #leptons and photons clear
             nlep =event.lep_pt.size()
             for j in range(nlep):
                 if(not event.lep_tightId[j]): continue
@@ -172,14 +193,6 @@ for sample in samples:
 
                 number[sample]['clearlep_cut'] +=1
 
-                #select the leading jet
-                temp_pt = 0.0
-                leadingIndex = 0
-                for k in range(0,nmergedjets):
-                    if(event.mergedjet_pt[k]>temp_pt):
-                        temp_pt = event.mergedjet_pt[k]
-                        leadingIndex = k
-
                 #fill histos
                 tempNsubjet = event.mergedjet_nsubjet[leadingIndex]
                 temptau1 = event.mergedjet_tau1[leadingIndex]
@@ -194,16 +207,22 @@ for sample in samples:
                         ntau1_notZero_DYJets +=1
                     histos[sample]['ZvsQCD'].Fill(event.mergedjet_ZvsQCD[leadingIndex])
                     histos[sample]['WvsQCD'].Fill(event.mergedjet_WvsQCD[leadingIndex])
+                    histos[sample]['ZvsQCD_de'].Fill(event.mergedjet_ZvsQCD_de[leadingIndex])
+                    histos[sample]['WvsQCD_de'].Fill(event.mergedjet_WvsQCD_de[leadingIndex])
                     histos[sample]['tau21'].Fill(temptau2/temptau1)
                     histos[sample]['tau1_notZero_pt'].Fill(event.mergedjet_pt[leadingIndex])
                     histos[sample]['tau1_notZero_eta'].Fill(event.mergedjet_eta[leadingIndex])
                     histos[sample]['tau1_notZero_mass'].Fill(event.mergedjet_mass[leadingIndex])
+                    temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_softdropmass[leadingIndex]*event.mergedjet_softdropmass[leadingIndex])/event.mergedjet_pt[leadingIndex])
+                    #print "[TEST] temp_tauDDT = "+str(temp_tauDDT)
+                    histos[sample]['tau21_DDT'].Fill(temp_tauDDT)
                     Sumsubjet = TLorentzVector()
                     for i in range(0,tempNsubjet):
                         tempsubjet = TLorentzVector()
                         tempsubjet.SetPtEtaPhiM(event.mergedjet_subjet_pt[leadingIndex][i],event.mergedjet_subjet_eta[leadingIndex][i],event.mergedjet_subjet_phi[leadingIndex][i],event.mergedjet_subjet_mass[leadingIndex][i])
                         Sumsubjet += tempsubjet
-                    histos[sample]['tau1_notZero_SDmass'].Fill(Sumsubjet.M())
+                    #histos[sample]['tau1_notZero_SDmass'].Fill(Sumsubjet.M())
+                    histos[sample]['tau1_notZero_SDmass'].Fill(event.mergedjet_softdropmass[leadingIndex])
 
 #======================================================================================
 
