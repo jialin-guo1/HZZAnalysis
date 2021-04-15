@@ -10,12 +10,12 @@ from plotHelper import *
 #this macro does not do any analysis, just get plots for RawHistos and draw singal and background efficiency
 #================================================================================
 
-samples = ['ZZ','DYJets','WZ']
-var_names = ['ZvsQCD','tau21','WvsQCD','ZvsQCD_de','WvsQCD_de','tau21_DDT']
-PH = plotHelper(samples,2017) #initialize plot
+samples = ['GluGluHToZZTo2L2Q_MAll','QCD']
+var_names = ['ZvsQCD','tau21','ZvsQCD_de','tau21_DDT']
+PH = plotHelper(samples,2018) #initialize plot
 
 #book ROOT file storing raw histos
-inputfilename = "../RawHistos/DeepAK8Var.root"
+inputfilename = "../RawHistos/DeepAK8VarAll_noptbins.root"
 inputfile = TFile(inputfilename)
 if(inputfile):
     print "[INFO] find raw histograms file: "+inputfilename
@@ -34,8 +34,8 @@ for sample in samples:
 
 
 #start to caculate efficiency in each setted cut
-for i in range(0,50):
-    cut = Double(i)/50
+for i in range(0,100):
+    cut = Double(i)/100
     for sample in samples:
         for var_name in var_names:
             binx1 = histos[sample][var_name].GetXaxis().FindBin(cut)
@@ -57,8 +57,8 @@ vector_X = {} #for singal
 vector_Y ={}  #for backgrounds
 graph = {}
 for var_name in var_names:
-    vector_X[var_name] = efficiency['ZZ'][var_name]
-    vector_Y[var_name] = efficiency['DYJets'][var_name]
+    vector_X[var_name] = efficiency['GluGluHToZZTo2L2Q_MAll'][var_name]
+    vector_Y[var_name] = efficiency['QCD'][var_name]
 
     graph[var_name] = TGraph( len(vector_X[var_name]) , vector_X[var_name] , vector_Y[var_name] )
 
@@ -75,12 +75,12 @@ for var_name in var_names:
     graph['ZvsQCD_de'].SetTitle("ZvsQCD_decorrelated")
     graph['ZvsQCD_de'].SetLineStyle(2)
 
-    graph['WvsQCD'].SetLineColor(kBlue)
-    graph['WvsQCD'].SetTitle("WvsQCD")
+    #graph['WvsQCD'].SetLineColor(kBlue)
+    #graph['WvsQCD'].SetTitle("WvsQCD")
 
-    graph['WvsQCD_de'].SetLineColor(kBlue)
-    graph['WvsQCD_de'].SetLineStyle(2)
-    graph['WvsQCD_de'].SetTitle("WvsQCD_decorrelated")
+    #graph['WvsQCD_de'].SetLineColor(kBlue)
+    #graph['WvsQCD_de'].SetLineStyle(2)
+    #graph['WvsQCD_de'].SetTitle("WvsQCD_decorrelated")
 
     graph['tau21'].SetLineColor(kBlack)
     graph['tau21'].SetTitle("tau21")
@@ -98,8 +98,8 @@ graphs.Draw("AC")
 leg = PH.MakeLegend('left')
 leg.AddEntry(graph['ZvsQCD'], 'ZvsQCD')
 leg.AddEntry(graph['tau21'], 'tau21')
-leg.AddEntry(graph['WvsQCD'], 'WvsQCD')
-leg.AddEntry(graph['WvsQCD_de'], 'WvsQCD_decorrelated')
+#leg.AddEntry(graph['WvsQCD'], 'WvsQCD')
+#leg.AddEntry(graph['WvsQCD_de'], 'WvsQCD_decorrelated')
 leg.AddEntry(graph['ZvsQCD_de'], 'ZvsQCD_decorrelated')
 leg.AddEntry(graph['tau21_DDT'], 'tau21_DDT')
 leg.Draw()
