@@ -10,12 +10,12 @@ from plotHelper import *
 #this macro does not do any analysis, just get plots for RawHistos and draw singal and background efficiency
 #================================================================================
 
-samples = ['GluGluHToZZTo2L2Q_MAll','QCD']
+samples = ['GluGluHToZZTo2L2Q_M3000','QCD']
 var_names = ['ZvsQCD','tau21','ZvsQCD_de','tau21_DDT']
 PH = plotHelper(samples,2018) #initialize plot
 
 #book ROOT file storing raw histos
-inputfilename = "../RawHistos/DeepAK8VarAll_noptbins.root"
+inputfilename = "../RawHistos/DeepAK8Var_m3000.root"
 inputfile = TFile(inputfilename)
 if(inputfile):
     print "[INFO] find raw histograms file: "+inputfilename
@@ -57,7 +57,7 @@ vector_X = {} #for singal
 vector_Y ={}  #for backgrounds
 graph = {}
 for var_name in var_names:
-    vector_X[var_name] = efficiency['GluGluHToZZTo2L2Q_MAll'][var_name]
+    vector_X[var_name] = efficiency['GluGluHToZZTo2L2Q_M3000'][var_name]
     vector_Y[var_name] = efficiency['QCD'][var_name]
 
     graph[var_name] = TGraph( len(vector_X[var_name]) , vector_X[var_name] , vector_Y[var_name] )
