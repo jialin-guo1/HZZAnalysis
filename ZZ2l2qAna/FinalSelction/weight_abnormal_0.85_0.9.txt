@@ -1,0 +1,1834 @@
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 26781124
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 26784075
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26861559
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 26827886
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 29465109
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39504552
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 39722171
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38994288
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 39747049
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 39248071
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 39051932
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39256822
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 39783860
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 1880272
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 16971729
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 38803729
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38863096
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 28627149
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 28712559
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 21568006
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 28660157
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 39827201
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37585947
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 38529407
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 39893056
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 28729906
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 28734416
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 39937958
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38555801
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 39888724
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 38503860
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 23177311
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 37478634
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 26813793
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 28600362
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 16219817
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 16628129
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 33392667
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 10000137
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 39902573
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 8302106
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 17974007
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 22035278
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 26128392
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 23751957
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 29702809
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 37925680
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 38184660
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 38424066
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38424096
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 19549647
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41053225
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 329556
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 2867292
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 1754266
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 693516
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 18811373
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3681781
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 40238794
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40755058
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38139905
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 41226762
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 41228275
+
+[INFO] this weight = 0.426138686596, eventWeight = 14.1375303268, pileupWeight = 14.1375303268, genWeight = 1.0, nInt = 1, Run = 1, Event = 26519049
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 34528766
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 27236320
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 24376454
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 24376769
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 23041491
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 32398813
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 32987633
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 32990518
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 35353113
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 33696979
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40697878
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 38161473
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 38163053
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 34637103
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32445074
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 22955086
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 8224818
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 25675069
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 25431394
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 25953615
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 3774796
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 36411581
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 2672720
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 3461024
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 3461629
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3465636
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26032123
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31083602
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 31624137
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 22337992
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 17058960
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 7392617
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 21507941
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21513085
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 21827253
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 17683711
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 17690355
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26314431
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25263282
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 35161532
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 36324513
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41056651
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 40585487
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19642491
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 23974092
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36147145
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20502623
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 26500560
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 23546956
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 35101717
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38092838
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 36022181
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 34560788
+
+[INFO] this weight = 0.426138686596, eventWeight = 14.1375303268, pileupWeight = 14.1375303268, genWeight = 1.0, nInt = 1, Run = 1, Event = 34851022
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38433542
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20281759
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 22676473
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 22679821
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37020572
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 23837151
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 111593
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 115816
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 116542
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 2684095
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 3489028
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 5182415
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 6776266
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7566085
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 7567405
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 22026946
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25945993
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 25972559
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 23693660
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 8291692
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 8063572
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21971922
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 27516947
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 21790385
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20567911
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19057679
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 23738852
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24380039
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 24658192
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 26601023
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41560638
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 3695131
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4751839
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 33808733
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31050926
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30236727
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 40864155
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41493088
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 25842904
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 32729692
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 34228187
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 17127844
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26515323
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 37261874
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33803389
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 33803689
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 23049235
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 17661782
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26293080
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3843254
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 31660057
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 33425293
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 8151406
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 17275448
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24075052
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 1183948
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 12094842
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 12112212
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 12112989
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 21498265
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 40943432
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 25134474
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 28003776
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 29291621
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19843795
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 33238661
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 29335060
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7372758
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 25201857
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 27739018
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 34051095
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38105831
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21981173
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32075096
+
+[INFO] this weight = 1.34908107086, eventWeight = 44.7569656372, pileupWeight = 44.7569656372, genWeight = 1.0, nInt = 2, Run = 1, Event = 32075175
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 32077661
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 19838489
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7328611
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 2292748
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7418348
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 12727679
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 11620040
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 15159641
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 40123318
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 2379133
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 6402565
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 6403349
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 8331178
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41478330
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 25542827
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32824614
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 35035292
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 35115005
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 23492112
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 23705834
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33175079
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 34006948
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 36351746
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 16730650
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 16723878
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16724386
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41502455
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 33520609
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 27834915
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 24457552
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 25109264
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 28350711
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 24649966
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24650738
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30249859
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 18420060
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 33340094
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19985069
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 19985087
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21325482
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 19619764
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 19637114
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 24847284
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 23380129
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 3221103
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3278638
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4893087
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 4893126
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 4897601
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 29453614
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 29344515
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 2543544
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 2802300
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 24238285
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 34089009
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 34090351
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 23472599
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30005705
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 30005907
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 8251473
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 23828023
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 29540636
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 33050504
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36896287
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37748508
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4021915
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 34909425
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 22523694
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33046673
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 23137541
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 38439951
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26532032
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 17422857
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20897133
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 33747489
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 29113171
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 25475362
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37070678
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 16911889
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 5052422
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 5131353
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 16980914
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 32739963
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 31886141
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31886472
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 35315663
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 1050871
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 37047816
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 8315798
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 8317033
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 6128169
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 21870296
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 8187109
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 28259332
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 28286402
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 23305609
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 36407995
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 36973274
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 36974648
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 37843578
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 40956770
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 7754803
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5571322
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3914431
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 19300841
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 5575934
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 3900149
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4011610
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 4287032
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32588542
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 34378409
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32743863
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 33407730
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40763712
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 1118374
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 21026752
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 25094046
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 29460276
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21549796
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 34149148
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 37687378
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 7554362
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37967423
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 20874990
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4793903
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 7878480
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 5657530
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 28088924
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 23082054
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 22398433
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 3513196
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 1579142
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 1785956
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 23424496
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 22828658
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 22840682
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 23216159
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 7913063
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26050701
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 4802124
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41629588
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 5155634
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 33538614
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 20945919
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33999162
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33955402
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38132282
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 2258857
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4549287
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 20667430
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 8062453
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36702421
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 22238621
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 22658766
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 32471609
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 33434708
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 33439379
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 1460970
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20142284
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31975525
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2508536
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 20565296
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 801165
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 5963040
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 17815732
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 19041942
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 24271280
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 22732074
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 24801278
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 10331758
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 10331956
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 9836213
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 8507660
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 9173717
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 9176652
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 9557493
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 12850710
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 14331446
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 15623257
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 16085660
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14119432
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 15949795
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 15244863
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 14698596
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 15022423
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 12576285
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 16499914
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 14737020
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 14642740
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 9649858
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 14144874
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 8964251
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 11117126
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 13803709
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 15735980
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 8600209
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 13798292
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 11112264
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 12889771
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 13278619
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14881304
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14108488
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 8453287
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 8703212
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 8778870
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 9157201
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 8717223
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 8790659
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14189651
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 9861489
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 28167782
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 37256649
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 40710334
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40712841
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 27368976
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25695202
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 6026888
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 2367367
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 34966291
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 37196471
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9455
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41192405
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 1504741
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 5666731
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6499541
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 18679825
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 6525158
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 25385487
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24752238
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 17969725
+
+[INFO] this weight = 1.34908107086, eventWeight = 44.7569656372, pileupWeight = 44.7569656372, genWeight = 1.0, nInt = 2, Run = 1, Event = 18228513
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 5902599
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 7744464
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 22189195
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 21739936
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 3559033
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 29680358
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25146044
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25629642
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 32714542
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 18997065
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 19074563
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 24598075
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 17182202
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 17187633
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 17401444
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 27674676
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 24521980
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 17799034
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 35214178
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 1688941
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 35075477
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 5970230
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 29979803
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 22892817
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 27133002
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 41203542
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 2716769
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 2719145
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2723025
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 5210344
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 33158489
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 22497804
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 25692867
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4206545
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 18197843
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 35801413
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 35802518
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40528211
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 21674757
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 25748532
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 34066315
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31067600
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30218750
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 1514315
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 1482532
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 2809287
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2478729
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7271162
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 27478191
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 27815667
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 40526790
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19115473
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6549939
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 2650813
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2651626
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4113630
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 3729013
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 5364248
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 31266336
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 31266968
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 4969
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 33688
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 36679990
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 6291888
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5456024
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 5592480
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 36048932
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5844680
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 1311399
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5021900
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6832414
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 21754193
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25582955
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 31192184
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 32413434
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 30976549
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 32372625
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 26179163
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 16866165
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 16868208
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 16871706
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 16952981
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 17293098
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 20089425
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 22141518
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 7076233
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36814586
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 1865898
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2141882
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 6424785
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 21555971
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 17504988
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24769666
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 20081407
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 41220009
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41067113
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 5267030
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 40677208
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 27511945
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32891130
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 32892235
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26761910
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40431778
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 20641859
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41625764
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41237456
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41213067
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41331971
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 41344668
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6962551
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 25662738
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3196723
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3196726
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 5638107
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5418352
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6325840
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 6327688
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 5883249
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 27947245
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 37399056
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 31021333
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 32339848
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 28039718
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 28042785
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36283547
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 5031461
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32455808
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 37122040
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31985484
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32087319
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40150678
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 35687919
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 11128454
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 11973610
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 15287733
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 30881829
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14316974
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 12385738
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 13403129
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 13404556
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 13716699
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 11026097
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9517751
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 10249024
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 13182407
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 14200820
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 11864019
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 13265860
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 23275988
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 23930812
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 23930948
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 22740557
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 22369875
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 4673089
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 20369377
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 24704844
+
+[INFO] this weight = 311.862774324, eventWeight = 10346.3251953, pileupWeight = 10346.3251953, genWeight = 1.0, nInt = 0, Run = 1, Event = 22613019
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 21932665
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 31418541
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 31418842
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 21372651
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 27360435
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 26416787
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 26419866
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 36766782
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 25508200
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24499955
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 34873678
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 21548039
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 23555937
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 3574487
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 3652920
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 1971723
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 730279
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 1886933
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 1367730
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 7374274
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 7498653
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2011206
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 7550391
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3305854
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 36204581
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 36208101
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 276888
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 28393131
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 19341147
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 20583594
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 21821307
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9742769
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 16169763
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 38693475
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 10805034
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 11631122
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 27850643
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 35105452
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 35897693
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 12268147
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 15984706
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 16096406
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39322284
+
+[INFO] this weight = -0.426138686596, eventWeight = -14.1375303268, pileupWeight = 14.1375303268, genWeight = -1.0, nInt = 1, Run = 1, Event = 17078951
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 38672479
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 38952439
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38960414
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 38932485
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 30162030
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 17023689
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 35937859
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 40214614
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 26299828
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36977894
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 36803839
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 40960396
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 37173085
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 12819525
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 12817683
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 15792438
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 11149993
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 10120633
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 10120860
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39114365
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39106207
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 39308701
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39675216
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 15368111
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24549616
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 27224114
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 33259809
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 32881046
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 36865445
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 34277848
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 11562485
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 10476926
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 15150703
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 12196161
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14729861
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 12327861
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37639387
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38249835
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 38286367
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 14748714
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 10311060
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 10312065
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 11428187
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 13680364
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 9498585
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 14709855
+
+[INFO] this weight = 1.34908107086, eventWeight = 44.7569656372, pileupWeight = 44.7569656372, genWeight = 1.0, nInt = 2, Run = 1, Event = 15388502
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 32791551
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 31674609
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31729479
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 31740968
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 31754245
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 39423235
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37517053
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39807033
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 36580185
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 38253182
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30838191
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 38370424
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30792800
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 39915830
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39918255
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 30509955
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37452389
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30591853
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 30623636
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 37420793
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 39058437
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 176539
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 237762
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 31762568
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 35461530
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 31854078
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 31799865
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 33927892
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 30842831
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 35595922
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30385151
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 30575490
+
+[INFO] this weight = -1.34908107086, eventWeight = -44.7569656372, pileupWeight = 44.7569656372, genWeight = -1.0, nInt = 2, Run = 1, Event = 30612486
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 30772434
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 27955636
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 30632060
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 30734994
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 38622604
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 35525544
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 38274492
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30390831
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30392616
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 130510
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 3169652
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 30529522
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 12063285
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 12065464
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 12282905
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14937336
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 9782307
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 11144887
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 12278084
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 20175286
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 26648629
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 29772131
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 29070391
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 29236953
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24048005
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 41601609
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 34213434
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 37875386
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3804718
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 3174624
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 31270046
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 18397065
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 16755277
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16956852
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 1112349
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 1551806
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 23664773
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 1452498
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 2881735
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 1074637
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24795341
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40658207
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 31997926
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 7263409
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 32851394
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25065112
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 7790911
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 19666569
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 33971214
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 33854908
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 32403566
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 16740386
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 19598148
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 17732921
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 31968236
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 40896295
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 32863888
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 36788551
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 24544265
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 19277612
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 29064827
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25177309
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 25334515
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 28800684
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 31162447
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 26506431
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26580416
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 28469041
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 29382745
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21181296
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 18816485
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 22327775
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 1125714
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 2238351
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 2238915
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 1531581
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 8109845
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 32580774
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 40364908
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 3095311
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 8219331
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 2847886
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7631397
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 21176304
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 21188709
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 599192
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 2344425
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 4234381
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 6973378
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 19562435
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 24790805
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 24792810
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40639129
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 6971205
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 7644268
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 25319028
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 38016090
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40135983
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 41183859
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 27786644
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 23794569
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 20051012
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 20051752
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 18444814
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 40058426
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 1394118
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4102311
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4292157
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 4292727
+
+[INFO] this weight = -0.106606723511, eventWeight = -3.53677296638, pileupWeight = 3.53677296638, genWeight = -1.0, nInt = 8, Run = 1, Event = 293409
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 26551205
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7802285
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 19663380
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 23152270
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 28964655
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 35010671
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 30963644
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 31554684
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 35683553
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 3712681
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 18535066
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 4614994
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 7539365
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 24004899
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 25744229
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 40692468
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 1207761
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 19487538
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 20864225
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 19474651
+
+[INFO] this weight = -0.143383205568, eventWeight = -4.7568655014, pileupWeight = 4.7568655014, genWeight = -1.0, nInt = 7, Run = 1, Event = 21925109
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 27292505
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 30936327
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 27640475
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 25724329
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 2743066
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 4422405
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 3648183
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 751186
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 2699166
+
+[INFO] this weight = -0.560053532963, eventWeight = -18.5802745819, pileupWeight = 18.5802745819, genWeight = -1.0, nInt = 3, Run = 1, Event = 20325467
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 22312328
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 33053395
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 12253735
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 12471282
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 12843624
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16328807
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 15449985
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16264649
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 8771140
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 14676108
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 9660807
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 9845221
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 9848314
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 12529889
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16648390
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16270372
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16271015
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 8941239
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 13232663
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 8457250
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14326552
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 13007534
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 11004193
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 11161598
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 12954676
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 12954743
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 15045895
+
+[INFO] this weight = 0.560053532963, eventWeight = 18.5802745819, pileupWeight = 18.5802745819, genWeight = 1.0, nInt = 3, Run = 1, Event = 9530684
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14943342
+
+[INFO] this weight = 0.266949518801, eventWeight = 8.85628795624, pileupWeight = 8.85628795624, genWeight = 1.0, nInt = 5, Run = 1, Event = 10216116
+
+[INFO] this weight = -0.266949518801, eventWeight = -8.85628795624, pileupWeight = 8.85628795624, genWeight = -1.0, nInt = 5, Run = 1, Event = 12742094
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 9127480
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 10274135
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 9029919
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 10107662
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 10110063
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14991117
+
+[INFO] this weight = 0.143383205568, eventWeight = 4.7568655014, pileupWeight = 4.7568655014, genWeight = 1.0, nInt = 7, Run = 1, Event = 12966922
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 14889814
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16313668
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 16568062
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 15455395
+
+[INFO] this weight = -0.0646903335492, eventWeight = -2.14615941048, pileupWeight = 2.14615941048, genWeight = -1.0, nInt = 10, Run = 1, Event = 15945698
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9681531
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 16141751
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 10595302
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 10144416
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 13532608
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 13648298
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 14861656
+
+[INFO] this weight = -0.370973981476, eventWeight = -12.3073921204, pileupWeight = 12.3073921204, genWeight = -1.0, nInt = 4, Run = 1, Event = 9509807
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 11341767
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 15400518
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 16124615
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 16111046
+
+[INFO] this weight = 1.34908107086, eventWeight = 44.7569656372, pileupWeight = 44.7569656372, genWeight = 1.0, nInt = 2, Run = 1, Event = 13931445
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9634346
+
+[INFO] this weight = -0.080800284781, eventWeight = -2.68062138557, pileupWeight = 2.68062138557, genWeight = -1.0, nInt = 9, Run = 1, Event = 10579622
+
+[INFO] this weight = 0.370973981476, eventWeight = 12.3073921204, pileupWeight = 12.3073921204, genWeight = 1.0, nInt = 4, Run = 1, Event = 15723960
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 8489210
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 10399954
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 9871723
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 12203809
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 11301448
+
+[INFO] this weight = -0.193711625277, eventWeight = -6.42655563354, pileupWeight = 6.42655563354, genWeight = -1.0, nInt = 6, Run = 1, Event = 12448439
+
+[INFO] this weight = 0.193711625277, eventWeight = 6.42655563354, pileupWeight = 6.42655563354, genWeight = 1.0, nInt = 6, Run = 1, Event = 11725876
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 19721511
+
+[INFO] this weight = 0.106606723511, eventWeight = 3.53677296638, pileupWeight = 3.53677296638, genWeight = 1.0, nInt = 8, Run = 1, Event = 28529333
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 28535441
+
+[INFO] this weight = 0.0646903335492, eventWeight = 2.14615941048, pileupWeight = 2.14615941048, genWeight = 1.0, nInt = 10, Run = 1, Event = 32346904
+
+[INFO] this weight = 0.080800284781, eventWeight = 2.68062138557, pileupWeight = 2.68062138557, genWeight = 1.0, nInt = 9, Run = 1, Event = 32185804
+
