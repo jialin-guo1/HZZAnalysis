@@ -8,18 +8,18 @@ from plotHelper import *
 
 import argparse
 parser = argparse.ArgumentParser(description="reduce files from a list")
-parser.add_argument("-s","--sample", dest="sample", default='GluGluHToZZTo2L2Q_MAll',help="input sample")
+parser.add_argument("-s","--sample", dest="sample", default='GluGluHToZZTo2L2Q_M1000',help="input sample")
 args = parser.parse_args()
 
 #samples = ['GluGluHToZZTo2L2Q_M1000','DYJetsToLL_Pt-250To400','DYJetsToLL_Pt-400To650','DYJetsToLL_Pt-650ToInf','TTJets','WZ','ZZ_TuneCP5']#'GluGluHToZZTo2L2Q_M1500','GluGluHToZZTo2L2Q_M2000','GluGluHToZZTo2L2Q_M2500','GluGluHToZZTo2L2Q_M3000'] #['ZZ','DYJets','WZ',
 sample = [args.sample]
-var_names = ['ZvsQCD_de','tau21_DDT']
+var_names = ['ZvsQCD_de','tau21_DDT','particleNet_ZvsQCD_de','ZbbvsQCD_de']
 var_tau1 = ['SDmass_SR','SDmass_CR','Pt','eta','Z1_mass','Z1_pt','Hmass','dR_lep','dR_ZZ','HvsSD']
-PH = plotHelper(sample,2018) #initialize a plot class
+PH = plotHelper(sample,'2018Legacy') #initialize a plot class
 
 
 #book out file to store raw histograms
-outfilename = "../RawHistos/%s_FinalCut_notZvsQCD.root"%args.sample
+outfilename = "../RawHistos/%s_particleNetCut.root"%args.sample
 outfile = TFile(outfilename,'recreate')
 
 #book histos
@@ -97,13 +97,13 @@ if(args.sample=='GluGluHToZZTo2L2Q_MAll'):
             if(event.mergedjet_pt[i]<200): continue
             if(abs(event.mergedjet_eta[i])>2.4): continue
             #MassWindow check
-            if(event.mergedjet_softdropmass[i]<=0 or event.mergedjet_softdropmass[i]>180): continue
-            #if(event.mergedjet_ZvsQCD[i]<0.7): continue
+            if(event.mergedjet_subjet_softDropMass[i]<=0 or event.mergedjet_subjet_softDropMass[i]>180): continue
+            if(event.mergedjet_ZvsQCD_de[i]<0.7): continue
 
             temptau1 = event.mergedjet_tau1[i]
             temptau2 = event.mergedjet_tau2[i]
             if(temptau1<=0): continue
-            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_softdropmass[i]*event.mergedjet_softdropmass[i])/event.mergedjet_pt[i])
+            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_subjet_softDropMass[i]*event.mergedjet_subjet_softDropMass[i])/event.mergedjet_pt[i])
             #if(temp_tauDDT>0.6): continue
 
             #leptons and photons clear
@@ -211,7 +211,7 @@ if(args.sample=='GluGluHToZZTo2L2Q_MAll'):
                 leadingIndex = i
 
 
-        if(event.mergedjet_softdropmass[leadingIndex]>=70 and event.mergedjet_softdropmass[leadingIndex]<=105):
+        if(event.mergedjet_subjet_softDropMass[leadingIndex]>=70 and event.mergedjet_subjet_softDropMass[leadingIndex]<=105):
             passedMergedJetSRSelection = True
         else:
             passedMergedJetCRSelection = True
@@ -224,24 +224,24 @@ if(args.sample=='GluGluHToZZTo2L2Q_MAll'):
                 mergedjet_H = TLorentzVector()
                 l1_H.SetPtEtaPhiM(event.lepFSR_pt[lep_Hindex[0]],event.lepFSR_eta[lep_Hindex[0]],event.lepFSR_phi[lep_Hindex[0]],event.lepFSR_mass[lep_Hindex[0]])
                 l2_H.SetPtEtaPhiM(event.lepFSR_pt[lep_Hindex[1]],event.lepFSR_eta[lep_Hindex[1]],event.lepFSR_phi[lep_Hindex[1]],event.lepFSR_mass[lep_Hindex[1]])
-                mergedjet_H.SetPtEtaPhiM(event.mergedjet_pt[leadingIndex],event.mergedjet_eta[leadingIndex],event.mergedjet_phi[leadingIndex],event.mergedjet_softdropmass[leadingIndex])
+                mergedjet_H.SetPtEtaPhiM(event.mergedjet_pt[leadingIndex],event.mergedjet_eta[leadingIndex],event.mergedjet_phi[leadingIndex],event.mergedjet_subjet_softDropMass[leadingIndex])
                 higgscand = l1_H+l2_H+mergedjet_H
                 leptonic_Z = l1_H+l2_H
                 histos[args.sample]['Hmass'].Fill(higgscand.M(),weight)
-                histos[args.sample]['HvsSD'].Fill(higgscand.M(),event.mergedjet_softdropmass[leadingIndex],weight)
+                histos[args.sample]['HvsSD'].Fill(higgscand.M(),event.mergedjet_subjet_softDropMass[leadingIndex],weight)
 
                 temptau1 = event.mergedjet_tau1[leadingIndex]
                 temptau2 = event.mergedjet_tau2[leadingIndex]
 
                 histos[args.sample]['Z1_mass'].Fill(massZ1,weight)
                 histos[args.sample]['ZvsQCD_de'].Fill(event.mergedjet_ZvsQCD_de[leadingIndex],weight)
-                histos[args.sample]['SDmass_SR'].Fill(event.mergedjet_softdropmass[leadingIndex],weight)
+                histos[args.sample]['SDmass_SR'].Fill(event.mergedjet_subjet_softDropMass[leadingIndex],weight)
                 histos[args.sample]['eta'].Fill(event.mergedjet_eta[leadingIndex],weight)
                 histos[args.sample]['Pt'].Fill(event.mergedjet_pt[leadingIndex],weight)
 
-                #print "event.mergedjet_softdropmass = " +str(event.mergedjet_softdropmass[leadingIndex])
+                #print "event.mergedjet_subjet_softDropMass = " +str(event.mergedjet_subjet_softDropMass[leadingIndex])
                 #print "event.mergedjet_pt = "+str(event.mergedjet_pt[leadingIndex])
-                temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_softdropmass[leadingIndex]*event.mergedjet_softdropmass[leadingIndex])/event.mergedjet_pt[leadingIndex])
+                temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_subjet_softDropMass[leadingIndex]*event.mergedjet_subjet_softDropMass[leadingIndex])/event.mergedjet_pt[leadingIndex])
                 histos[args.sample]['tau21_DDT'].Fill(temp_tauDDT,weight)
 
     nEvents = Double(histos[args.sample]['GENH_massall'].Integral())
@@ -286,13 +286,15 @@ else:
             if(event.mergedjet_pt[i]<200): continue
             if(abs(event.mergedjet_eta[i])>2.4): continue
             #MassWindow check
-            if(event.mergedjet_softdropmass[i]<=0 or event.mergedjet_softdropmass[i]>180): continue
-            #if(event.mergedjet_ZvsQCD[i]<0.7): continue
+            if(event.mergedjet_subjet_softDropMass[i]<=0 or event.mergedjet_subjet_softDropMass[i]>180): continue
+            temp_particleNetZvsQCD = event.mergedjet_Net_Xbb_de[i]+event.mergedjet_Net_Xcc_de[i]+event.mergedjet_Net_Xqq_de[i]
+            if(temp_particleNetZvsQCD<0.89): continue
+            #if(event.mergedjet_ZvsQCD_de[i]<0.7): continue
 
             temptau1 = event.mergedjet_tau1[i]
             temptau2 = event.mergedjet_tau2[i]
             if(temptau1<=0): continue
-            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_softdropmass[i]*event.mergedjet_softdropmass[i])/event.mergedjet_pt[i])
+            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_subjet_softDropMass[i]*event.mergedjet_subjet_softDropMass[i])/event.mergedjet_pt[i])
             #if(temp_tauDDT>0.6): continue
 
             #leptons and photons clear
@@ -393,29 +395,35 @@ else:
 
         #event weight
         if(args.sample.find('DYJetsToLL_Pt-100To250')!=-1):
-            weight = PH.lumi*1000*94.48*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*94.48*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample.find('DYJetsToLL_Pt-250To400')!=-1):
-            weight = PH.lumi*1000*3.648*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*3.648*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='DYJetsToLL_Pt-400To650'):
-            weight = PH.lumi*1000*0.4999*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.4999*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='DYJetsToLL_Pt-650ToInf'):
-            weight = PH.lumi*1000*0.04699*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.04699*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='TTJets'):
-            weight = PH.lumi*1000*722.8*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*722.8*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='ZZ_TuneCP5'):
-            weight = PH.lumi*1000*12.10*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*12.10*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='WZ'):
-            weight = PH.lumi*1000*27.27*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*27.27*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='GluGluHToZZTo2L2Q_M1000'):
-            weight = PH.lumi*1000*0.1023*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.1023*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='GluGluHToZZTo2L2Q_M1500'):
-            weight = PH.lumi*1000*0.01308*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.01308*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='GluGluHToZZTo2L2Q_M2000'):
-            weight = PH.lumi*1000*0.0055*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.0055*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='GluGluHToZZTo2L2Q_M2500'):
-            weight = PH.lumi*1000*0.002207*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.002207*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         elif(args.sample=='GluGluHToZZTo2L2Q_M3000'):
-            weight = PH.lumi*1000*0.001037*event.eventWeight/PH.sumWeights[args.sample]
+            weight = PH.lumi*1000*0.001037*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
+        elif(args.sample=='BulkGraviton_ggF_ZZ_ZlepZhad_narrow_M1000'):
+            weight = PH.lumi*1000*0.03883*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
+        elif(args.sample=='BulkGraviton_ggF_ZZ_ZlepZhad_narrow_M2000'):
+            weight = PH.lumi*1000*0.001029*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
+        elif(args.sample=='BulkGraviton_ggF_ZZ_ZlepZhad_narrow_M3000'):
+            weight = PH.lumi*1000*0.0000666*event.eventWeight*event.lep_dataMC[lep_Hindex[0]]*event.lep_dataMC[lep_Hindex[1]]/PH.sumWeights[args.sample]
         else:
             data +=1
             weight=1
@@ -431,7 +439,7 @@ else:
                 leadingIndex = i
 
 
-        if(event.mergedjet_softdropmass[leadingIndex]>=70 and event.mergedjet_softdropmass[leadingIndex]<=105):
+        if(event.mergedjet_subjet_softDropMass[leadingIndex]>=70 and event.mergedjet_subjet_softDropMass[leadingIndex]<=105):
             passedMergedJetSRSelection = True
         else:
             passedMergedJetCRSelection = True
@@ -443,13 +451,15 @@ else:
 
             histos[args.sample]['Z1_mass'].Fill(massZ1,weight)
             histos[args.sample]['ZvsQCD_de'].Fill(event.mergedjet_ZvsQCD_de[leadingIndex],weight)
-            histos[args.sample]['SDmass_SR'].Fill(event.mergedjet_softdropmass[leadingIndex],weight)
+            histos[args.sample]['ZbbvsQCD_de'].Fill(event.mergedjet_ZvsQCD_de[leadingIndex],weight)
+            histos[args.sample]['SDmass_SR'].Fill(event.mergedjet_subjet_softDropMass[leadingIndex],weight)
             histos[args.sample]['eta'].Fill(event.mergedjet_eta[leadingIndex],weight)
             histos[args.sample]['Pt'].Fill(event.mergedjet_pt[leadingIndex],weight)
+            histos[args.sample]['particleNet_ZvsQCD_de'].Fill(event.mergedjet_Net_Xbb_de[leadingIndex]+event.mergedjet_Net_Xcc_de[leadingIndex]+event.mergedjet_Net_Xqq_de[leadingIndex],weight)
 
-            #print "event.mergedjet_softdropmass = " +str(event.mergedjet_softdropmass[leadingIndex])
+            #print "event.mergedjet_subjet_softDropMass = " +str(event.mergedjet_subjet_softDropMass[leadingIndex])
             #print "event.mergedjet_pt = "+str(event.mergedjet_pt[leadingIndex])
-            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_softdropmass[leadingIndex]*event.mergedjet_softdropmass[leadingIndex])/event.mergedjet_pt[leadingIndex])
+            temp_tauDDT = temptau2/temptau1 + 0.082*math.log((event.mergedjet_subjet_softDropMass[leadingIndex]*event.mergedjet_subjet_softDropMass[leadingIndex])/event.mergedjet_pt[leadingIndex])
             histos[args.sample]['tau21_DDT'].Fill(temp_tauDDT,weight)
 
             higgscand = TLorentzVector()
@@ -458,11 +468,11 @@ else:
             mergedjet_H = TLorentzVector()
             l1_H.SetPtEtaPhiM(event.lepFSR_pt[lep_Hindex[0]],event.lepFSR_eta[lep_Hindex[0]],event.lepFSR_phi[lep_Hindex[0]],event.lepFSR_mass[lep_Hindex[0]])
             l2_H.SetPtEtaPhiM(event.lepFSR_pt[lep_Hindex[1]],event.lepFSR_eta[lep_Hindex[1]],event.lepFSR_phi[lep_Hindex[1]],event.lepFSR_mass[lep_Hindex[1]])
-            mergedjet_H.SetPtEtaPhiM(event.mergedjet_pt[leadingIndex],event.mergedjet_eta[leadingIndex],event.mergedjet_phi[leadingIndex],event.mergedjet_softdropmass[leadingIndex])
+            mergedjet_H.SetPtEtaPhiM(event.mergedjet_pt[leadingIndex],event.mergedjet_eta[leadingIndex],event.mergedjet_phi[leadingIndex],event.mergedjet_subjet_softDropMass[leadingIndex])
             higgscand = l1_H+l2_H+mergedjet_H
             leptonic_Z = l1_H+l2_H
             histos[args.sample]['Hmass'].Fill(higgscand.M(),weight)
-            histos[args.sample]['HvsSD'].Fill(higgscand.M(),event.mergedjet_softdropmass[leadingIndex],weight)
+            histos[args.sample]['HvsSD'].Fill(higgscand.M(),event.mergedjet_subjet_softDropMass[leadingIndex],weight)
             histos[args.sample]['Z1_pt'].Fill(leptonic_Z.Pt(),weight)
 
             deltaR_lep = deltaR(l1_H.Eta(),l1_H.Phi(),l2_H.Eta(),l2_H.Phi())
@@ -472,7 +482,7 @@ else:
             histos[args.sample]['dR_ZZ'].Fill(deltaR_ZZ,weight)
 
         if(passedMergedJetCRSelection):
-            histos[args.sample]['SDmass_CR'].Fill(event.mergedjet_softdropmass[leadingIndex],weight)
+            histos[args.sample]['SDmass_CR'].Fill(event.mergedjet_subjet_softDropMass[leadingIndex],weight)
 
 
 if(data!=0):
