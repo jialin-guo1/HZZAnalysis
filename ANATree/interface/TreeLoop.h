@@ -14,6 +14,9 @@
 #include "TString.h"
 //#include <ROOT/RDataFrame.hxx>
 
+using namespace std;
+using namespace IvyStreamHelpers;
+
 class TreeLoop : public IvyBase
 //class TreeLoop
 {
@@ -41,20 +44,35 @@ protected:
   TFile *oldfile;
   TTree *oldtree;
   TTreeReader *myreader;
-  // Output tree, Saved Events Trees
+  // Output file, Saved Events Trees
+  TFile *outfile;
   TTree *passedEventsTree_All;
+
 
   //menber object
   bool foundZ1LCandidate;
   bool foundZ2JCandidate;
 
   int lep_Z1index[2];
+  int jet_Z1index[2];
 
   TTreeReaderArray<int> *lep_id, *lep_tightId;
-  TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass, *lep_RelIsoNoFSR;
+  TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass;
   TTreeReaderArray<double> *lep_pt, *lep_eta, *lep_phi, *lep_mass;
   TTreeReaderArray<double> *jet_pt, *jet_eta, *jet_phi, *jet_mass;
+  TTreeReaderArray<float> *lep_RelIsoNoFSR;
+  TTreeReaderValue<bool> *passedTrig;
 
+  //Setting(those setting will be moved to a independent class later)
+  double isoCutMu = 0.35, isoCutEl = 0.35;
+  int leadingPtCut = 40;
+  int subleadingPtCut = 25;
+  int dijetPtCut = 100;
+  double mZ1Low = 40;
+  double mZ1High = 180;
+  double Zmass = 91.1876;
+  bool verbose = false;
+  bool doMela = true;
 
 
 

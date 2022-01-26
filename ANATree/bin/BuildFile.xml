@@ -8,4 +8,5 @@
   <use name="JHUGenMELA/MELA"/>
   <use name="IvyFramework/IvyDataTools"/>
   <use name="IvyFramework/IvyAutoMELA"/>
+  <use name="HZZAnalysis/ANATree"/>
 </bin>
