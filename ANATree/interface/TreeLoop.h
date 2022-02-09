@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <typeinfo>
 #include "IvyBase.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include <IvyFramework/IvyAutoMELA/interface/IvyMELAHelpers.h>
@@ -12,6 +13,7 @@
 #include "TTreeReaderArray.h"
 #include "TFile.h"
 #include "TString.h"
+#include "DiscriminantClasses.h"
 //#include <ROOT/RDataFrame.hxx>
 
 using namespace std;
@@ -30,6 +32,7 @@ public:
   void setTree();
   void findZ1LCandidate();
   void findZ2JCandidata();
+  void find4lCandidate();
 
 
 protected:
@@ -39,6 +42,7 @@ protected:
   std::vector<std::string> lheMElist;
   std::vector<std::string> recoMElist;
   IvyMELAHelpers::GMECBlock MEblock;
+  std::map<TString,float> ME_Kfactor_values;
 
   //input file
   TFile *oldfile;
@@ -52,9 +56,18 @@ protected:
   //menber object
   bool foundZ1LCandidate;
   bool foundZ2JCandidate;
+  bool found4lCandidate;
 
   int lep_Z1index[2];
   int jet_Z1index[2];
+  int lep_Hindex[4];
+
+  double mass2jet, pt2jet;
+  double mass2l, pt2l;
+  double mass2l2jet;
+
+  //KD
+  float KD_jjVBF;
 
   TTreeReaderArray<int> *lep_id, *lep_tightId;
   TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass;

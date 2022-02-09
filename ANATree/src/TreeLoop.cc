@@ -1,16 +1,32 @@
 #include "TreeLoop.h"
 
-using namespace std;
-using namespace IvyStreamHelpers;
 
 //construtor
 TreeLoop::TreeLoop(TString inputfile){
   //df = new ROOT:
   oldfile = new TFile(inputfile);
-  //TTreeReader yreader = new TTreeReader("Ana/passedEvents",oldfile);
+  if(verbose){
+    if(oldfile){
+      cout<<"[INFO] open oldfile in "<<inputfile<<endl;
+    } else{
+      cout<<"[ERROR] can not open file"<<endl;
+    }
+  }
+  //TTreeReader myreader("Ana/passedEvents",oldfile);
+  myreader = new TTreeReader("Ana/passedEvents",oldfile);
+  //if(verbose){
+  //  if(myreader->Next()){
+  //    cout<<"[INFO] setup tree reader "<<endl;
+  //  } else{
+  //    cout<<"[ERROR] can not setup tree reader"<<endl;
+  //  }
+  //}
+
+  outfile = new TFile("testMEs_CHS.root","recreate");
   passedEventsTree_All = new TTree("passedEvents","passedEvents");
 
-  TTreeReader myreader("Ana/passedEvents",oldfile);
+  if(verbose){cout<<"[INFO] construtor done"<<endl;}
+
 
 }
 
@@ -85,9 +101,10 @@ void TreeLoop::setMatrixElementListFromFile(std::string fname, std::string const
 }
 //==============================================================================================================//
 void TreeLoop::Loop(){
+  if(verbose){cout<<"[INFO] start to event loop"<<endl;}
 
-  bool doMela = true;
   if(doMela){
+    if(verbose){cout<<"[INFO] setup MELA"<<endl;}
   // Set the MEs
   // ME lists
   setMatrixElementListFromFile(
@@ -97,105 +114,187 @@ void TreeLoop::Loop(){
     false
     );
 
+    // Build the MEs if they are specified
+    if (!lheMElist.empty() || !recoMElist.empty()){
+    // Set up MELA (done only once inside IvyMELAHelpers)
+    IvyMELAHelpers::setupMela(year, 125., MiscUtils::INFO);
+    // If there are output trees, set the output trees of the MEblock.
+    // Do this before building the branches.
+    IVYout << "Setting up ME block output trees..." << endl;
+    MEblock.addRefTree(passedEventsTree_All);
+    //for (auto const& outtree_:productTreeList){
+    //  IVYout << "\t- Extracting valid output trees" << endl;
+    //  if (!outtree_) cout << "Output tree is NULL!" << endl;
+    //  std::vector<TTree*> const& treelist_ = outtree_->getValidTrees();
+    //  IVYout << "\t- Registering " << treelist_.size() << " trees" << endl;
+    //  for (auto const& tree_:treelist_) MEblock.addRefTree(passedEventsTree_All);
+    //  IVYout << "\t- Done" << endl;
+    //}
+    // Build the MEs
+    IVYout << "Building the MEs..." << endl;
+    if (!lheMElist.empty()) {
+      this->MEblock.buildMELABranches(lheMElist, true);
+      for(auto list:lheMElist){
+        size_t temp_pos = list.find(" ");
+        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 5;
+      }
+    }
+
+    if (!recoMElist.empty()) {
+      this->MEblock.buildMELABranches(recoMElist, false);
+      for(auto list:recoMElist){
+        size_t temp_pos = list.find(" ");
+        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 5;
+      }
+    }
+
+    map<TString, float>::iterator iter;
+    for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
+      cout << "[INFO] initialized ME valuse = "<<iter->first << " : " << iter->second << endl;
+    }
+    //cout<<"test map"<<ME_Kfactor_values["JJQCD_SIG_ghg2_1_JHUGen"]<<endl;
+
   }
 
-  // Build the MEs if they are specified
-  if (!lheMElist.empty() || !recoMElist.empty()){
-  // Set up MELA (done only once inside IvyMELAHelpers)
-  IvyMELAHelpers::setupMela(year, 125., MiscUtils::INFO);
-  // If there are output trees, set the output trees of the MEblock.
-  // Do this before building the branches.
-  IVYout << "Setting up ME block output trees..." << endl;
-  MEblock.addRefTree(passedEventsTree_All);
-  //for (auto const& outtree_:productTreeList){
-  //  IVYout << "\t- Extracting valid output trees" << endl;
-  //  if (!outtree_) cout << "Output tree is NULL!" << endl;
-  //  std::vector<TTree*> const& treelist_ = outtree_->getValidTrees();
-  //  IVYout << "\t- Registering " << treelist_.size() << " trees" << endl;
-  //  for (auto const& tree_:treelist_) MEblock.addRefTree(passedEventsTree_All);
-  //  IVYout << "\t- Done" << endl;
-  //}
-  // Build the MEs
-  IVYout << "Building the MEs..." << endl;
-  if (!lheMElist.empty()) this->MEblock.buildMELABranches(lheMElist, true);
-  if (!recoMElist.empty()) this->MEblock.buildMELABranches(recoMElist, false);
+  }else{
+    if(verbose){cout<<"[INFO] skip MELA"<<endl;}
   }
 
   //===================start event loop==========================================
-  //Long64_t nentries = oldtree->GetEntries();
-  //for (Long64_t i=0;i<nentries; i++){
-  //}
   setTree();
+  if(verbose){cout<<"[INFO]============loop tree reader========================"<<endl;}
   while (myreader->Next()) {
+    if(!passedTrig){
+      if(verbose){cout<<"[INFO] failed pass trigger,skip to next tree loop"<<endl;}
+      continue;
+    }else{
+      if(verbose){cout<<"[INFO] pass trigger"<<endl;}
+    }
+
+    if(verbose){
+      if(lep_pt->GetSize()>0){
+        cout<<"[INFO] this lep pt = "<<(*lep_pt)[0]<<endl;
+      }
+
+    }
     //initialize
     foundZ1LCandidate = false;
     foundZ2JCandidate = false;
+    found4lCandidate = false;
     for (int i=0; i<2; ++i) {lep_Z1index[i]=-1;}
+    for (int i=0; i<2; ++i) {jet_Z1index[i]=-1;}
+    for (int i=0; i<2; ++i) {lep_Hindex[i]=-1;}
 
+    mass2jet=0.0;
+    pt2jet=0.0;
+    mass2l=0.0;
+    pt2l=0.0;
+    mass2l2jet=0.0;
+    KD_jjVBF = 0.0;
+
+
+    if(verbose){cout<<"[INFO] try to find higgs candidate"<<endl;}
     findZ1LCandidate();
+    findZ2JCandidata();
+
+    if((!foundZ1LCandidate) || (!foundZ2JCandidate)){
+      if(verbose){cout<<"[INFO] no higgs candidate in this event, skip to next event loop"<<endl;}
+      continue;
+    } //found Higg 2L2Q candidate
+    if(verbose){cout<<"[INFO] higgs candidate is found in this event"<<endl;}
+
+
     if(foundZ1LCandidate && foundZ2JCandidate){
+      //cout<<"[INFO] higgs candidate is found in this event"<<endl;
+      //cout<<"this leading lep pt  = "<<(*lepFSR_pt)[lep_Z1index[0]]<<endl;
       if (doMela){
 
-          TLorentzVector p4_ZZ_approx,selectedLep1,selectedLep2,selectedJet1,selectedJet2;
-          selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[0],(*lepFSR_eta)[0],(*lep_phi)[0],(*lepFSR_mass)[0]);
-          selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[1],(*lepFSR_eta)[1],(*lep_phi)[1],(*lepFSR_mass)[1]);
-          selectedJet1.SetPtEtaPhiM((*jet_pt)[0],(*jet_eta)[0],(*jet_phi)[0],(*jet_mass)[0]);
-          selectedJet2.SetPtEtaPhiM((*jet_pt)[1],(*jet_eta)[2],(*jet_phi)[3],(*jet_mass)[4]);
+        //MEs
+        //signal like objets
+        TLorentzVector p4_ZZ_approx,selectedLep1,selectedLep2,selectedJet1,selectedJet2;
+        selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
+        selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
+        selectedJet1.SetPtEtaPhiM((*jet_pt)[jet_Z1index[0]],(*jet_eta)[jet_Z1index[0]],(*jet_phi)[jet_Z1index[0]],(*jet_mass)[jet_Z1index[0]]);
+        selectedJet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
 
-          p4_ZZ_approx = selectedLep1+selectedLep2+selectedJet1+selectedJet2;
+        p4_ZZ_approx = selectedLep1+selectedLep2+selectedJet1+selectedJet2;
+        mass2l2jet = p4_ZZ_approx.M();
 
-          SimpleParticleCollection_t daughters;
-          daughters.push_back(SimpleParticle_t(lepFSR_ID[0], selectedLep1));
-          daughters.push_back(SimpleParticle_t(lepFSR_ID[0], selectedLep2));
-          daughters.push_back(SimpleParticle_t(0, selectedJet1));
-          daughters.push_back(SimpleParticle_t(0, selectedJet2));
+        SimpleParticleCollection_t daughters;
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[0]], selectedLep1));
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[1]], selectedLep2));
+        daughters.push_back(SimpleParticle_t(0, selectedJet1));
+        daughters.push_back(SimpleParticle_t(0, selectedJet2));
 
-          SimpleParticleCollection_t associated;
-          for (auto const& jet:goodJets){
+        //associated objets
+        SimpleParticleCollection_t associated;
+        int njets = jet_pt->GetSize();
+        for(int i=0; i<njets; i++){
 
-            TLorentzVector thisjet;
-            thisjet.SetPtEtaPhiM(jet.pt(),jet.eta(),jet.phi(),jet.mass());
-            associated.push_back(SimpleParticle_t(0, thisjet));
+          //find jet that are not signal and put it into associated
+          if(i==jet_Z1index[0] || i==jet_Z1index[1]){continue;}
 
-          }
+          TLorentzVector thisjet;
+          thisjet.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
+          associated.push_back(SimpleParticle_t(0, thisjet));
 
-          IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
-          IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
-          MEblock.computeMELABranches();
-          MEblock.pushMELABranches();
-
-          IvyMELAHelpers::melaHandle->resetInputEvent();
         }
+
+        IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
+        IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
+        MEblock.computeMELABranches();
+        MEblock.pushMELABranches();
+
+        IvyMELAHelpers::melaHandle->resetInputEvent();
+
+        MEblock.getBranchValues(ME_Kfactor_values);
+
+        //for(auto branch:MEblock.recome_branches){
+        //  cout<< typeid(branch).name()<<endl;
+        //}
+
+        //KD
+        //VBF
+        vector<DiscriminantClasses::Type> KDtypes{DiscriminantClasses::kDjjVBF};
+        unsigned int const nKDs = KDtypes.size();
+        vector<DiscriminantClasses::KDspecs> KDlist;
+        KDlist.reserve(nKDs);
+        for (auto const& KDtype:KDtypes) KDlist.emplace_back(KDtype);
+        DiscriminantClasses::constructDiscriminants(KDlist, 169*121, "JJVBFTagged");
+        //Update discriminants
+        for (auto& KDspec:KDlist){
+
+          std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+          for (auto const& strKDvar:KDspec.KDvars){
+            //cout<<typeid(strKDvar).name()<<endl;
+            KDvars.push_back(ME_Kfactor_values[strKDvar]);
+          } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+          KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
+
+        }
+        //KD_jjVBF = *(KDspecs.KD)
+
+        for (auto& KDspec:KDlist) KDspec.resetKD();
+
+      }
+
     }
-    /* code */
+    passedEventsTree_All->Fill();
+
   }
+
+  outfile->cd();
+  passedEventsTree_All->Write();
+
+
 }
 
-void TreeLoop::setTree(){
-
-  lep_id = new TTreeReaderArray<int>(*myreader, "lep_id");
-  lepFSR_pt = new TTreeReaderArray<double>(*myreader, "lepFSR_pt");
-  lepFSR_eta  = new TTreeReaderArray<double>(*myreader, "lepFSR_eta");
-  lepFSR_phi = new TTreeReaderArray<double>(*myreader, "lepFSR_phi");
-  lepFSR_mass  = new TTreeReaderArray<double>(*myreader, "lepFSR_mass");
-  lep_pt = new TTreeReaderArray<double>(*myreader, "lep_pt");
-  lep_eta  = new TTreeReaderArray<double>(*myreader, "lep_eta");
-  lep_phi = new TTreeReaderArray<double>(*myreader, "lep_phi");
-  lep_mass  = new TTreeReaderArray<double>(*myreader, "lep_mass");
-  lep_tightId = new TTreeReaderArray<int>(*myreader, "lep_tightId");
-  lep_RelIsoNoFSR = new TTreeReaderArray<double>(*myreader, "lep_RelIsoNoFSR");
-
-  jet_pt = new TTreeReaderArray<double>(*myreader, "jet_pt");
-  jet_eta = new TTreeReaderArray<double>(*myreader, "jet_eta");
-  jet_phi = new TTreeReaderArray<double>(*myreader, "jet_phi");
-  jet_mass = new TTreeReaderArray<double>(*myreader, "jet_mass");
-}
-
+//=================find two lepton==============================================
 void TreeLoop::findZ1LCandidate(){
-
-  const double Zmass = 91.1876;
-
+  if(verbose){cout<<"[INFO] loop leptons in this event"<<endl;}
   unsigned int Nlep = lepFSR_pt->GetSize();
+  if(Nlep<2){return;}
+  if(verbose){cout<<"[INFO] found at least tow leptons"<<endl;}
 
   // First, make all Z candidates including any FSR photons
   int n_Zs=0;
@@ -231,17 +330,12 @@ void TreeLoop::findZ1LCandidate(){
       }
     } // lep i
   } // lep j
+  if(verbose){cout<<"[INFO] find leptons pairs"<<endl;}
 
   // Consider all Z candidates
   double minZ1DeltaM=9999.9;
-  int leadingPtCut = 40;
-  int subleadingPtCut = 25;
-  double isoCutEl = 0.35;
-  double isoCutMu = 0.35;
-  double mZ1Low = 40;
-  double mZ1High = 180;
 
-
+  if(verbose){cout<<"[INFO] checkout all leptons pairs if is Z candidate"<<endl;}
   for (int i=0; i<n_Zs; i++) {
 
     int i1 = Z_Z1L_lepindex1[i]; int i2 = Z_Z1L_lepindex2[i];
@@ -290,6 +384,7 @@ void TreeLoop::findZ1LCandidate(){
     if (!((*lep_tightId)[Z1_lepindex[1]])) continue; // checking tight lepton ID
 
     if ( (Z1.M() < mZ1Low) || (Z1.M() > mZ1High) ) continue;
+    if(verbose){cout<<"[INFO] found Z1 leptons pairs candidate"<<endl;}
 
     //if (verbose) cout<<"good Z1L candidate, Z1DeltaM: "<<Z1DeltaM<<" minZ1DeltaM: "<<minZ1DeltaM<<endl;
     // Check if this candidate has the best Z1 and highest scalar sum of Z2 lepton pt
@@ -299,38 +394,48 @@ void TreeLoop::findZ1LCandidate(){
 
       minZ1DeltaM = Z1DeltaM;
 
-      TLorentzVector Z1L;
-      Z1L = Z1+lep_j1;
-
-
       lep_Z1index[0] = Z1_lepindex[0];
       lep_Z1index[1] = Z1_lepindex[1];
+
+      mass2l = Z1.M();
+      pt2l = Z1.Pt();
 
       //if (verbose) cout<<" new best Z1L candidate: massZ1: "<<massZ1<<" (mass3l: "<<mass3l<<")"<<endl;
       foundZ1LCandidate=true;
     }
   }
 
+  if(verbose){
+
+    if(foundZ1LCandidate){cout<<"[INFO] found leptoinc Z candidate."<<endl;}
+    else{cout<<"[INFO] no leptoinc Z candidate in this evnets"<<endl;}
+  }
+
+
 }
 
+//==================find two resovled jets======================================
 void TreeLoop::findZ2JCandidata(){
-
+  if(verbose){cout<<"[INFO] loop jets in this events"<<endl;}
   unsigned int Njets = jet_pt->GetSize();
+  if(Njets<2){ return; } //found at least two jets
+  if(verbose){cout<<"[INFO] find at least two jets. number of jets = "<<Njets<<" in this events"<<endl;}
+
 
   int n_Zs=0;
   vector<int> Z_Z2J_jetindex1;
-  vector<int> Z_Z2J_jetindex1;
+  vector<int> Z_Z2J_jetindex2;
   for(unsigned int i=0; i<Njets; i++){
     for(unsigned int j=i+1; j<Njets; j++){
 
       TLorentzVector jet_i1, jet_i2;
-      jet_i1.SetPtEtaPhiM((*jet_pt)[i1],(*jet_eta)[i1],(*jet_phi)[i1],(*jet_mass)[i1]);
-      jet_i2.SetPtEtaPhiM((*jet_pt)[i2],(*jet_eta)[i2],(*jet_phi)[i2],(*jet_mass)[i2]);
+      jet_i1.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
+      jet_i2.SetPtEtaPhiM((*jet_pt)[j],(*jet_eta)[j],(*jet_phi)[j],(*jet_mass)[j]);
 
-      TLorentzVector Zi;
-      Zi = jet_i1+jet_i2;
+      TLorentzVector Zjet;
+      Zjet = jet_i1+jet_i2;
 
-      if (Z.M()>0.0) {
+      if (Zjet.M()>0.0) {
         n_Zs++;
         Z_Z2J_jetindex1.push_back(i);
         Z_Z2J_jetindex2.push_back(j);
@@ -338,19 +443,116 @@ void TreeLoop::findZ2JCandidata(){
     } //jet 1
   }//jet 2
 
+  // Consider all Z candidates
+  double minZ1DeltaM=9999.9;
+
   for (int i=0; i<n_Zs; i++){
+
     int i1 = Z_Z2J_jetindex1[i]; int i2 = Z_Z2J_jetindex2[i];
 
     TLorentzVector jet_i1, jet_i2;
-    lep_i1.SetPtEtaPhiM((*jet_pt)[i1],(*jet_eta)[i1],(*jet_phi)[i1],(*jet_mass)[i1]);
-    lep_i2.SetPtEtaPhiM((*jet_pt)[i2],(*jet_eta)[i2],(*jet_phi)[i2],(*jet_mass)[i2]);
+    jet_i1.SetPtEtaPhiM((*jet_pt)[i1],(*jet_eta)[i1],(*jet_phi)[i1],(*jet_mass)[i1]);
+    jet_i2.SetPtEtaPhiM((*jet_pt)[i2],(*jet_eta)[i2],(*jet_phi)[i2],(*jet_mass)[i2]);
 
     TLorentzVector Zi;
-    Zi = lep_i1+lep_i2;
+    Zi = jet_i1+jet_i2;
 
+    TLorentzVector Z1 = Zi;
+    double Z1DeltaM = abs(Zi.M()-Zmass);
 
+    //sort jet in terms of Pt order
+    int Z2_jetindex[2] = {0,0};
+    if (jet_i1.Pt()>jet_i2.Pt()) { Z2_jetindex[0] = i1;  Z2_jetindex[1] = i2; }
+    else { Z2_jetindex[0] = i2;  Z2_jetindex[1] = i1; }
+
+    //check each jet pt and eta
+    if(jet_i1.Pt()<30 || jet_i2.Pt()<30) {continue;}
+    if(abs(jet_i1.Eta()>2.4) || abs(jet_i2.Eta()>2.4)) {continue;}
+
+    //all jet must not overlap with tight leptons
+    bool isclean_jet = true;
+    unsigned int thisNjets = 2;
+    unsigned int Nleptons = lep_pt->GetSize();
+    for(unsigned int i=0; i<thisNjets; i++){
+      for (unsigned int j=0; j<Nleptons; j++){
+
+        bool passed_idiso=true;
+        if (abs((*lep_id)[j])==13 && (*lep_RelIsoNoFSR)[j]>isoCutMu) passed_idiso=false;
+        if (abs((*lep_id)[j])==11 && (*lep_RelIsoNoFSR)[j]>isoCutEl) passed_idiso=false;
+        if (!((*lep_tightId)[j])) passed_idiso=false;
+        //for (int l=0; l<4; l++) {
+        //    if ((int)i==lep_Hindex[l]) cand_lep=true;
+        //}
+        //if (!(passed_idiso || cand_lep)) continue;
+        if (!passed_idiso) continue;
+        TLorentzVector thisLep;
+        thisLep.SetPtEtaPhiM((*lep_pt)[j],(*lep_eta)[j],(*lep_phi)[j],(*lep_mass)[j]);
+
+        double tempDeltaR=999.0;
+        tempDeltaR=deltaR((*jet_eta)[i],(*jet_phi)[i],thisLep.Eta(),thisLep.Phi());
+        if (tempDeltaR<0.4){
+          isclean_jet = false;
+        }
+      }
+    }
+    if(!isclean_jet){continue;}
+
+    //check dijet pt
+    if(Zi.Pt()<dijetPtCut){ continue;}
+
+    //check loose dijet mass for 40-180Gev
+    if(Zi.M()<mZ1Low || Zi.M()>mZ1High){ continue;}
+
+    if ( Z1DeltaM<=minZ1DeltaM ) {
+
+      minZ1DeltaM = Z1DeltaM;
+
+      jet_Z1index[0] = Z2_jetindex[0];
+      jet_Z1index[1] = Z2_jetindex[1];
+
+      mass2jet = Zi.M();
+      pt2jet = Zi.Pt();
+
+      //if (verbose) cout<<" new best Z1L candidate: massZ1: "<<massZ1<<" (mass3l: "<<mass3l<<")"<<endl;
+      foundZ2JCandidate=true;
+    }
   }
+}
 
+
+//=====================findHZZ4Lcandidate============================================
+void TreeLoop::find4lCandidate(){
+  cout<<"nothing in this function"<<endl;
+}
+
+//=========================set input and output tree==================================
+void TreeLoop::setTree(){
+  if(verbose){cout<<"[INFO] set input tree variables"<<endl;}
+  //oldfile->cd();
+  lep_id = new TTreeReaderArray<int>(*myreader, "lep_id");
+  lepFSR_pt = new TTreeReaderArray<double>(*myreader, "lepFSR_pt");
+  lepFSR_eta  = new TTreeReaderArray<double>(*myreader, "lepFSR_eta");
+  lepFSR_phi = new TTreeReaderArray<double>(*myreader, "lepFSR_phi");
+  lepFSR_mass  = new TTreeReaderArray<double>(*myreader, "lepFSR_mass");
+  lep_pt = new TTreeReaderArray<double>(*myreader, "lep_pt");
+  lep_eta  = new TTreeReaderArray<double>(*myreader, "lep_eta");
+  lep_phi = new TTreeReaderArray<double>(*myreader, "lep_phi");
+  lep_mass  = new TTreeReaderArray<double>(*myreader, "lep_mass");
+  lep_tightId = new TTreeReaderArray<int>(*myreader, "lep_tightId");
+  lep_RelIsoNoFSR = new TTreeReaderArray<float>(*myreader, "lep_RelIsoNoFSR");
+  passedTrig = new TTreeReaderValue<bool>(*myreader,"passedTrig");
+
+  jet_pt = new TTreeReaderArray<double>(*myreader, "jet_pt");
+  jet_eta = new TTreeReaderArray<double>(*myreader, "jet_eta");
+  jet_phi = new TTreeReaderArray<double>(*myreader, "jet_phi");
+  jet_mass = new TTreeReaderArray<double>(*myreader, "jet_mass");
+
+  passedEventsTree_All->Branch("mass2jet",&mass2jet);
+  passedEventsTree_All->Branch("pt2jet",&pt2jet);
+  passedEventsTree_All->Branch("mass2l",&mass2l);
+  passedEventsTree_All->Branch("pt2l",&pt2l);
+  passedEventsTree_All->Branch("mass2l2jet",&mass2l2jet);
+  passedEventsTree_All->Branch("KD_jjVBF",&KD_jjVBF);
 
 
 }
