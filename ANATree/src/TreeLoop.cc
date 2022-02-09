@@ -136,7 +136,7 @@ void TreeLoop::Loop(){
       this->MEblock.buildMELABranches(lheMElist, true);
       for(auto list:lheMElist){
         size_t temp_pos = list.find(" ");
-        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 5;
+        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 0.0;
       }
     }
 
@@ -144,7 +144,7 @@ void TreeLoop::Loop(){
       this->MEblock.buildMELABranches(recoMElist, false);
       for(auto list:recoMElist){
         size_t temp_pos = list.find(" ");
-        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 5;
+        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 0.0;
       }
     }
 
