@@ -132,30 +132,9 @@ void TreeLoop::Loop(){
     //}
     // Build the MEs
     IVYout << "Building the MEs..." << endl;
-    if (!lheMElist.empty()) {
-      this->MEblock.buildMELABranches(lheMElist, true);
-      for(auto list:lheMElist){
-        size_t temp_pos = list.find(" ");
-        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 0.0;
-      }
-    }
-
-    if (!recoMElist.empty()) {
-      this->MEblock.buildMELABranches(recoMElist, false);
-      for(auto list:recoMElist){
-        size_t temp_pos = list.find(" ");
-        ME_Kfactor_values[list.substr(5,temp_pos-5)] = 0.0;
-      }
-    }
-
-    map<TString, float>::iterator iter;
-    for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
-      cout << "[INFO] initialized ME valuse = "<<iter->first << " : " << iter->second << endl;
-    }
-    //cout<<"test map"<<ME_Kfactor_values["JJQCD_SIG_ghg2_1_JHUGen"]<<endl;
-
+    if (!lheMElist.empty()) this->MEblock.buildMELABranches(lheMElist, true);
+    if (!recoMElist.empty()) this->MEblock.buildMELABranches(recoMElist, false);
   }
-
   }else{
     if(verbose){cout<<"[INFO] skip MELA"<<endl;}
   }
@@ -247,13 +226,14 @@ void TreeLoop::Loop(){
 
         IvyMELAHelpers::melaHandle->resetInputEvent();
 
-        MEblock.getBranchValues(ME_Kfactor_values);
-
-        //for(auto branch:MEblock.recome_branches){
-        //  cout<< typeid(branch).name()<<endl;
-        //}
-
         //KD
+        //retrieve MEs for KD constructing
+        unordered_map<string,float> ME_Kfactor_values;
+        MEblock.getBranchValues(ME_Kfactor_values);
+        //unordered_map<string, float>::iterator iter;
+        //for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
+        //  cout << "[INFO] this ME_Kfactor_values = "<<iter->first << " : " << iter->second << endl;
+        //}
         //VBF
         vector<DiscriminantClasses::Type> KDtypes{DiscriminantClasses::kDjjVBF};
         unsigned int const nKDs = KDtypes.size();
@@ -267,11 +247,20 @@ void TreeLoop::Loop(){
           std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
           for (auto const& strKDvar:KDspec.KDvars){
             //cout<<typeid(strKDvar).name()<<endl;
-            KDvars.push_back(ME_Kfactor_values[strKDvar]);
+            //cout<<"this strKDva = "<<strKDvar<<endl;
+            //cout<<"this ME_Kfactor_values = "<<ME_Kfactor_values[static_cast<string>(strKDvar)]<<endl;
+            KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
           } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+          //float temp_KD = KDspec.KD->update(KDvars, mass2l2jet);
+          //cout<<"KDvars[0] = "<<KDvars[0]<<endl;
+          //cout<<"type of mass2l2jet is "<<typeid(mass2l2jet).name()<<"  value of mass2jet  = "<<mass2l2jet<<endl;
+          cout<<"type of return value of KD function is :"<<typeid(KDspec.KD->update(KDvars, mass2l2jet)).name()<<"  "<<"value of KD function = "<<KDspec.KD->update(KDvars, mass2l2jet)<<endl;
           KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
+          //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+          KD_jjVBF = *(KDspec.KD);
 
         }
+        //cout<<KDlist.size()<<endl;
         //KD_jjVBF = *(KDspecs.KD)
 
         for (auto& KDspec:KDlist) KDspec.resetKD();

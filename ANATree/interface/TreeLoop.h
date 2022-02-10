@@ -42,7 +42,6 @@ protected:
   std::vector<std::string> lheMElist;
   std::vector<std::string> recoMElist;
   IvyMELAHelpers::GMECBlock MEblock;
-  std::map<TString,float> ME_Kfactor_values;
 
   //input file
   TFile *oldfile;
@@ -64,7 +63,7 @@ protected:
 
   double mass2jet, pt2jet;
   double mass2l, pt2l;
-  double mass2l2jet;
+  float mass2l2jet;
 
   //KD
   float KD_jjVBF;
