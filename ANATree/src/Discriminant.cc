@@ -14,7 +14,7 @@ Discriminant::Discriminant(
   WPCshift(1), gscale(gscale_), invertG(false), val(-999)
 {
   if (!addAdditionalC(cfilename, splinename)) IVYout << "Discriminant::Discriminant: No c-constants file is specified, defaulting to c=1." << endl;
-  if (!addAdditionalG(gfilename, gsplinename)) IVYout << "Discriminant::Discriminant: No g-constants file is specified, defaulting to g=1." << endl;
+  //if (!addAdditionalG(gfilename, gsplinename)) IVYout << "Discriminant::Discriminant: No g-constants file is specified, defaulting to g=1." << endl;
 }
 Discriminant::~Discriminant(){
   for (std::pair<TFile*, TSpline3*>& fspair:theC) fspair.first->Close();
@@ -61,7 +61,7 @@ bool Discriminant::addAdditionalC(TString filename, TString splinename){
 
   HostHelpers::ExpandEnvironmentVariables(filename);
   if (filename!="" && splinename!=""){
-    IVYout << "Discriminant::addAdditionalC: Opening " << filename << endl;
+    //IVYout << "Discriminant::addAdditionalC: Opening " << filename << endl;
     TFile* theFile = TFile::Open(filename);
     if (theFile){
       if (theFile->IsOpen() && !theFile->IsZombie()){
@@ -73,7 +73,7 @@ bool Discriminant::addAdditionalC(TString filename, TString splinename){
           theFile=nullptr;
         }
         else{
-          IVYout << "Discriminant::addAdditionalC: Acquired " << splinename << endl;
+          //IVYout << "Discriminant::addAdditionalC: Acquired " << splinename << endl;
           theC.push_back(std::pair<TFile*, TSpline3*>(theFile, theSpline));
           success=true;
         }
