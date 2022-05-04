@@ -34,6 +34,9 @@ public:
   void findZ2JCandidata();
   void find4lCandidate();
   void findZ2MergedCandidata();
+  void SetVBFGen();
+  void initialize();
+  void SetMEsFile();
 
 
 protected:
@@ -52,12 +55,16 @@ protected:
   TFile *outfile;
   TTree *passedEventsTree_All;
 
-
+  //=================================================================================================
+  //===============================output Tree branch================================================
+  //=================================================================================================
   //menber object
   bool foundZ1LCandidate;
   bool foundZ2JCandidate;
   bool foundZ2MergedCandidata;
   bool found4lCandidate;
+  bool found2lepCandidate;
+  bool foundTTCRCandidate;
 
   bool foundresolvedOnly;
   bool foundmergedOnly;
@@ -65,6 +72,15 @@ protected:
   bool foundmergedCombine;
   bool passedfullresolved;
   bool passedfullmerged;
+  bool passedNassociated;
+  bool isEE;
+  bool isMuMu;
+
+  bool passedGENH;
+
+  float EventWeight, GenWeight, PileupWeight, PrefiringWeight,SumWeight;
+
+  ULong64_t run,event,lumiSect;
 
   int lep_Z1index[2];
   int jet_Z1index[2];
@@ -77,10 +93,48 @@ protected:
   float mass2l2jet, mass2lj;
   int nsubjet;
 
+  float particleNetZvsQCD, particleNetZbbvslight;
+
   vector<double>  associatedjet_pt,associatedjet_eta,associatedjet_phi,associatedjet_mass;
+  vector<int> associatedjets_index;
 
+  float Met,Met_phi;
 
-  float particleNetZvsQCD;
+  //out Gen branchs
+  bool isbjet,iscjet,islightjet;
+  double GEN_H1_pt,GEN_H1_eta,GEN_H1_phi,GEN_H1_mass,GEN_H2_pt,GEN_H2_eta,GEN_H2_phi,GEN_H2_mass,GEN_DR_H1_Mom,GEN_DR_H2_Mom;
+  double GEN_H1_Mom_pt,GEN_H1_Mom_eta,GEN_H1_Mom_phi,GEN_H1_Mom_mass,GEN_H2_Mom_pt,GEN_H2_Mom_eta,GEN_H2_Mom_phi,GEN_H2_Mom_mass;
+
+  vector<double> GEN_H1_Bro_pt,GEN_H1_Bro_eta,GEN_H1_Bro_phi,GEN_H1_Bro_mass,GEN_DR_H1_Bro,GEN_DR_H1Mom_Bro;
+  vector<double> GEN_H2_Bro_pt,GEN_H2_Bro_eta,GEN_H2_Bro_phi,GEN_H2_Bro_mass,GEN_DR_H2_Bro,GEN_DR_H2Mom_Bro,GEN_DR_Bro12;
+  vector<double> GEN_DEta_H1_Bro,GEN_DEta_H1Mom_Bro,GEN_DEta_H2_Bro,GEN_DEta_H2Mom_Bro,GEN_DEta_Bro12;
+  vector<double> DR_merged_GenZ,DR_merged_GenZ_matched,DR_resovled1_GenZ,DR_resovled2_GenZ,DR_resovled2_GenZ_matched,DR_resovled1_GenZ_matched;
+  vector<double> DR_associatedjet1_GenZ,DR_associatedjet2_GenZ,DR_associatedjet1_GenZ_matched,DR_associatedjet2_GenZ_matched;
+
+  bool matched_merged_GEN_Z,matched_resovled1_GEN_Z,matched_resovled2_GEN_Z,matched_resovled_GEN_Z,matched_resovledone_GEN_Z;
+  bool matched_associatedjet1_GEN_Z,matched_associatedjet2_GEN_Z,matched_associatedjet_GEN_Z,matched_associatedjetone_GEN_Z;
+
+  //VBF quarks
+  double GEN_associated1_pt,GEN_associated1_eta,GEN_associated1_phi,GEN_associated1_mass;
+  double GEN_associated2_pt,GEN_associated2_eta,GEN_associated2_phi,GEN_associated2_mass;
+  double GEN_associated12_mass,GEN_associated12_Deta;
+
+  double GEN_quark1_match_pt,GEN_quark1_match_eta,GEN_quark1_match_phi,GEN_quark1_match_mass;
+  double GEN_quark2_match_pt,GEN_quark2_match_eta,GEN_quark2_match_phi,GEN_quark2_match_mass;
+  double GEN_quark12_match_mass;
+  bool passedGenquarkMatch;
+
+  double Reco_quark1_match_pt,Reco_quark1_match_eta,Reco_quark1_match_phi,Reco_quark1_match_mass;
+  double Reco_quark2_match_pt,Reco_quark2_match_eta,Reco_quark2_match_phi,Reco_quark2_match_mass;
+  double Reco_quark12_match_mass, Reco_quark12_match_DEta;
+  bool passedRecoquarkMatch;
+  int match2_recoindex, match1_recoindex;
+
+  double DR_merged_VBF1_matched, DR_merged_VBF2_matched;
+  vector<double> DR_merged_asccoiacted;
+  vector<double> DR_selectedleps_asccoiacted;
+  bool passedmatchtruthVBF;
+  double time_associatedjet_eta;
 
   //cut table
   int passed_trig = 0;
@@ -121,6 +175,9 @@ protected:
   float KD_jjVBF;
   float KD_jVBF;
 
+  //=================================================================================================================
+  //=====================================read from input file========================================================
+  //=================================================================================================================
   TTreeReaderArray<int> *lep_id, *lep_tightId;
   TTreeReaderArray<int> *mergedjet_nsubjet;
   TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass;
@@ -130,6 +187,19 @@ protected:
   TTreeReaderArray<float> *mergedjet_Net_Xbb_de, *mergedjet_Net_Xcc_de, *mergedjet_Net_Xqq_de;
   TTreeReaderArray<vector<float>> *mergedjet_subjet_pt, *mergedjet_subjet_eta, *mergedjet_subjet_phi,*mergedjet_subjet_mass;
   TTreeReaderValue<bool> *passedTrig;
+  TTreeReaderValue<float> *eventWeight, *genWeight, *pileupWeight, *prefiringWeight;
+  TTreeReaderValue<ULong64_t> *Run, *Event, *LumiSect;
+  TTreeReaderValue<float> *met, *met_phi;
+
+  //GEN
+  TTreeReaderArray<double> *GEN_Zq_pt, *GEN_Zq_eta, *GEN_Zq_phi, *GEN_Zq_mass, *GEN_q_pt, *GEN_q_eta, *GEN_q_phi, *GEN_q_mass, *GENjet_pt, *GENjet_eta, *GENjet_phi, *GENjet_mass;
+  TTreeReaderArray<int> *GEN_Zq_id, *GEN_q_id, *GEN_q_status, *GEN_q_Momid, *GEN_q_MomMomid, *GEN_q_nDaughters;
+  TTreeReaderArray<vector<int>> *GEN_qdau_id, *GEN_qdau_status;
+  TTreeReaderArray<vector<double>> *GEN_qdau_pt, *GEN_qdau_eta, *GEN_qdau_phi, *GEN_qdau_mass;
+  TTreeReaderArray<double> *GEN_VBF_pt, *GEN_VBF_eta, *GEN_VBF_phi, *GEN_VBF_mass;
+  TTreeReaderArray<float> *lep_dataMC;
+  TTreeReaderArray<int> *mergedjet_nbHadrons, *mergedjet_ncHadrons;
+
 
   //Setting(those setting will be moved to a independent class later)
   double isoCutMu = 0.35, isoCutEl = 0.35;
@@ -144,6 +214,8 @@ protected:
   double Zmass = 91.1876;
   bool verbose = false;
   bool doMela = true;
+  bool isMC = false;
+  bool isData = false;
 
 
 
