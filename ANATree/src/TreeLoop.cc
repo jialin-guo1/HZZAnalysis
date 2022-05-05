@@ -123,6 +123,31 @@ void TreeLoop::Loop(){
 
     }
 
+    //find resolved higgs
+    if(foundZ1LCandidate && foundZ2JCandidate){
+      TLorentzVector p4_ZZ, Lep1, Lep2, Jet1,Jet2;
+      Lep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
+      Lep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
+      Jet1.SetPtEtaPhiM((*jet_pt)[jet_Z1index[0]],(*jet_eta)[jet_Z1index[0]],(*jet_phi)[jet_Z1index[0]],(*jet_mass)[jet_Z1index[0]]);
+      Jet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
+      p4_ZZ = Lep1+Lep2+Jet1+Jet2;
+      mass2l2jet = p4_ZZ.M();
+    }
+
+    //find merged higgs
+    if(foundZ1LCandidate && foundZ2MergedCandidata){
+      nsubjet = (*mergedjet_nsubjet)[merged_Z1index];
+
+      TLorentzVector p4_ZZ,Lep1,Lep2,Jet1,Jet2,Mergedjet;
+      Lep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
+      Lep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
+      Jet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][0],(*mergedjet_subjet_eta)[merged_Z1index][0],(*mergedjet_subjet_phi)[merged_Z1index][0],(*mergedjet_subjet_mass)[merged_Z1index][0]);
+      Jet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][1],(*mergedjet_subjet_eta)[merged_Z1index][1],(*mergedjet_subjet_phi)[merged_Z1index][1],(*mergedjet_subjet_mass)[merged_Z1index][1]);
+      Mergedjet.SetPtEtaPhiM((*mergedjet_pt)[merged_Z1index],(*mergedjet_eta)[merged_Z1index],(*mergedjet_phi)[merged_Z1index],(*mergedjet_subjet_softDropMass)[merged_Z1index]);
+
+      p4_ZZ = Lep1+Lep2+Mergedjet;
+      mass2lj = p4_ZZ.M();
+    }
 
     //find resovled only higgs
     if(foundZ1LCandidate && foundZ2JCandidate && !foundZ2MergedCandidata){
@@ -154,14 +179,6 @@ void TreeLoop::Loop(){
       passed_fullresolved++;
       passedfullresolved = true;
       //cout<<"passedfullresolved"<<endl;
-
-      TLorentzVector p4_ZZ, Lep1, Lep2, Jet1,Jet2;
-      Lep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
-      Lep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
-      Jet1.SetPtEtaPhiM((*jet_pt)[jet_Z1index[0]],(*jet_eta)[jet_Z1index[0]],(*jet_phi)[jet_Z1index[0]],(*jet_mass)[jet_Z1index[0]]);
-      Jet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
-      p4_ZZ = Lep1+Lep2+Jet1+Jet2;
-      mass2l2jet = p4_ZZ.M();
 
 
       if (doMela){
@@ -322,17 +339,6 @@ void TreeLoop::Loop(){
       if(verbose) cout<<"[INFO] this is merged higgs"<<endl;
       passed_fullmerged++;
       passedfullmerged = true;
-      nsubjet = (*mergedjet_nsubjet)[merged_Z1index];
-
-      TLorentzVector p4_ZZ,Lep1,Lep2,Jet1,Jet2,Mergedjet;
-      Lep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
-      Lep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
-      Jet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][0],(*mergedjet_subjet_eta)[merged_Z1index][0],(*mergedjet_subjet_phi)[merged_Z1index][0],(*mergedjet_subjet_mass)[merged_Z1index][0]);
-      Jet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][1],(*mergedjet_subjet_eta)[merged_Z1index][1],(*mergedjet_subjet_phi)[merged_Z1index][1],(*mergedjet_subjet_mass)[merged_Z1index][1]);
-      Mergedjet.SetPtEtaPhiM((*mergedjet_pt)[merged_Z1index],(*mergedjet_eta)[merged_Z1index],(*mergedjet_phi)[merged_Z1index],(*mergedjet_subjet_softDropMass)[merged_Z1index]);
-
-      p4_ZZ = Lep1+Lep2+Mergedjet;
-      mass2lj = p4_ZZ.M();
 
       //DR
       if(isMC){
