@@ -1,0 +1,72 @@
+#tagger
+ZvsQCD :
+  #hadron flavor
+  bhadron:
+    #particleNet purity
+    LP:
+      #pt range
+      200To400 : 0.999
+      400To600 : 0.934
+      600ToInf : 1.016
+    MP:
+      #pt range
+      200To400 : 0.890
+      400To600 : 0.918
+      600ToInf : 0.887
+    HP:
+      #pt range
+      200To400 : 1.043
+      400To600 : 1.103
+      600ToInf : 1.090
+  chadron :
+    #particleNet purity
+    LP:
+      #pt range
+      200To400 : 0.881
+      400To600 : 1.067
+      600ToInf : 0.616
+    MP:
+      #pt range
+      200To400 : 0.975
+      400To600 : 0.929
+      600ToInf : 0.745
+    HP:
+      #pt range
+      200To400 : 1.041
+      400To600 : 1.106
+      600ToInf : 1.067
+  lighthadron :
+    #particleNet purity
+    LP:
+      #pt range
+      200To400 : 0.842
+      400To600 : 0.756
+      600ToInf : 0.993
+    MP:
+      #pt range
+      200To400 : 0.985
+      400To600 : 1.076
+      600ToInf : 1.341
+    HP:
+      #pt range
+      200To400 : 1.211
+      400To600 : 0.970
+      600ToInf : 0.738
+
+btag:
+  #particleNet purity
+  LP:
+    #pt range
+    200To400 : 0.999
+    400To600 : 0.934
+    600ToInf : 1.016
+  MP:
+    #pt range
+    200To400 : 0.999
+    400To600 : 0.934
+    600ToInf : 1.016
+  HP:
+    #pt range
+    200To400 : 0.999
+    400To600 : 0.934
+    600ToInf : 1.016
