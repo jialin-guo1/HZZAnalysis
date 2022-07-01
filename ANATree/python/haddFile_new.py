@@ -15,7 +15,7 @@ def main():
     parser.add_option("-i", "--indir", dest="indir",
                      help="input directory with .root files")
     parser.add_option("-o", "--outdir",
-                     help="output directory", default="/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/Data", dest="outdir")
+                     help="output directory", default="/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/MC", dest="outdir")
     (options, args) = parser.parse_args()
 
     indir = '/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/'+str(options.indir)
@@ -28,6 +28,8 @@ def main():
     full_file_size = 0.0
     haddtimes = 0
     file_index = 0
+    #print list(find_files(indir, '*.root'))
+    the_last = len(list(find_files(indir, '*.root')))-1
     for i,filename in enumerate(find_files(indir, '*.root')):
 
         fullsample = filename.split('/')
@@ -42,18 +44,27 @@ def main():
         samples += ' '
         samples += filename
 
-        cmd = 'hadd -a ' + outdir+'/'+sample+'_'+str(file_index)+'.root'+' '+filename
-
-        os.system(cmd)
+        #cmd = 'hadd -a ' + outdir+'/'+sample+'_'+str(file_index)+'.root'+' '+filename
+        
+        #os.system(cmd)
         #print cmd
-        haddtimes +=1
+        #haddtimes +=1
 
-        if(full_file_size>10):
+        if((full_file_size>10) or (i==the_last)):
+            cmd = 'hadd -f ' + outdir+'/'+sample+'_'+str(file_index)+'.root'+' '+samples
+            haddtimes +=1
+            print cmd
+            os.system(cmd)
+            print '\n\n\n'
+
+            if(i==the_last):
+              print "the size of last few files is "+str(full_file_size)+" GB"
+
             file_index += 1
             samples = ''
             full_file_size = 0.0
 
-    print haddtimes
+    print "hadd times = "+str(haddtimes)
     print file_index
 
 
