@@ -24,6 +24,8 @@ namespace DiscriminantClasses{
     kDbkgdec,
     kDbkgm4l,
 
+    KDZjj,
+
     kDggbkgkin,
     kDggint,
     kCggint,

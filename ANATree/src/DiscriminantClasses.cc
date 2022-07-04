@@ -28,6 +28,8 @@ std::unordered_map<TString, DiscriminantClasses::Type> DiscriminantClasses::getK
   res["Dbkgdec"] = kDbkgdec;
   res["Dbkgm4l"] = kDbkgm4l;
 
+  res["DZjj"] = KDZjj;
+
   res["Dggbkgkin"] = kDggbkgkin;
   res["Dggint"] = kDggint;
   res["Cggint"] = kCggint;
@@ -121,6 +123,9 @@ TString DiscriminantClasses::getKDLabel(DiscriminantClasses::Type type){
     return "D^{dec}_{bkg}";
   case kDbkgm4l:
     return "D_{bkg}";
+  
+  case KDZjj:
+    return "D_{Zjj}";
 
   case kDggbkgkin:
     return "D^{gg, kin}_{bkg}";
@@ -280,6 +285,9 @@ Discriminant* DiscriminantClasses::constructKDFromType(
     return new Dbkgdec_t(cfilename, splinename, gfilename, gsplinename, gscale);
   case kDbkgm4l:
     return new Dbkgm4l_t(cfilename, splinename, gfilename, gsplinename, gscale);
+  
+  case KDZjj:
+    return new Dbkgkin_t(cfilename, splinename, gfilename, gsplinename, gscale);
 
   case kDggbkgkin:
     return new Dggbkgkin_t(cfilename, splinename, gfilename, gsplinename, gscale);
@@ -388,6 +396,10 @@ std::vector<TString> DiscriminantClasses::getKDVars(const Type type){
   std::vector<TString> res;
   // In the following statements, JECNominal is to be replaced later
   switch (type){
+  case KDZjj:
+    res.push_back("p_GG_SIG_ghg2_1_ghz1_1_JHUGen");
+    res.push_back("p_ZJJ_BKG_MCFM");
+    break;
   case kDbkgkin:
     res.push_back("p_GG_SIG_ghg2_1_ghz1_1_JHUGen");
     res.push_back("p_QQB_BKG_MCFM");
@@ -820,6 +832,7 @@ bool DiscriminantClasses::isCPSensitive(const TString name){
 bool DiscriminantClasses::usesDecInfo(const DiscriminantClasses::Type type){
   bool res=false;
   switch (type){
+  case KDZjj:
   case kDbkgkin:
   case kDbkgdec:
   case kDbkgm4l:
@@ -948,6 +961,9 @@ void DiscriminantClasses::constructDiscriminants(std::vector<DiscriminantClasses
 
   for (auto& KDspec:KDlist){
     switch (KDspec.KDtype){
+    case KDZjj:
+      KDspec.KD = constructKDFromType(KDspec.KDtype, ANALYSISTREEPKGDATAPATH + "RecoMEConstants/gConstant_Zjj.root", "Spline3");
+      break;
     case kDbkgkin:
       KDspec.KD = constructKDFromType(KDspec.KDtype, ANALYSISTREEPKGDATAPATH + "RecoMEConstants/SmoothKDConstant_m4l_Dbkgkin_" + strChannel + "_13TeV.root", "sp_gr_varReco_Constant_Smooth");
       break;

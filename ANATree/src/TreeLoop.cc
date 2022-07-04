@@ -22,6 +22,10 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile){
   myreader = new TTreeReader("Ana/passedEvents",oldfile);
   TH1F *temph = (TH1F*)oldfile->Get("Ana/sumWeights");
   SumWeight = temph->GetBinContent(1);
+
+  TH1F *nEvents = (TH1F*)oldfile->Get("Ana/nEvents");
+  nentries = nEvents->GetBinContent(1);
+
   //if(verbose){
   //  if(myreader->Next()){
   //    cout<<"[INFO] setup tree reader "<<endl;
@@ -48,16 +52,61 @@ void TreeLoop::Loop(){
   if(doMela){
     if(verbose){cout<<"[INFO] setup MELA"<<endl;}
     SetMEsFile();
+
   }else{
     if(verbose){cout<<"[INFO] skip MELA"<<endl;}
   }
 
   //===================start event loop==========================================
   setTree();
+  //KDZjj========================================================================
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_Zjj "<<endl;
+  vector<DiscriminantClasses::Type> KDtypes_Zjj{DiscriminantClasses::KDZjj};
+  unsigned int const nKDs_Zjj = KDtypes_Zjj.size();
+  if(verbose) cout<<"[INFO] constuct Discriminant list for KD_Zjj "<<endl;
+  vector<DiscriminantClasses::KDspecs> KDlist_Zjj;
+  KDlist_Zjj.reserve(nKDs_Zjj);
+  for (auto const& KDtype:KDtypes_Zjj) KDlist_Zjj.emplace_back(KDtype);
+  if(verbose) cout<<"[INFO] call constuct class for KD_Zjj"<<endl;
+  DiscriminantClasses::constructDiscriminants(KDlist_Zjj, 169*121, "JJVBFTagged");
+  //KD_ZJ
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_ZJ "<<endl;
+  vector<DiscriminantClasses::Type> KDtypes_ZJ{DiscriminantClasses::KDZjj};
+  unsigned int const nKDs_ZJ = KDtypes_ZJ.size();
+  if(verbose) cout<<"[INFO] constuct Discriminant list for KD_ZJ "<<endl;
+  vector<DiscriminantClasses::KDspecs> KDlist_ZJ;
+  KDlist_ZJ.reserve(nKDs_ZJ);
+  for (auto const& KDtype:KDtypes_ZJ) KDlist_ZJ.emplace_back(KDtype);
+  if(verbose) cout<<"[INFO] call constuct class for KD_ZJ"<<endl;
+  DiscriminantClasses::constructDiscriminants(KDlist_ZJ, 169*121, "JJVBFTagged");
+
+  //KD_JVBF========================================================================
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_VBF"<<endl;
+  vector<DiscriminantClasses::Type> KDtypes{DiscriminantClasses::kDjjVBF};
+  unsigned int const nKDs = KDtypes.size();
+  vector<DiscriminantClasses::KDspecs> KDlist;
+  KDlist.reserve(nKDs);
+  for (auto const& KDtype:KDtypes) KDlist.emplace_back(KDtype);
+  DiscriminantClasses::constructDiscriminants(KDlist, 169*121, "JJVBFTagged");
+
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_JVBF"<<endl;
+  vector<DiscriminantClasses::Type> KDtypes_JVBF{DiscriminantClasses::kDjjVBF};
+  unsigned int const nKDs_JVBF = KDtypes_JVBF.size();
+  vector<DiscriminantClasses::KDspecs> KDlist_JVBF;
+  KDlist_JVBF.reserve(nKDs_JVBF);
+  for (auto const& KDtype:KDtypes_JVBF) KDlist_JVBF.emplace_back(KDtype);
+  DiscriminantClasses::constructDiscriminants(KDlist_JVBF, 169*121, "JJVBFTagged");
+
   if(verbose){cout<<"[INFO]============loop tree reader========================"<<endl;}
   int nevents_negative = 0;
   int nevents_nassociatedjets_lesstwo = 0;
+  int ievent = 0;
+  //loop
   while (myreader->Next()) {
+    ievent++;
+    if(ievent%1000==0){
+      cout<<ievent<<"/"<<nentries<<std::endl;
+    }
 
     if(!(*(*passedTrig))){
       if(verbose){cout<<"[INFO] failed pass trigger,skip to next tree loop"<<endl;}
@@ -132,6 +181,151 @@ void TreeLoop::Loop(){
       Jet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
       p4_ZZ = Lep1+Lep2+Jet1+Jet2;
       mass2l2jet = p4_ZZ.M();
+
+      //study with merged case
+      
+      if (doMela){
+        //check number of associated jets
+        int njets = jet_pt->GetSize();
+        int nassociatedjets = 0;
+        vector<TLorentzVector> associatedjets;
+        for(int i=0; i<njets; i++){
+
+          //find jet that are not signal and put it into associated
+          if(i==jet_Z1index[0] || i==jet_Z1index[1]){continue;}
+
+          TLorentzVector thisjet;
+          thisjet.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
+          
+          nassociatedjets++;
+          associatedjets.push_back(thisjet);
+          associatedjetsjj_index.push_back(i);
+        }
+
+        TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
+        selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
+        selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
+        selectedJet1.SetPtEtaPhiM((*jet_pt)[jet_Z1index[0]],(*jet_eta)[jet_Z1index[0]],(*jet_phi)[jet_Z1index[0]],(*jet_mass)[jet_Z1index[0]]);
+        selectedJet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
+
+        SimpleParticleCollection_t daughters;
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[0]], selectedLep1));
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[1]], selectedLep2));
+        daughters.push_back(SimpleParticle_t(0, selectedJet1));
+        daughters.push_back(SimpleParticle_t(0, selectedJet2));
+
+        //cout<<" fill daughters done "<<endl;
+
+        //associated objets
+        SimpleParticleCollection_t associated;
+        //sort associatedjets as pt order
+        //sort associatedjets as pt order
+        int leading_index[2]={0,0};
+        if(nassociatedjets>0){
+          if(verbose) cout<<"[INFO] first associatedjets"<<endl;
+          double temp_leadingpt=0.0;
+          for(int i=0; i<nassociatedjets; i++){
+            if(associatedjets[i].Pt()>temp_leadingpt){
+              temp_leadingpt = associatedjets[i].Pt();
+              leading_index[0]= i;
+            }
+          }
+          //push_back the leading jet
+          associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[0]]));
+          //cout<<"associatedjet1: px="<<associatedjets[leading_index[0]].Px()<<" Py="<<associatedjets[leading_index[0]].Py()<<" Pz="<<associatedjets[leading_index[0]].Pz()<<" E="<<associatedjets[leading_index[0]].E()<<endl;
+          //store variables for associate jet
+          associatedjetjj_pt.push_back(associatedjets[leading_index[0]].Pt());
+          associatedjetjj_eta.push_back(associatedjets[leading_index[0]].Eta());
+          associatedjetjj_phi.push_back(associatedjets[leading_index[0]].Phi());
+          associatedjetjj_mass.push_back(associatedjets[leading_index[0]].M());
+        }
+        if(nassociatedjets>1){
+          if(verbose) cout<<"[INFO] second associatedjets"<<endl;
+          double temp_subleadingpt=0.0;
+          for(int i=0; i<nassociatedjets; i++){
+            if(i==leading_index[0]) continue; //do not count leading jet
+            if(associatedjets[i].Pt()>temp_subleadingpt){
+              temp_subleadingpt = associatedjets[i].Pt();
+              leading_index[1]= i;
+            }
+          }
+          //push_back the subleading jet
+          associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[1]]));
+          //compute delta eta between two associated jets
+          time_associatedjetjj_eta = associatedjets[leading_index[0]].Eta()*associatedjets[leading_index[1]].Eta();
+          //cout<<"associatedjet2: px="<<associatedjets[leading_index[1]].Px()<<" Py="<<associatedjets[leading_index[1]].Py()<<" Pz="<<associatedjets[leading_index[1]].Pz()<<" E="<<associatedjets[leading_index[1]].E()<<endl;
+          //store variables for associate jet
+          associatedjetjj_pt.push_back(associatedjets[leading_index[1]].Pt());
+          associatedjetjj_eta.push_back(associatedjets[leading_index[1]].Eta());
+          associatedjetjj_phi.push_back(associatedjets[leading_index[1]].Phi());
+          associatedjetjj_mass.push_back(associatedjets[leading_index[1]].M());
+
+          //match to turth 
+          if(isMC){
+            if((associatedjetsjj_index[leading_index[0]] == match1_recoindex || associatedjetsjj_index[leading_index[0]] == match2_recoindex) && (associatedjetsjj_index[leading_index[1]] == match1_recoindex || associatedjetsjj_index[leading_index[1]] == match2_recoindex)){
+              passedmatchtruthVBF_jj=true;
+            }
+          }
+
+        }
+        if(verbose) cout<<"[INFO] associatedjet set done"<<endl;
+
+        //if(verbose) cout<<"[INFO] associatedjet set done"<<endl;
+
+        //cout<<" fill VBF jet done "<<endl;
+
+        IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
+        IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
+        MEblock.computeMELABranches();
+        MEblock.pushMELABranches();
+
+        IvyMELAHelpers::melaHandle->resetInputEvent();
+
+        //KD
+        //retrieve MEs for KD constructing
+        unordered_map<string,float> ME_Kfactor_values;
+        MEblock.getBranchValues(ME_Kfactor_values);
+
+        //KDZjj=========================================================================
+        //Update discriminants
+        if(verbose) cout<<"[INFO] Get Discriminant for KD_Zjj "<<endl;
+        for (auto& KDspec:KDlist_Zjj){
+          std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+          for (auto const& strKDvar:KDspec.KDvars){
+            KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+          } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+
+          KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
+          //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+          KD_Zjj = *(KDspec.KD);
+          if(verbose) cout<<"[INFO] This KD_Zjj = "<<KD_Zjj<<endl;
+        }
+
+        if(nassociatedjets>=2){ //compute KD_jjVBF
+          //cout<<" nassociatedjets>=2 "<<endl;
+          if(verbose) cout<<"[INFO] found at least two nassociatedjets"<<endl;
+          passedNassociated_jj = true;
+          //Update discriminants
+          for (auto& KDspec:KDlist){
+            std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+            for (auto const& strKDvar:KDspec.KDvars){
+              KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+            } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+
+            KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
+            //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+            KD_jjVBF = *(KDspec.KD);
+            if(nassociatedjets<2){
+              nevents_nassociatedjets_lesstwo++;
+            }
+            if(KD_jjVBF<0){
+              nevents_negative++;
+            }
+        
+          }
+        }
+      }
+      
     }
 
     //find merged higgs
@@ -147,6 +341,175 @@ void TreeLoop::Loop(){
 
       p4_ZZ = Lep1+Lep2+Mergedjet;
       mass2lj = p4_ZZ.M();
+
+      if (doMela){
+        int njets = jet_pt->GetSize();
+        int nassociatedjets = 0;
+        vector<TLorentzVector> associatedjets;
+        for(int i=0; i<njets; i++){
+
+          if(foundZ2JCandidate){
+            if(i==jet_Z1index[0] || i==jet_Z1index[1]){continue;}
+          }
+
+          TLorentzVector thisjet;
+
+          thisjet.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
+          //check this deltaR between this jet and selected merged jet
+          double temp_DR = deltaR(thisjet.Eta(),thisjet.Phi(),(*mergedjet_eta)[merged_Z1index],(*mergedjet_phi)[merged_Z1index]);
+          DR_merged_asccoiacted.push_back(temp_DR);
+          if(temp_DR<0.8) {
+            continue;
+          }
+
+          nassociatedjets++;
+          associatedjets.push_back(thisjet);
+          associatedjetsJ_index.push_back(i);
+        }
+
+        //compute KD_JVBF and KD_Zjj
+        //MEs
+        //signal like objets
+        TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
+        selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
+        selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
+        selectedJet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][0],(*mergedjet_subjet_eta)[merged_Z1index][0],(*mergedjet_subjet_phi)[merged_Z1index][0],(*mergedjet_subjet_mass)[merged_Z1index][0]);
+        selectedJet2.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][1],(*mergedjet_subjet_eta)[merged_Z1index][1],(*mergedjet_subjet_phi)[merged_Z1index][1],(*mergedjet_subjet_mass)[merged_Z1index][1]);
+
+
+        SimpleParticleCollection_t daughters;
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[0]], selectedLep1));
+        daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[1]], selectedLep2));
+        daughters.push_back(SimpleParticle_t(0, selectedJet1));
+        daughters.push_back(SimpleParticle_t(0, selectedJet2));
+
+        if(verbose){
+          cout<<"Lep1: px="<<selectedLep1.Px()<<" Py="<<selectedLep1.Py()<<" Pz="<<selectedLep1.Pz()<<" E="<<selectedLep1.E()<<endl;
+          cout<<"Lep2: px="<<selectedLep2.Px()<<" Py="<<selectedLep2.Py()<<" Pz="<<selectedLep2.Pz()<<" E="<<selectedLep2.E()<<endl;
+          cout<<"jet1: px="<<selectedJet1.Px()<<" Py="<<selectedJet1.Py()<<" Pz="<<selectedJet1.Pz()<<" E="<<selectedJet1.E()<<endl;
+          cout<<"jet2: px="<<selectedJet2.Px()<<" Py="<<selectedJet2.Py()<<" Pz="<<selectedJet2.Pz()<<" E="<<selectedJet2.E()<<endl;
+        }
+
+        //associated objets
+        if(verbose) cout<<"[INFO] push signal and associated candidate"<<endl;
+        SimpleParticleCollection_t associated;
+        //sort associatedjets as pt order
+        int leading_index[2]={0,0};
+        if(nassociatedjets>0){
+          if(verbose) cout<<"[INFO] first associatedjets"<<endl;
+          double temp_leadingpt=0.0;
+          for(int i=0; i<nassociatedjets; i++){
+            if(associatedjets[i].Pt()>temp_leadingpt){
+              temp_leadingpt = associatedjets[i].Pt();
+              leading_index[0]= i;
+            }
+          }
+          //push_back the leading jet
+          associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[0]]));
+          //cout<<"associatedjet1: px="<<associatedjets[leading_index[0]].Px()<<" Py="<<associatedjets[leading_index[0]].Py()<<" Pz="<<associatedjets[leading_index[0]].Pz()<<" E="<<associatedjets[leading_index[0]].E()<<endl;
+          //store variables for associate jet
+          associatedjetJ_pt.push_back(associatedjets[leading_index[0]].Pt());
+          associatedjetJ_eta.push_back(associatedjets[leading_index[0]].Eta());
+          associatedjetJ_phi.push_back(associatedjets[leading_index[0]].Phi());
+          associatedjetJ_mass.push_back(associatedjets[leading_index[0]].M());
+        }
+        if(nassociatedjets>1){
+          if(verbose) cout<<"[INFO] first associatedjets"<<endl;
+          double temp_subleadingpt=0.0;
+          for(int i=0; i<nassociatedjets; i++){
+            if(i==leading_index[0]) continue; //do not count leading jet
+            if(associatedjets[i].Pt()>temp_subleadingpt){
+              temp_subleadingpt = associatedjets[i].Pt();
+              leading_index[1]= i;
+            }
+          }
+          //push_back the subleading jet
+          associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[1]]));
+          //compute delta eta between two associated jets
+          time_associatedjetJ_eta = associatedjets[leading_index[0]].Eta()*associatedjets[leading_index[1]].Eta();
+          //cout<<"associatedjet2: px="<<associatedjets[leading_index[1]].Px()<<" Py="<<associatedjets[leading_index[1]].Py()<<" Pz="<<associatedjets[leading_index[1]].Pz()<<" E="<<associatedjets[leading_index[1]].E()<<endl;
+          //store variables for associate jet
+          associatedjetJ_pt.push_back(associatedjets[leading_index[1]].Pt());
+          associatedjetJ_eta.push_back(associatedjets[leading_index[1]].Eta());
+          associatedjetJ_phi.push_back(associatedjets[leading_index[1]].Phi());
+          associatedjetJ_mass.push_back(associatedjets[leading_index[1]].M());
+
+          if(isMC){
+            if((associatedjetsJ_index[leading_index[0]] == match1_recoindex || associatedjetsJ_index[leading_index[0]] == match2_recoindex) && (associatedjetsJ_index[leading_index[1]] == match1_recoindex || associatedjetsJ_index[leading_index[1]] == match2_recoindex)){
+              passedmatchtruthVBF_J=true;
+            }
+          }
+
+        }
+
+        if(verbose) cout<<"[INFO] Set Mela CandidateDecayMode,InputEvent and computeMELABranche "<<endl;
+        IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
+        IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
+        MEblock.computeMELABranches();
+        MEblock.pushMELABranches();
+        IvyMELAHelpers::melaHandle->resetInputEvent();
+
+        //KD
+        //retrieve MEs for KD constructing
+        if(verbose) cout<<"[INFO] retrieve MEs for KD constructing "<<endl;
+        unordered_map<string,float> ME_Kfactor_values;
+        MEblock.getBranchValues(ME_Kfactor_values);
+        //unordered_map<string, float>::iterator iter;
+        //for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
+        //  cout << "[INFO] this ME_Kfactor_values = "<<iter->first << " : " << iter->second << endl;
+        //}
+        
+        //KDZjj=========================================================================
+        //Update discriminants
+        if(verbose) cout<<"[INFO] Get Discriminant for KD_ZJ "<<endl;
+        for (auto& KDspec:KDlist_ZJ){
+          std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+          for (auto const& strKDvar:KDspec.KDvars){
+            //cout<<typeid(strKDvar).name()<<endl;
+            //cout<<"this strKDva in Zjj= "<<strKDvar<<endl;
+            //cout<<"this ME_Kfactor_values = "<<ME_Kfactor_values[static_cast<string>(strKDvar)]<<endl;
+            KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+          } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+
+          KDspec.KD->update(KDvars, mass2lj); // Use mZZ!
+          //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+          KD_ZJ = *(KDspec.KD);
+          if(verbose) cout<<"[INFO] This KD_ZJ = "<<KD_ZJ<<endl;
+        }
+
+        if(nassociatedjets>=2){ //compute KD_JVBF
+
+          passedNassociated_J = true;
+          //KD_JVBF========================================================================
+          //Update discriminants
+          if(verbose) cout<<"[INFO] Get Discriminant for KD_VBF"<<endl;
+          for (auto& KDspec:KDlist_JVBF){
+            std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+            for (auto const& strKDvar:KDspec.KDvars){
+              //cout<<typeid(strKDvar).name()<<endl;
+              //cout<<"this strKDva = "<<strKDvar<<endl;
+              //cout<<"this ME_Kfactor_values = "<<ME_Kfactor_values[static_cast<string>(strKDvar)]<<endl;
+              KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+            } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+
+            KDspec.KD->update(KDvars, mass2lj); // Use mZZ!
+            //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+            KD_JVBF = *(KDspec.KD);
+            if(nassociatedjets<2){
+              nevents_nassociatedjets_lesstwo++;
+            }
+            if(KD_JVBF<0){
+             nevents_negative++;
+            }
+          }
+
+        }
+
+        if(verbose){
+          cout<<"[INFO] domela in merged case done"<<endl;
+        }
+      }
+
     }
 
     //find resovled only higgs
@@ -173,165 +536,11 @@ void TreeLoop::Loop(){
     }
 
     //full resovled higgs and do MALE
-
     if(foundresolvedOnly || foundresolvedCombine){
       if(verbose) cout<<"[INFO] this is resovled higgs"<<endl;
       passed_fullresolved++;
       passedfullresolved = true;
       //cout<<"passedfullresolved"<<endl;
-
-
-      if (doMela){
-        //cout<<"fullresolved Mela"<<endl;
-        //check number of associated jets
-        int njets = jet_pt->GetSize();
-        int nassociatedjets = 0;
-        vector<TLorentzVector> associatedjets;
-        for(int i=0; i<njets; i++){
-
-          //find jet that are not signal and put it into associated
-          if(i==jet_Z1index[0] || i==jet_Z1index[1]){continue;}
-
-          TLorentzVector thisjet;
-          thisjet.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
-
-          /*
-          bool dropit = false;
-          for(int i=0; i<2; i++){
-            double temp_DR = deltaR(thisjet.Eta(),thisjet.Phi(),(*lepFSR_eta)[lep_Z1index[i]],(*lepFSR_phi)[lep_Z1index[i]]);
-            DR_selectedleps_asccoiacted.push_back(temp_DR);
-            if(temp_DR<0.4){
-              dropit = true;
-            }
-          }
-          if(dropit) continue;
-          */
-
-          nassociatedjets++;
-          associatedjets.push_back(thisjet);
-          associatedjets_index.push_back(i);
-        }
-        if(nassociatedjets>=2){ //compute KD_jjVBF
-          //cout<<" nassociatedjets>=2 "<<endl;
-
-          if(verbose) cout<<"[INFO] found at least two nassociatedjets"<<endl;
-          passedNassociated = true;
-          //MEs
-          //signal like objets
-          TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
-          selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
-          selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
-          selectedJet1.SetPtEtaPhiM((*jet_pt)[jet_Z1index[0]],(*jet_eta)[jet_Z1index[0]],(*jet_phi)[jet_Z1index[0]],(*jet_mass)[jet_Z1index[0]]);
-          selectedJet2.SetPtEtaPhiM((*jet_pt)[jet_Z1index[1]],(*jet_eta)[jet_Z1index[1]],(*jet_phi)[jet_Z1index[1]],(*jet_mass)[jet_Z1index[1]]);
-
-          SimpleParticleCollection_t daughters;
-          daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[0]], selectedLep1));
-          daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[1]], selectedLep2));
-          daughters.push_back(SimpleParticle_t(0, selectedJet1));
-          daughters.push_back(SimpleParticle_t(0, selectedJet2));
-
-          //cout<<" fill daughters done "<<endl;
-
-          //associated objets
-          SimpleParticleCollection_t associated;
-          //sort associatedjets as pt order
-          int leading_index[2]={0,0};
-          double temp_leadingpt=0.0;
-          for(int i=0; i<nassociatedjets; i++){
-            if(associatedjets[i].Pt()>temp_leadingpt){
-              temp_leadingpt = associatedjets[i].Pt();
-              leading_index[0]= i;
-            }
-          }
-          if(verbose) cout<<" sort leading done "<<endl;
-          double temp_subleadingpt=0.0;
-          for(int i=0; i<nassociatedjets; i++){
-            if(i==leading_index[0]) continue; //do not count leading jet
-
-            if(associatedjets[i].Pt()>temp_subleadingpt){
-              temp_subleadingpt = associatedjets[i].Pt();
-              leading_index[1]= i;
-            }
-          }
-          if(verbose) cout<<" sort done "<<endl;
-          //sort done
-          for(int i=0; i<2; i++){ //put two leading jets into associated
-            associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[i]]));
-            associatedjet_pt.push_back(associatedjets[leading_index[i]].Pt());
-            associatedjet_eta.push_back(associatedjets[leading_index[i]].Eta());
-            associatedjet_phi.push_back(associatedjets[leading_index[i]].Phi());
-            associatedjet_mass.push_back(associatedjets[leading_index[i]].M());
-          }
-
-          if(verbose) cout<<"[INFO] associatedjet set done"<<endl;
-
-          time_associatedjet_eta = associatedjets[leading_index[0]].Eta()*associatedjets[leading_index[1]].Eta();
-
-          //match to truth
-          if(isMC){
-            if((associatedjets_index[leading_index[0]] == match1_recoindex || associatedjets_index[leading_index[0]] == match2_recoindex) && (associatedjets_index[leading_index[1]] == match1_recoindex || associatedjets_index[leading_index[1]] == match2_recoindex)){
-              passedmatchtruthVBF=true;
-            }
-          }
-
-          //if(verbose) cout<<"[INFO] associatedjet set done"<<endl;
-
-          //cout<<" fill VBF jet done "<<endl;
-
-          IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
-          IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
-          MEblock.computeMELABranches();
-          MEblock.pushMELABranches();
-
-          IvyMELAHelpers::melaHandle->resetInputEvent();
-
-          //KD
-          //retrieve MEs for KD constructing
-          unordered_map<string,float> ME_Kfactor_values;
-          MEblock.getBranchValues(ME_Kfactor_values);
-          //unordered_map<string, float>::iterator iter;
-          //for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
-          //  cout << "[INFO] this ME_Kfactor_values = "<<iter->first << " : " << iter->second << endl;
-          //}
-          //VBF
-          vector<DiscriminantClasses::Type> KDtypes{DiscriminantClasses::kDjjVBF};
-          unsigned int const nKDs = KDtypes.size();
-          vector<DiscriminantClasses::KDspecs> KDlist;
-          KDlist.reserve(nKDs);
-          for (auto const& KDtype:KDtypes) KDlist.emplace_back(KDtype);
-          DiscriminantClasses::constructDiscriminants(KDlist, 169*121, "JJVBFTagged");
-          //Update discriminants
-          for (auto& KDspec:KDlist){
-
-            std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
-            for (auto const& strKDvar:KDspec.KDvars){
-              //cout<<typeid(strKDvar).name()<<endl;
-              //cout<<"this strKDva = "<<strKDvar<<endl;
-              //cout<<"this ME_Kfactor_values = "<<ME_Kfactor_values[static_cast<string>(strKDvar)]<<endl;
-              KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
-            } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
-            //float temp_KD = KDspec.KD->update(KDvars, mass2l2jet);
-            //cout<<"KDvars[0] = "<<KDvars[0]<<endl;
-            //cout<<"type of mass2l2jet is "<<typeid(mass2l2jet).name()<<"  value of mass2jet  = "<<mass2l2jet<<endl;
-            //cout<<"type of return value of KD function is :"<<typeid(KDspec.KD->update(KDvars, mass2l2jet)).name()<<"  "<<"value of KD function = "<<KDspec.KD->update(KDvars, mass2l2jet)<<endl;
-            KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
-            //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
-            KD_jjVBF = *(KDspec.KD);
-            if(nassociatedjets<2){
-              nevents_nassociatedjets_lesstwo++;
-              //cout<<"[WARNNING] There is less than 2 associated jets in this event. There number of associated jets in this events = "<<nassociatedjets<<endl;
-              //cout<<"In this event, KD = "<<KD_jjVBF<<endl;
-            }
-            if(KD_jjVBF<0){
-              nevents_negative++;
-            }
-
-          }
-          for (auto& KDspec:KDlist) KDspec.resetKD();
-
-        }
-      }
-
     }
 
     //full merged higgs and do MALE
@@ -352,172 +561,37 @@ void TreeLoop::Loop(){
           DR_merged_VBF2_matched = this2_DR;
         }
       }
-
-      if (doMela){
-        int njets = jet_pt->GetSize();
-        int nassociatedjets = 0;
-        vector<TLorentzVector> associatedjets;
-        for(int i=0; i<njets; i++){
-
-          if(foundZ2JCandidate){
-            if(i==jet_Z1index[0] || i==jet_Z1index[1]){continue;}
-          }
-
-          TLorentzVector thisjet;
-
-          thisjet.SetPtEtaPhiM((*jet_pt)[i],(*jet_eta)[i],(*jet_phi)[i],(*jet_mass)[i]);
-          //check this deltaR between this jet and selected merged jet
-          double temp_DR = deltaR(thisjet.Eta(),thisjet.Phi(),(*mergedjet_eta)[merged_Z1index],(*mergedjet_phi)[merged_Z1index]);
-          DR_merged_asccoiacted.push_back(temp_DR);
-          if(temp_DR<0.8) {
-            continue;
-          }
-
-          /*
-          bool dropit = false;
-          for(int i=0; i<2; i++){
-            double temp_DR = deltaR(thisjet.Eta(),thisjet.Phi(),(*lepFSR_eta)[lep_Z1index[i]],(*lepFSR_phi)[lep_Z1index[i]]);
-            DR_selectedleps_asccoiacted.push_back(temp_DR);
-            if(temp_DR<0.4){
-              dropit = true;
-            }
-          }
-          if(dropit) continue;
-          */
-
-          nassociatedjets++;
-          associatedjets.push_back(thisjet);
-          associatedjets_index.push_back(i);
-        }
-
-        if(nassociatedjets>=2){ //compute KD_jjVBF
-
-          passedNassociated = true;
-          //MEs
-          //signal like objets
-          TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
-          selectedLep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
-          selectedLep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
-          selectedJet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][0],(*mergedjet_subjet_eta)[merged_Z1index][0],(*mergedjet_subjet_phi)[merged_Z1index][0],(*mergedjet_subjet_mass)[merged_Z1index][0]);
-          selectedJet1.SetPtEtaPhiM((*mergedjet_subjet_pt)[merged_Z1index][1],(*mergedjet_subjet_eta)[merged_Z1index][1],(*mergedjet_subjet_phi)[merged_Z1index][1],(*mergedjet_subjet_mass)[merged_Z1index][1]);
-
-
-          SimpleParticleCollection_t daughters;
-          daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[0]], selectedLep1));
-          daughters.push_back(SimpleParticle_t((*lep_id)[lep_Z1index[1]], selectedLep2));
-          daughters.push_back(SimpleParticle_t(0, selectedJet1));
-          daughters.push_back(SimpleParticle_t(0, selectedJet2));
-
-          //associated objets
-          SimpleParticleCollection_t associated;
-          //sort associatedjets as pt order
-          int leading_index[2]={0,0};
-          double temp_leadingpt=0.0;
-          for(int i=0; i<nassociatedjets; i++){
-            if(associatedjets[i].Pt()>temp_leadingpt){
-              temp_leadingpt = associatedjets[i].Pt();
-              leading_index[0]= i;
-            }
-          }
-          double temp_subleadingpt=0.0;
-          for(int i=0; i<nassociatedjets; i++){
-            if(i==leading_index[0]) continue; //do not count leading jet
-
-            if(associatedjets[i].Pt()>temp_subleadingpt){
-              temp_subleadingpt = associatedjets[i].Pt();
-              leading_index[1]= i;
-            }
-          }
-          //sort done
-
-          for(int i=0; i<2; i++){ //put two leading jets into associated
-            associated.push_back(SimpleParticle_t(0, associatedjets[leading_index[i]]));
-            associatedjet_pt.push_back(associatedjets[leading_index[i]].Pt());
-            associatedjet_eta.push_back(associatedjets[leading_index[i]].Eta());
-            associatedjet_phi.push_back(associatedjets[leading_index[i]].Phi());
-            associatedjet_mass.push_back(associatedjets[leading_index[i]].M());
-          }
-          time_associatedjet_eta = associatedjets[leading_index[0]].Eta()*associatedjets[leading_index[1]].Eta();
-
-          //match to truth
-          if(isMC){
-            if((associatedjets_index[leading_index[0]] == match1_recoindex || associatedjets_index[leading_index[0]] == match2_recoindex) && (associatedjets_index[leading_index[1]] == match1_recoindex || associatedjets_index[leading_index[1]] == match2_recoindex)){
-              passedmatchtruthVBF=true;
-            }
-          }
-
-
-          /*
-
-          TLorentzVector VBF_jet1,VBF_jet2;
-          VBF_jet1.SetPtEtaPhiM(Reco_quark1_match_pt,Reco_quark1_match_eta,Reco_quark1_match_phi,Reco_quark1_match_mass);
-          VBF_jet2.SetPtEtaPhiM(Reco_quark2_match_pt,Reco_quark2_match_eta,Reco_quark2_match_phi,Reco_quark2_match_mass);
-          associated.push_back(SimpleParticle_t(0, VBF_jet1));
-          associated.push_back(SimpleParticle_t(0, VBF_jet2));
-          */
-
-
-
-          IvyMELAHelpers::melaHandle->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
-          IvyMELAHelpers::melaHandle->setInputEvent(&daughters, &associated, nullptr, false);
-          MEblock.computeMELABranches();
-          MEblock.pushMELABranches();
-          IvyMELAHelpers::melaHandle->resetInputEvent();
-
-          //KD
-          //retrieve MEs for KD constructing
-          unordered_map<string,float> ME_Kfactor_values;
-          MEblock.getBranchValues(ME_Kfactor_values);
-          //unordered_map<string, float>::iterator iter;
-          //for(iter = ME_Kfactor_values.begin(); iter != ME_Kfactor_values.end(); iter++){
-          //  cout << "[INFO] this ME_Kfactor_values = "<<iter->first << " : " << iter->second << endl;
-          //}
-          //VBF
-          vector<DiscriminantClasses::Type> KDtypes{DiscriminantClasses::kDjjVBF};
-          unsigned int const nKDs = KDtypes.size();
-          vector<DiscriminantClasses::KDspecs> KDlist;
-          KDlist.reserve(nKDs);
-          for (auto const& KDtype:KDtypes) KDlist.emplace_back(KDtype);
-          DiscriminantClasses::constructDiscriminants(KDlist, 169*121, "JJVBFTagged");
-          //Update discriminants
-          for (auto& KDspec:KDlist){
-
-            std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
-            for (auto const& strKDvar:KDspec.KDvars){
-              //cout<<typeid(strKDvar).name()<<endl;
-              //cout<<"this strKDva = "<<strKDvar<<endl;
-              //cout<<"this ME_Kfactor_values = "<<ME_Kfactor_values[static_cast<string>(strKDvar)]<<endl;
-              KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
-            } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
-
-            KDspec.KD->update(KDvars, mass2lj); // Use mZZ!
-            //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
-            KD_jjVBF = *(KDspec.KD);
-            if(nassociatedjets<2){
-              nevents_nassociatedjets_lesstwo++;
-            }
-            if(KD_jjVBF<0){
-              nevents_negative++;
-            }
-
-          }
-          for (auto& KDspec:KDlist) KDspec.resetKD();
-
-        }
-
-      }
-
     }
 
-    //SetVBFGen();//set Gen and match atfer reco-jet selected
-
-
-
+    //SetVBFGen();//set Gen and match atfer reco-jet selecte
     //==========fill output tree branch==========================================
     passedEventsTree_All->Fill();
 
+    if(verbose){
+      cout<<"[INFO] loop this evnet done"<<endl;
+      cout<<"================================="<<endl;
+      cout<<"================================="<<endl;
+      cout<<"================================="<<endl;
+    } 
+
   }
   //=========================loop done==========================================
+  if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
+  for (auto& KDspec:KDlist) KDspec.resetKD();
+  if(verbose) cout<<"[INFO] KD_VBF done"<<endl;
+
+  if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
+  for (auto& KDspec:KDlist_JVBF) KDspec.resetKD();
+  if(verbose) cout<<"[INFO] KD_JVBF done"<<endl;
+
+  if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
+  for (auto& KDspec:KDlist_Zjj) KDspec.resetKD();
+  if(verbose) cout<<"[INFO] KD_Zjj done"<<endl;
+
+  if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
+  for (auto& KDspec:KDlist_ZJ) KDspec.resetKD();
+  if(verbose) cout<<"[INFO] KD_ZJ done"<<endl;
+
   cout<<"[INFO] there are "<<nevents_negative<<" "<<"events have negative KD value"<<endl;
   cout<<"[INFO] there are "<<nevents_nassociatedjets_lesstwo<<" "<<"events with number of associated jets less than two"<<endl;
 
@@ -847,6 +921,19 @@ void TreeLoop::findZ2JCandidata(){
       jet_Z1index[0] = Z2_jetindex[0];
       jet_Z1index[1] = Z2_jetindex[1];
 
+      jet_1_btag = (*jet_isbtag)[Z2_jetindex[0]];
+      jet_2_btag = (*jet_isbtag)[Z2_jetindex[1]];
+
+      if(isMC){
+        //cout<<"(*jet_hadronFlavour)[Z2_jetindex[0]] = " <<(*jet_hadronFlavour)[Z2_jetindex[0]]<<endl;
+        //cout<<"(*jet_hadronFlavour)[Z2_jetindex[1]] = " <<(*jet_hadronFlavour)[Z2_jetindex[1]]<<endl;
+
+        jet_1_hadronflavor = (*jet_hadronFlavour)[Z2_jetindex[0]];
+        jet_2_hadronflavor = (*jet_hadronFlavour)[Z2_jetindex[1]];
+        jet_1_partonflavor = (*jet_partonFlavour)[Z2_jetindex[0]];
+        jet_2_partonflavor = (*jet_partonFlavour)[Z2_jetindex[1]];
+      }
+
       mass2jet = Zi.M();
       pt2jet = Zi.Pt();
 
@@ -899,6 +986,7 @@ void TreeLoop::findZ2MergedCandidata(){
     if(verbose) cout<<"(*mergedjet_Net_Xqq_de)[i] = "<<(*mergedjet_Net_Xqq_de)[i]<<endl;
     float temp_particleNetZvsQCD = (*mergedjet_Net_Xbb_de)[i]+(*mergedjet_Net_Xcc_de)[i]+(*mergedjet_Net_Xqq_de)[i];
     float temp_particleNetZbbvslight = (*mergedjet_Net_Xbb_de)[i]/temp_particleNetZvsQCD;
+    float temp_particleNetXbbvsQCD = (*mergedjet_Net_Xbb_de)[i]/((*mergedjet_Net_Xbb_de)[i]+(*mergedjet_Net_QCDbb_de)[i]+(*mergedjet_Net_QCDcc_de)[i]+(*mergedjet_Net_QCDother_de)[i]+(*mergedjet_Net_QCDb_de)[i]+(*mergedjet_Net_QCDc_de)[i]);
     //if(temp_particleNetZvsQCD<0.9) continue;
     //cout<<"this passed ZvsQCD = "<<temp_particleNetZvsQCD<<endl;
     //pass_particleNetZvsQCD0opint9 = true;
@@ -911,6 +999,7 @@ void TreeLoop::findZ2MergedCandidata(){
       merged_Z1index = i;
       particleNetZvsQCD = temp_particleNetZvsQCD;
       particleNetZbbvslight = temp_particleNetZbbvslight;
+      particleNetXbbvsQCD = temp_particleNetXbbvsQCD;
       if(verbose) cout<<"found merged jet candidates"<<endl;
     }
 
@@ -1133,7 +1222,8 @@ void TreeLoop::SetMEsFile(){// Set the MEs
   // ME lists
   setMatrixElementListFromFile(
     "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities.me",
-    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
+    //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
+    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,DecayProbabilities_MCFM",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,AJetsVHProbabilities_SpinZero_JHUGen,PMAVJJ_SUPERDIJETMELA",
     false
   );
@@ -1142,6 +1232,7 @@ void TreeLoop::SetMEsFile(){// Set the MEs
   if (!lheMElist.empty() || !recoMElist.empty()){
     // Set up MELA (done only once inside IvyMELAHelpers)
     IvyMELAHelpers::setupMela(year, 125., MiscUtils::INFO);
+    //IvyMELAHelpers::setupMela(year, 125., MiscUtils::DEBUG_VERBOSE);
     // If there are output trees, set the output trees of the MEblock.
     // Do this before building the branches.
     IVYout << "Setting up ME block output trees..." << endl;
@@ -1259,6 +1350,9 @@ void TreeLoop::setTree(){
   jet_eta = new TTreeReaderArray<double>(*myreader, "jet_eta");
   jet_phi = new TTreeReaderArray<double>(*myreader, "jet_phi");
   jet_mass = new TTreeReaderArray<double>(*myreader, "jet_mass");
+  jet_isbtag = new TTreeReaderArray<int>(*myreader,"jet_isbtag");
+  jet_hadronFlavour = new TTreeReaderArray<int>(*myreader,"jet_hadronFlavour");
+  jet_partonFlavour = new TTreeReaderArray<int>(*myreader,"jet_partonFlavour");
 
   mergedjet_pt = new TTreeReaderArray<float>(*myreader,"mergedjet_pt");
   mergedjet_eta = new TTreeReaderArray<float>(*myreader,"mergedjet_eta");
@@ -1267,6 +1361,11 @@ void TreeLoop::setTree(){
   mergedjet_Net_Xbb_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_Xbb_de");
   mergedjet_Net_Xcc_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_Xcc_de");
   mergedjet_Net_Xqq_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_Xqq_de");
+  mergedjet_Net_QCDbb_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_QCDbb_de");
+  mergedjet_Net_QCDcc_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_QCDcc_de");
+  mergedjet_Net_QCDother_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_QCDother_de");
+  mergedjet_Net_QCDb_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_QCDb_de");
+  mergedjet_Net_QCDc_de = new TTreeReaderArray<float>(*myreader,"mergedjet_Net_QCDc_de");
   mergedjet_nsubjet = new TTreeReaderArray<int>(*myreader,"mergedjet_nsubjet");
   mergedjet_subjet_pt = new TTreeReaderArray<vector<float>>(*myreader,"mergedjet_subjet_pt");
   mergedjet_subjet_eta = new TTreeReaderArray<vector<float>>(*myreader,"mergedjet_subjet_eta");
@@ -1321,9 +1420,12 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("mass2l2jet",&mass2l2jet);
   passedEventsTree_All->Branch("mass2lj",&mass2lj);
   passedEventsTree_All->Branch("KD_jjVBF",&KD_jjVBF);
-  passedEventsTree_All->Branch("KD_jVBF",&KD_jVBF);
+  passedEventsTree_All->Branch("KD_JVBF",&KD_JVBF);
+  passedEventsTree_All->Branch("KD_ZJ",&KD_ZJ);
+  passedEventsTree_All->Branch("KD_Zjj",&KD_Zjj);
   passedEventsTree_All->Branch("particleNetZvsQCD",&particleNetZvsQCD);
   passedEventsTree_All->Branch("particleNetZbbvslight",&particleNetZbbvslight);
+  passedEventsTree_All->Branch("particleNetXbbvsQCD",&particleNetXbbvsQCD);
   passedEventsTree_All->Branch("massmerged",&massmerged);
   passedEventsTree_All->Branch("ptmerged",&ptmerged);
   passedEventsTree_All->Branch("nsubjet",&nsubjet);
@@ -1332,7 +1434,8 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("foundZ2MergedCandidata",&foundZ2MergedCandidata);
   passedEventsTree_All->Branch("passedfullmerged",&passedfullmerged);
   passedEventsTree_All->Branch("passedfullresolved",&passedfullresolved);
-  passedEventsTree_All->Branch("passedNassociated",&passedNassociated);
+  passedEventsTree_All->Branch("passedNassociated_jj",&passedNassociated_jj);
+  passedEventsTree_All->Branch("passedNassociated_J",&passedNassociated_J);
   passedEventsTree_All->Branch("found2lepCandidate",&found2lepCandidate);
   passedEventsTree_All->Branch("foundTTCRCandidate",&foundTTCRCandidate);
   passedEventsTree_All->Branch("isEE",&isEE);
@@ -1355,15 +1458,27 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("jet_Z1index",&jet_Z1index,"jet_Z1index[2]/I");
   passedEventsTree_All->Branch("merged_Z1index",&merged_Z1index);
 
-  passedEventsTree_All->Branch("associatedjet_pt",&associatedjet_pt);
-  passedEventsTree_All->Branch("associatedjet_eta",&associatedjet_eta);
-  passedEventsTree_All->Branch("associatedjet_phi",&associatedjet_phi);
-  passedEventsTree_All->Branch("associatedjet_mass",&associatedjet_mass);
-  passedEventsTree_All->Branch("associatedjets_index",&associatedjets_index);
+  passedEventsTree_All->Branch("associatedjetjj_pt",&associatedjetjj_pt);
+  passedEventsTree_All->Branch("associatedjetjj_eta",&associatedjetjj_eta);
+  passedEventsTree_All->Branch("associatedjetjj_phi",&associatedjetjj_phi);
+  passedEventsTree_All->Branch("associatedjetjj_mass",&associatedjetjj_mass);
+  passedEventsTree_All->Branch("associatedjetsjj_index",&associatedjetsjj_index);
+  passedEventsTree_All->Branch("associatedjetJ_pt",&associatedjetJ_pt);
+  passedEventsTree_All->Branch("associatedjetJ_eta",&associatedjetJ_eta);
+  passedEventsTree_All->Branch("associatedjetJ_phi",&associatedjetJ_phi);
+  passedEventsTree_All->Branch("associatedjetJ_mass",&associatedjetJ_mass);
+  passedEventsTree_All->Branch("associatedjetsJ_index",&associatedjetsJ_index);
+
 
   passedEventsTree_All->Branch("isbjet",&isbjet);
   passedEventsTree_All->Branch("iscjet",&iscjet);
   passedEventsTree_All->Branch("islightjet",&islightjet);
+  passedEventsTree_All->Branch("jet_1_btag",&jet_1_btag);
+  passedEventsTree_All->Branch("jet_2_btag",&jet_2_btag);
+  passedEventsTree_All->Branch("jet_1_hadronflavor",&jet_1_hadronflavor);
+  passedEventsTree_All->Branch("jet_2_hadronflavor",&jet_2_hadronflavor);
+  passedEventsTree_All->Branch("jet_1_partonflavor",&jet_1_partonflavor);
+  passedEventsTree_All->Branch("jet_2_partonflavor",&jet_2_partonflavor);
 
   passedEventsTree_All->Branch("GEN_H1_pt",&GEN_H1_pt);
   passedEventsTree_All->Branch("GEN_H1_eta",&GEN_H1_eta);
@@ -1466,8 +1581,10 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("DR_merged_VBF2_matched",&DR_merged_VBF2_matched);
   passedEventsTree_All->Branch("DR_merged_asccoiacted",&DR_merged_asccoiacted);
   passedEventsTree_All->Branch("DR_selectedleps_asccoiacted",&DR_selectedleps_asccoiacted);
-  passedEventsTree_All->Branch("passedmatchtruthVBF",&passedmatchtruthVBF);
-  passedEventsTree_All->Branch("time_associatedjet_eta",&time_associatedjet_eta);
+  passedEventsTree_All->Branch("passedmatchtruthVBF_jj",&passedmatchtruthVBF_jj);
+  passedEventsTree_All->Branch("passedmatchtruthVBF_J",&passedmatchtruthVBF_J);
+  passedEventsTree_All->Branch("time_associatedjetjj_eta",&time_associatedjetjj_eta);
+  passedEventsTree_All->Branch("time_associatedjetJ_eta",&time_associatedjetJ_eta);
 
 
 
@@ -1489,7 +1606,8 @@ void TreeLoop::initialize(){
   foundTTCRCandidate = false;
   passedfullmerged = false;
   passedfullresolved = false;
-  passedNassociated = false;
+  passedNassociated_jj = false;
+  passedNassociated_J = false;
   isEE = false; isMuMu = false;
   for (int i=0; i<2; ++i) {lep_Z1index[i]=-1;}
   for (int i=0; i<2; ++i) {jet_Z1index[i]=-1;}
@@ -1503,13 +1621,20 @@ void TreeLoop::initialize(){
   pt2l=-999.99;
   mass2l2jet=-999.99;
   KD_jjVBF = -999.99;
+  KD_JVBF = -999.99;
+  KD_ZJ = -999.99;
+  KD_Zjj = -999.99;
   massmerged = -999.99;
   ptmerged = -999.99;
   nsubjet = -999.99;
   mass2lj = -999.99;
 
+  jet_1_btag=-999; jet_2_btag=-999; jet_1_hadronflavor=-999; jet_1_partonflavor=-999;
+  jet_2_hadronflavor=-999; jet_2_partonflavor=-999;
+
   particleNetZvsQCD = -999.99;
   particleNetZbbvslight = -999.99;
+  particleNetXbbvsQCD = -999.9;
 
   passedGENH = false;
   isbjet = false; iscjet = false; islightjet = false;
@@ -1531,8 +1656,10 @@ void TreeLoop::initialize(){
   DR_associatedjet1_GenZ.clear(); DR_associatedjet2_GenZ.clear(); DR_associatedjet1_GenZ_matched.clear(); DR_associatedjet2_GenZ_matched.clear();
   matched_merged_GEN_Z = false; matched_resovled1_GEN_Z=false; matched_resovled2_GEN_Z = false; matched_resovled_GEN_Z = false; matched_resovledone_GEN_Z=false;
   matched_associatedjet1_GEN_Z = false; matched_associatedjet2_GEN_Z = false; matched_associatedjet_GEN_Z = false; matched_associatedjetone_GEN_Z = false;
-  associatedjet_pt.clear(); associatedjet_eta.clear(); associatedjet_phi.clear(); associatedjet_mass.clear();
-  associatedjets_index.clear();
+  associatedjetjj_pt.clear(); associatedjetjj_eta.clear(); associatedjetjj_phi.clear(); associatedjetjj_mass.clear();
+  associatedjetJ_pt.clear(); associatedjetJ_eta.clear(); associatedjetJ_phi.clear(); associatedjetJ_mass.clear();
+  associatedjetsjj_index.clear(); associatedjetsJ_index.clear();
+  
 
   //VBF
   GEN_associated1_pt=-999.0; GEN_associated1_eta=-999.0; GEN_associated1_phi=-999.0; GEN_associated1_mass=-999.0;
@@ -1554,8 +1681,10 @@ void TreeLoop::initialize(){
   DR_merged_VBF1_matched = -999.9; DR_merged_VBF2_matched=-999.0;
   DR_merged_asccoiacted.clear();
   DR_selectedleps_asccoiacted.clear();
-  passedmatchtruthVBF = false;
-  time_associatedjet_eta = -999.0;
+  passedmatchtruthVBF_jj = false;
+  passedmatchtruthVBF_J = false;
+  time_associatedjetjj_eta = -999.0;
+  time_associatedjetJ_eta = -999.0;
   //initialize done
 
 }

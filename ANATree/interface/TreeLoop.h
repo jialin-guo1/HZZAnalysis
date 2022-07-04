@@ -72,20 +72,26 @@ protected:
   bool foundmergedCombine;
   bool passedfullresolved;
   bool passedfullmerged;
-  bool passedNassociated;
+  bool passedNassociated_jj;
+  bool passedNassociated_J;
   bool isEE;
   bool isMuMu;
 
   bool passedGENH;
 
   float EventWeight, GenWeight, PileupWeight, PrefiringWeight,SumWeight;
+  Long64_t nentries;
 
   ULong64_t run,event,lumiSect;
 
   int lep_Z1index[2];
   int jet_Z1index[2];
   int lep_Hindex[4];
+  int jet_1_btag, jet_2_btag;
+  int jet_1_hadronflavor, jet_1_partonflavor;
+  int jet_2_hadronflavor, jet_2_partonflavor;
   int merged_Z1index;
+  vector<int> jet_btag;
 
   double mass2jet, pt2jet;
   double mass2l, pt2l;
@@ -93,10 +99,11 @@ protected:
   float mass2l2jet, mass2lj;
   int nsubjet;
 
-  float particleNetZvsQCD, particleNetZbbvslight;
+  float particleNetZvsQCD, particleNetZbbvslight, particleNetXbbvsQCD;
 
-  vector<double>  associatedjet_pt,associatedjet_eta,associatedjet_phi,associatedjet_mass;
-  vector<int> associatedjets_index;
+  vector<double>  associatedjetjj_pt,associatedjetjj_eta,associatedjetjj_phi,associatedjetjj_mass;
+  vector<double>  associatedjetJ_pt,associatedjetJ_eta,associatedjetJ_phi,associatedjetJ_mass;
+  vector<int> associatedjetsjj_index, associatedjetsJ_index;
 
   float Met,Met_phi;
 
@@ -133,8 +140,10 @@ protected:
   double DR_merged_VBF1_matched, DR_merged_VBF2_matched;
   vector<double> DR_merged_asccoiacted;
   vector<double> DR_selectedleps_asccoiacted;
-  bool passedmatchtruthVBF;
-  double time_associatedjet_eta;
+  bool passedmatchtruthVBF_jj;
+  bool passedmatchtruthVBF_J;
+  double time_associatedjetjj_eta;
+  double time_associatedjetJ_eta;
 
   //cut table
   int passed_trig = 0;
@@ -173,7 +182,10 @@ protected:
 
   //KD
   float KD_jjVBF;
-  float KD_jVBF;
+  float KD_JVBF;
+  float KD_ZJ;
+  float KD_Zjj;
+
 
   //=================================================================================================================
   //=====================================read from input file========================================================
@@ -183,8 +195,10 @@ protected:
   TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass;
   TTreeReaderArray<double> *lep_pt, *lep_eta, *lep_phi, *lep_mass;
   TTreeReaderArray<double> *jet_pt, *jet_eta, *jet_phi, *jet_mass;
+  TTreeReaderArray<int> *jet_isbtag;
   TTreeReaderArray<float> *lep_RelIsoNoFSR, *mergedjet_pt, *mergedjet_eta, *mergedjet_phi, *mergedjet_subjet_softDropMass;
   TTreeReaderArray<float> *mergedjet_Net_Xbb_de, *mergedjet_Net_Xcc_de, *mergedjet_Net_Xqq_de;
+  TTreeReaderArray<float> *mergedjet_Net_QCDbb_de, *mergedjet_Net_QCDcc_de, *mergedjet_Net_QCDother_de, *mergedjet_Net_QCDb_de, *mergedjet_Net_QCDc_de;
   TTreeReaderArray<vector<float>> *mergedjet_subjet_pt, *mergedjet_subjet_eta, *mergedjet_subjet_phi,*mergedjet_subjet_mass;
   TTreeReaderValue<bool> *passedTrig;
   TTreeReaderValue<float> *eventWeight, *genWeight, *pileupWeight, *prefiringWeight;
@@ -199,6 +213,7 @@ protected:
   TTreeReaderArray<double> *GEN_VBF_pt, *GEN_VBF_eta, *GEN_VBF_phi, *GEN_VBF_mass;
   TTreeReaderArray<float> *lep_dataMC;
   TTreeReaderArray<int> *mergedjet_nbHadrons, *mergedjet_ncHadrons;
+  TTreeReaderArray<int> *jet_hadronFlavour, *jet_partonFlavour;
 
 
   //Setting(those setting will be moved to a independent class later)
@@ -212,7 +227,7 @@ protected:
   double mZ2High = 120.0;
   double m4lLowCut = 70.0;
   double Zmass = 91.1876;
-  bool verbose = false;
+  bool verbose = true;
   bool doMela = true;
   bool isMC = false;
   bool isData = false;

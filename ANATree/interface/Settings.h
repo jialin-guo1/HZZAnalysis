@@ -20,7 +20,7 @@ struct setting{
   double mZ1Low = 40;
   double mZ1High = 180;
   double Zmass = 91.1876;
-  bool verbose = false;
+  bool verbose = true;
   bool doMela = true;
 };
 

@@ -25,9 +25,11 @@ void read_options(int argc, char *argv[], Options &opt){
       if(strcmp("--tree",argv[i]) == 0 || strcmp("-t",argv[i]) == 0){
         opt.tree = true;
       }else if(strcmp("--inputpath",argv[i]) == 0 || strcmp("-p",argv[i]) == 0){
+        //-p /cms/user/guojl/Sample/2L2Q/UL_Legacy/2017/MC/GluGluHToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8
         opt.input_file_path = argv[i+1];
         opt.output_file_path = opt.input_file_path+"/skimed/";
       }else if(strcmp("--inputfile",argv[i]) == 0 || strcmp("-i",argv[i]) == 0){
+        //-i GluGluHToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8_2017_realistic_v9-v1_0.root
         opt.infile = argv[i+1];
         opt.infile = opt.input_file_path+'/'+opt.infile;
         opt.outfile = opt.output_file_path+argv[i+1];
