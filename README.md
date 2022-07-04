@@ -1,9 +1,11 @@
 # This is HZZAnalysis based on Ntuple
 
 ## To install V2
+```shell
 wget https://github.com/jialin-guo1/HZZAnalysis/blob/master/install.sh
 chmod +x install.sh
 ./install.sh
+```
 
 ## To install
 ### Setup CMSSW env
