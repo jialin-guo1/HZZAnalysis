@@ -84,6 +84,9 @@ protected:
 
   ULong64_t run,event,lumiSect;
 
+  double lep_1_pt, lep_1_eta;
+  double lep_2_pt, lep_2_eta;
+
   int lep_Z1index[2];
   int jet_Z1index[2];
   int lep_Hindex[4];
@@ -97,6 +100,7 @@ protected:
   double mass2l, pt2l;
   double massmerged, ptmerged;
   float mass2l2jet, mass2lj;
+  float mass2l2jet_up, mass2l2jet_down, mass2lj_up, mass2lj_down;
   int nsubjet;
 
   float particleNetZvsQCD, particleNetZbbvslight, particleNetXbbvsQCD;
@@ -111,6 +115,7 @@ protected:
   bool isbjet,iscjet,islightjet;
   double GEN_H1_pt,GEN_H1_eta,GEN_H1_phi,GEN_H1_mass,GEN_H2_pt,GEN_H2_eta,GEN_H2_phi,GEN_H2_mass,GEN_DR_H1_Mom,GEN_DR_H2_Mom;
   double GEN_H1_Mom_pt,GEN_H1_Mom_eta,GEN_H1_Mom_phi,GEN_H1_Mom_mass,GEN_H2_Mom_pt,GEN_H2_Mom_eta,GEN_H2_Mom_phi,GEN_H2_Mom_mass;
+
 
   vector<double> GEN_H1_Bro_pt,GEN_H1_Bro_eta,GEN_H1_Bro_phi,GEN_H1_Bro_mass,GEN_DR_H1_Bro,GEN_DR_H1Mom_Bro;
   vector<double> GEN_H2_Bro_pt,GEN_H2_Bro_eta,GEN_H2_Bro_phi,GEN_H2_Bro_mass,GEN_DR_H2_Bro,GEN_DR_H2Mom_Bro,GEN_DR_Bro12;
@@ -192,10 +197,11 @@ protected:
   //=================================================================================================================
   TTreeReaderArray<int> *lep_id, *lep_tightId;
   TTreeReaderArray<int> *mergedjet_nsubjet;
-  TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass;
+  TTreeReaderArray<double> *lepFSR_pt, *lepFSR_eta, *lepFSR_phi, *lepFSR_mass, *lep_pterr;
   TTreeReaderArray<double> *lep_pt, *lep_eta, *lep_phi, *lep_mass;
   TTreeReaderArray<double> *jet_pt, *jet_eta, *jet_phi, *jet_mass;
   TTreeReaderArray<int> *jet_isbtag;
+  TTreeReaderArray<float> *jet_bTagEffi;
   TTreeReaderArray<float> *lep_RelIsoNoFSR, *mergedjet_pt, *mergedjet_eta, *mergedjet_phi, *mergedjet_subjet_softDropMass;
   TTreeReaderArray<float> *mergedjet_Net_Xbb_de, *mergedjet_Net_Xcc_de, *mergedjet_Net_Xqq_de;
   TTreeReaderArray<float> *mergedjet_Net_QCDbb_de, *mergedjet_Net_QCDcc_de, *mergedjet_Net_QCDother_de, *mergedjet_Net_QCDb_de, *mergedjet_Net_QCDc_de;
@@ -204,6 +210,10 @@ protected:
   TTreeReaderValue<float> *eventWeight, *genWeight, *pileupWeight, *prefiringWeight;
   TTreeReaderValue<ULong64_t> *Run, *Event, *LumiSect;
   TTreeReaderValue<float> *met, *met_phi;
+  //jer and jec
+  TTreeReaderArray<float> *mergedjet_jerup_pt,*mergedjet_jerdn_pt, *mergedjet_jer_pterr, *mergedjet_jer_phierr;
+  TTreeReaderArray<double> *jet_jesup_pt, *jet_jesup_eta, *jet_jesup_phi, *jet_jesup_mass, *jet_jesdn_pt, *jet_jesdn_eta, *jet_jesdn_phi, *jet_jesdn_mass;
+  TTreeReaderArray<double> *jet_jerup_pt, *jet_jerup_eta, *jet_jerup_phi, *jet_jerup_mass, *jet_jerdn_pt, *jet_jerdn_eta, *jet_jerdn_phi, *jet_jerdn_mass;
 
   //GEN
   TTreeReaderArray<double> *GEN_Zq_pt, *GEN_Zq_eta, *GEN_Zq_phi, *GEN_Zq_mass, *GEN_q_pt, *GEN_q_eta, *GEN_q_phi, *GEN_q_mass, *GENjet_pt, *GENjet_eta, *GENjet_phi, *GENjet_mass;
@@ -214,6 +224,8 @@ protected:
   TTreeReaderArray<float> *lep_dataMC;
   TTreeReaderArray<int> *mergedjet_nbHadrons, *mergedjet_ncHadrons;
   TTreeReaderArray<int> *jet_hadronFlavour, *jet_partonFlavour;
+  TTreeReaderArray<double> *GENH_status, *GENH_mass;
+  TTreeReaderArray<int> *GENH_isHard;
 
 
   //Setting(those setting will be moved to a independent class later)
@@ -221,13 +233,13 @@ protected:
   int leadingPtCut = 40;
   int subleadingPtCut = 25;
   int dijetPtCut = 100;
-  double mZ1Low = 40.0;
-  double mZ1High = 180;
+  double mZ1Low = 60.0;
+  double mZ1High = 120;
   double mZ2Low = 12.0;
   double mZ2High = 120.0;
   double m4lLowCut = 70.0;
   double Zmass = 91.1876;
-  bool verbose = true;
+  bool verbose = false;
   bool doMela = true;
   bool isMC = false;
   bool isData = false;
