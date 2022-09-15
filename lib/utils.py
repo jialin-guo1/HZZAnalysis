@@ -1,3 +1,4 @@
+import uproot
 import numpy as np
 import boost_histogram as bh
 import matplotlib.pyplot as plt
@@ -115,11 +116,209 @@ def GetParticleNetbkgSF(array,tagger,cat):
         
     return sf_arr
 
+##==================================================================================================================
+##================================extractCutedBranch================================================================
+##==================================================================================================================
+def extractSpecialBranch(config,year,Sample_NameLists,Branch_List):
+    arr = {}
+    sumWeight = {}
+    for sample in Sample_NameLists:
+        print(f"This is {sample}")
+        indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+        files = find_this_rootfiles(indir)
+        sumWeight[sample] = 0.0
 
+        for file in files:
+            with uproot.open(f'{indir}/{file}') as f:
+                this_sumWeight_h = f['sumWeights'].to_boost()
+                this_sumWeight = this_sumWeight_h.sum()
+                #print(f'this sum weight = {this_sumWeight}')
+                sumWeight[sample] += this_sumWeight
 
-        
+        arr[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=Branch_List)
 
+    return arr, sumWeight
 
-
+##==================================================================================================================
+##================================CutBranch=========================================================================
+##==================================================================================================================
+#def cutBranch(array,config,year,car):
+#    arr = {}
     
 
+##==================================================================================================================
+##================================extractCutedBranch================================================================
+##==================================================================================================================
+def extractCutedBranch(config,year,cat):
+    #load root file and read array
+    bkg_array = {}
+    data_array = None
+    signal_array = {}
+    sumWeight = {}
+    filepath = config['ori_dir']+f'/{year}/'
+    print(f'File path is {filepath}')
+    for sample in config['Samples_lists']:
+        print(f"This is {sample}")
+        if sample!='Data':
+            indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+            files = find_this_rootfiles(indir)
+            sumWeight[sample] = 0
+
+            for file in files:
+                with uproot.open(f'{indir}/{file}') as f:
+                    this_sumWeight_h = f['sumWeights'].to_boost()
+                    this_sumWeight = this_sumWeight_h.sum()
+                    #print(f'this sum weight = {this_sumWeight}')
+                    sumWeight[sample] += this_sumWeight
+
+            bkg_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+
+        else:
+            data_path = config['ori_dir']+f'/{year}/'+f'Data/skimed/Data{year}UL_noDuplicates.root'
+            data_array = uproot.lazy([f"{data_path}:passedEvents"],filter_name=config['var_read_lists'])
+
+    if(year!='2016APV'):
+        for sample in config['signal_lists']:
+            indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+            files = find_this_rootfiles(indir)
+
+            print(f"This is {sample}")
+            signal_path = config['ori_dir']+f"/{year}/"+config['samples_inf'][sample][0]+'/skimed'
+
+            sumWeight[sample] = 0
+            for file in files:
+                with uproot.open(f'{indir}/{file}') as f:
+                    this_sumWeight_h = f['sumWeights'].to_boost()
+                    this_sumWeight = this_sumWeight_h.sum()
+                    #print(f'this sum weight = {this_sumWeight}')
+                    sumWeight[sample] += this_sumWeight
+
+            signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+    
+    #=======cut=============
+    if cat=='tt':
+        regions = ['CR','SR']
+        channels = ['ak4','net']
+    else:
+        channels = config['channel']
+        regions = ['CR','SR']
+    #regions = ['CR']
+    bkg_array_cut = {}; data_array_cut = {}; signal_array_cut = {}
+    for reg in regions:
+        bkg_array_cut[reg] = {}; data_array_cut[reg] = {}; signal_array_cut[reg] = {}
+        for channel in channels:
+            bkg_array_cut[reg][channel] = {}; data_array_cut[reg][channel] = None; signal_array_cut[reg][channel] = {}
+            for sample in config['Samples_lists']:
+                print(f"This is {sample} in {reg} in {channel}")
+                #print(f"selection text = {selection}")
+                selection = config['cut'][reg][channel][cat]
+                print(f"selection text = {selection}")
+
+                if sample!='Data':
+                    temp_array = bkg_array[sample]
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                    bkg_array_cut[reg][channel][sample] = temp_array[cut_array]
+                else:
+                    temp_array = data_array
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                    data_array_cut[reg][channel] = temp_array[cut_array]
+            if(year!='2016APV' ):
+                for sample in config['signal_lists']:
+                    temp_array = signal_array[sample]
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                    signal_array_cut[reg][channel][sample] = temp_array[cut_array]
+            
+    return bkg_array_cut,signal_array_cut,data_array_cut,sumWeight
+
+##==================================================================================================================
+##================================extractCutedBranch for catgory====================================================
+##==================================================================================================================
+def extractCutedCatBranch(config,year,cat):
+    tags = ['btag','untag','vbftag']
+    #load root file and read array
+    bkg_array = {}
+    data_array = None
+    signal_array = {}
+    sumWeight = {}
+    filepath = config['ori_dir']+f'/{year}/'
+    print(f'File path is {filepath}')
+    for sample in config['Samples_lists']:
+        print(f"This is {sample}")
+        if sample!='Data':
+            indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+            files = find_this_rootfiles(indir)
+            sumWeight[sample] = 0
+
+            for file in files:
+                with uproot.open(f'{indir}/{file}') as f:
+                    this_sumWeight_h = f['sumWeights'].to_boost()
+                    this_sumWeight = this_sumWeight_h.sum()
+                    #print(f'this sum weight = {this_sumWeight}')
+                    sumWeight[sample] += this_sumWeight
+
+            bkg_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+
+        else:
+            data_path = config['ori_dir']+f'/{year}/'+f'Data/skimed/Data{year}UL_noDuplicates.root'
+            data_array = uproot.lazy([f"{data_path}:passedEvents"],filter_name=config['var_read_lists'])
+
+    if(year!='2016APV' and year!='2017'):
+        for sample in config['signal_lists']:
+            indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+            files = find_this_rootfiles(indir)
+
+            print(f"This is {sample}")
+            signal_path = config['ori_dir']+f"/{year}/"+config['samples_inf'][sample][0]+'/skimed'
+
+            sumWeight[sample] = 0
+            for file in files:
+                with uproot.open(f'{indir}/{file}') as f:
+                    this_sumWeight_h = f['sumWeights'].to_boost()
+                    this_sumWeight = this_sumWeight_h.sum()
+                    #print(f'this sum weight = {this_sumWeight}')
+                    sumWeight[sample] += this_sumWeight
+
+            signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+    
+    #=======cut=============
+    if cat=='tt':
+        regions = ['CR','SR']
+        channels = ['ak4','net']
+    else:
+        channels = config['channel']
+        regions = ['CR','SR']
+    #regions = ['CR']
+    bkg_array_cut = {}; data_array_cut = {}; signal_array_cut = {}
+    for reg in regions:
+        bkg_array_cut[reg] = {}; data_array_cut[reg] = {}; signal_array_cut[reg] = {}
+        for channel in channels:
+            bkg_array_cut[reg][channel] = {}; data_array_cut[reg][channel] = {}; signal_array_cut[reg][channel] = {}
+            for tag in tags:
+                bkg_array_cut[reg][channel][tag] = {}; data_array_cut[reg][channel][tag] = None; signal_array_cut[reg][channel][tag] = {}
+                for sample in config['Samples_lists']:
+                    print(f"This is {sample} in {reg} in {channel}")
+                    #print(f"selection text = {selection}")
+                    selection = config['cut'][reg][channel][cat][tag]
+                    print(f"selection text = {selection}")
+
+                    if sample!='Data':
+                        temp_array = bkg_array[sample]
+                        cut_array = ak.numexpr.evaluate(selection,temp_array)
+                        #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                        bkg_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
+                    else:
+                        temp_array = data_array
+                        cut_array = ak.numexpr.evaluate(selection,temp_array)
+                        #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                        data_array_cut[reg][channel][tag] = temp_array[cut_array]
+                if(year!='2016APV' and year!='2017'):
+                    for sample in config['signal_lists']:
+                        temp_array = signal_array[sample]
+                        cut_array = ak.numexpr.evaluate(selection,temp_array)
+                        #cut_array = make_cut(temp_array,region = reg, cat = cat)
+                        signal_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
+            
+    return bkg_array_cut,signal_array_cut,data_array_cut,sumWeight

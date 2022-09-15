@@ -15,7 +15,7 @@ def main():
     parser.add_option("-i", "--indir", dest="indir",
                      help="input directory with .root files")
     parser.add_option("-o", "--outdir",
-                     help="output directory", default="/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/MC", dest="outdir")
+                     help="output directory", default="/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/MC/", dest="outdir")
     (options, args) = parser.parse_args()
 
     indir = '/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/'+str(options.indir)

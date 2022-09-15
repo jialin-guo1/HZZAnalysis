@@ -1,0 +1,94 @@
+ori_dir: '/cms/user/guojl/Sample/2L2Q/UL_Legacy'
+
+samples_inf:
+   DY_pt50To100: ['MC/DYJetsToLL_Pt-50To100_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8', 398.8]
+   DY_pt100To250: ['MC/DYJetsToLL_Pt-100To250_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',93.61]
+   DY_pt250To400: ['MC/DYJetsToLL_Pt-250To400_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',3.67]
+   DY_pt400To650: ['MC/DYJetsToLL_Pt-400To650_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',0.5]
+   DY_pt650ToInf: ['MC/DYJetsToLL_Pt-650ToInf_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',0.04704]
+   TTJets: ['MC/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8',831.76]
+   TTTo2L2Nu: ['MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8',1]
+   WW_TuneCP5: ['MC/WW_TuneCP5_13TeV-pythia8',1]
+   WWTo2L2Nu: ['MC/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8',11.09]
+   WZTo2Q2L: ['MC/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8',6.419]
+   ZZTo2Q2L: ['MC/ZZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8',3.696]
+   ZH_HToBB: ['MC/ZH_HToBB_ZToLL_M-125_TuneCP5_13TeV-powheg-pythia8',0.0317]
+   ZH_HToCC: ['MC/ZH_HToCC_ZToLL_M-125_TuneCP5_13TeV-powheg-pythia8',0.03079]
+   ZH_HToGG: ['MC/ZH_HToGG_ZToAll_M125_TuneCP5_13TeV-powheg-pythia8',0.02991]
+   ggH1000: ['MC/Signal/skimed/GluGluHToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__asymptotic_v17-v2_0.root',5.07]
+   VBF1500: ['MC/Signal/skimed/VBF_HToZZTo2L2Q_M1500_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__asymptotic_v13-v1_0.root',0.77]
+   test: 'MC/test'
+   Data: ['Data/skimed/Data2016UL_noDuplicates.root',1]
+
+Samples_lists: ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf',
+              'TTJets',
+              'WZTo2Q2L',
+              'ZZTo2Q2L',
+              'WWTo2L2Nu',
+              'Data']
+
+signal_lists: [ 'ggH1000','VBF1500']
+
+lumi: 
+    '2016': 16.81
+    '2016APV': 19.52
+    '2017': 41.48
+    '2018': 59.83
+
+bininfo: 
+    'mass2l': [24,60,120,"M(ll)"]
+    'pt2l': [70,100,800,"Pt(ll)"]
+    #'massmerged': [40,0,200,"M(J)"]
+    'massmerged': [24,0,160,"M(J)"] #aTGC
+    'ptmerged': [60,200,800,"Pt(J)"]
+    'mass2l2jet': [28,40,180,"M(2l2q)"]
+    'mass2lj': [60,500,3500,"M(2l2q)"]
+    'pt2jet': [70,100,800,"Pt(jj)"]
+    #'mass2jet': [28,40,180,"M(jj)"]
+    'mass2jet': [24,40,160,"M(jj)"] #aTGC
+    'particleNetZvsQCD': [20,0,1,"particleNetZvsQCD"]
+    'particleNetZbbvslight': [20,0,1,"particleNetZbbvslight"]
+    'KD_jjVBF': [20,0,1,"VBF(score)"]
+    'KD_JVBF': [20,0,1,"VBF(score)"]
+
+channel: ['isEE','isMuMu']
+cat: ['lep','ak4','ak8','net'] #net means ak8+particleNet cut
+
+#var to read
+var_read_lists: ['pt2l','mass2l','EventWeight','foundZ1LCandidate','foundTTCRCandidate','foundZ2JCandidate','foundZ2MergedCandidata','foundTTCRCandidate','passedfullmerged','passedfullresolved','particleNetZvsQCD','passedNassociated','isEE','isMuMu',
+                        'massmerged','ptmerged',
+                        'pt2jet','mass2jet',
+                        'mass2l2jet', 'mass2lj',
+                        'KD_jjVBF',KD_JVBF,
+                        'isbjet','iscjet','islightjet',
+                        'jet_1_btag','jet_2_btag']
+
+
+cut:
+    CR:
+        isEE:
+            lep: '(foundZ1LCandidate==True) & (isEE==True)' 
+            #ak8: '((massmerged<70) | (massmerged>135)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isEE==True)'
+            ak8: '((massmerged<70) | (massmerged>110)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isEE==True)'
+            net: '((massmerged<70) | (massmerged>135)) & (particleNetZvsQCD>0.9) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isEE==True)'
+            #ak4: '((mass2jet<70) | (mass2jet>135)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isEE==True)'
+            ak4: '((mass2jet<70) | (mass2jet>110)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isEE==True)'
+        isMuMu:
+            lep: '(foundZ1LCandidate==True) & (isMuMu==True)' 
+            #ak8: '((massmerged<70) | (massmerged>135)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isMuMu==True)'
+            ak8: '((massmerged<70) | (massmerged>110)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isMuMu==True)' #aTGC
+            net: '((massmerged<70) | (massmerged>135)) & (particleNetZvsQCD>0.9) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isMuMu==True)'
+            #ak4: '((mass2jet<70) | (mass2jet>135)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isMuMu==True)'
+            ak4: '((mass2jet<70) | (mass2jet>110)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isMuMu==True)' #aTGC
+    SR:
+        isEE:
+            lep: '(foundZ1LCandidate==True) & (isEE==True)' 
+            ak8: '((massmerged>70) & (massmerged<105)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isEE==True)'
+            net: '((massmerged>70) & (massmerged<105)) & (particleNetZvsQCD>0.9) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isEE==True)'
+            ak4: '((mass2jet>70) & (mass2jet<105)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isEE=True)'
+        isMuMu:
+            lep: '(foundZ1LCandidate==True) & (isMuMu==True)' 
+            ak8: '((massmerged>70) & (massmerged<105)) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isMuMu==True)'
+            net: '((massmerged>70) & (massmerged<105)) & (particleNetZvsQCD>0.9) & (foundZ1LCandidate==True) & (foundZ2MergedCandidata==True) & (isMuMu==True)'
+            ak4: '((mass2jet>70) & (mass2jet<105)) & (foundZ1LCandidate==True) & (foundZ2JCandidate==True) & (isMuMu==True)'
+

@@ -5,7 +5,7 @@
 #include <TTree.h>
 
 void removeDuplicates() {
-    TString prefix = "/cms/user/guojl/Sample/2L2Q/UL_Legacy/2016/Data/skimed/Data2016UL";
+    TString prefix = "/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/Data/skimed/Data2018UL";
     TString filename = prefix+".root";
 
     std::cout<<filename<<std::endl;

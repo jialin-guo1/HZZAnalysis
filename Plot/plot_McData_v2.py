@@ -52,6 +52,7 @@ else:
 #=================================================================================================================================================================================================
 #=================================================================================================================================================================================================
 #extract branch for each sample
+'''''
 def extractCutedBranch(config):
     #load root file and read array
     bkg_array = {}
@@ -126,18 +127,19 @@ def extractCutedBranch(config):
 
 
     return bkg_array_cut,signal_array_cut,data_array_cut,sumWeight
+'''
 
 ####======================================================================================================
 ####======================================Draw lists of  varbs============================================
 ####======================================And save plots==================================================
 ####======================================================================================================
-bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config)
+bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config,args.year,args.cat)
 ###====================set draw var according to different selections==========================================================
 #varbs = ['pt2l','mass2l','particleNetZvsQCD','massmerged','ptmerged']
 #varbs = ['massmerged','pt2l','mass2l','particleNetXbbvsQCD','Met']
 #varbs = ['massmerged','pt2l','mass2l']
 if(args.cat=='lep'):
-    varbs = ['pt2l','mass2l']
+    varbs = ['pt2l','mass2l','lep_1_pt','lep_2_pt']
 if(args.cat=='ak4'):
     varbs = ['mass2jet','pt2jet','pt2l','mass2l','KD_jjVBF','mass2l2jet','KD_Zjj']
 if(args.cat=='ak8'):
@@ -159,7 +161,7 @@ for var in varbs:
     bkg_hists = {}; Data_hist = {}; signal_hists = {}
     regions = ['CR','SR']
     for reg in regions:
-        if reg=='SR' and (var=='mass2l2jet' or var=='mass2lj'): continue
+        #if reg=='SR' and (var=='mass2l2jet' or var=='mass2lj'): continue
 
         bkg_hists[reg] = {}; Data_hist[reg] = {}; signal_hists[reg] = {}
         for channel in config['channel']:
@@ -255,10 +257,10 @@ for var in varbs:
             ax.set_ylabel('Events / bin', ha='right', y=1.0);
 
             ##SIGNAL
-            if(args.year!='2016APV' and args.year!='2017'):
-                colors = ['blue', 'red']
-                plot_hist(signal_hists[reg][channel],label=[ var for var in ['ggH(m1000)','VBF(m1500)']],linestyle=[style for style in [':','--']], color=[color for color in colors])
-
+            #if(args.year!='2016APV' and args.year!='2017'):
+            #    colors = ['blue', 'red']
+            #    plot_hist(signal_hists[reg][channel],label=[ var for var in ['ggH(m1000)','VBF(m1500)']],linestyle=[style for style in [':','--']], color=[color for color in colors])
+#
             ##DATA
             data_err = get_err(Data_hist[reg][channel])
             data = Data_hist[reg][channel].values()
