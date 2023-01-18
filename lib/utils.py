@@ -6,6 +6,114 @@ import mplhep as hep
 import awkward as ak
 import os
 
+from setting import setting
+##==================================================================================================================
+##================================Retrive histos from root file====================================================
+##==================================================================================================================
+class GetHisto(setting):
+    def __init__(self,year: str, cutcat: str) -> None:
+        '''input: lep, resolved merged_notag or merged_tag or all'''
+        super().__init__() #attribute from setting
+
+        self.year = year
+        #self.leptonic_cut_cats=['isEE','isMuMu','2lep']
+        #self.regions = ['CR','SR']
+        #self.tags = ['btag','untag','vbftag','all']
+        self.cutcat = cutcat
+        self.hist = {}
+        self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}.root'
+
+        if self.cutcat == 'lep':
+            self.hist['lep'] = self.getlepthisto()
+        elif self.cutcat=='resolved':
+            self.hist['resolved'] = self.getresolvedhisto()
+        elif self.cutcat=='merged_notag': 
+            self.hist['merged_notag'] = self.getmergednotaghisto()
+        elif self.cutcat=='merged_tag':
+              self.hist['merged_tag'] = self.getmergedtaghisto()
+        elif self.cutcat=='all':
+            self.hist['lep'] = self.getlepthisto()
+            self.hist['resolved'] = self.getresolvedhisto()
+            self.hist['merged_notag'] = self.getmergednotaghisto()
+            self.hist['merged_tag'] = self.getmergedtaghisto()
+
+    def getlepthisto(self):
+        '''
+            input: no input
+            output: hito
+            function: retreive hitograms which is applied leptonic cut from root files.
+        '''
+        h = {}
+        with uproot.open(self.inputrootfile) as f:
+            for sample in self.fileset[self.year].keys():
+                for cat in self.leptonic_cut_cats:
+                    for varb in self.config['bininfo'].keys():
+                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_boost()
+        return h
+
+
+    def getresolvedhisto(self):
+        '''
+            input: no input
+            output: hito
+            function: retreive hitograms which is applied resolved cut from root files.
+        '''
+        h = {}
+        with uproot.open(self.inputrootfile) as f:
+            for sample in self.fileset[self.year].keys():
+                for reg in self.regions:
+                    for cat in self.leptonic_cut_cats:
+                        for tag in self.tags:
+                            for varb in self.config['bininfo'].keys():
+                                if varb == 'mass2l2jet':
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+
+                                    #if f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ'
+                                    if reg=='SR' and (temphitoname in f.keys()):
+                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
+
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+        return h
+    
+    def getmergednotaghisto(self):
+        '''
+            input: no input
+            output: hito
+            function: retreive hitograms which is applied merged_notag cut from root files.
+        '''
+        h = {}
+        with uproot.open(self.inputrootfile) as f:
+            for sample in self.fileset[self.year].keys():
+                for cat in self.leptonic_cut_cats:
+                    for varb in self.config['bininfo'].keys():
+                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_boost()
+        return h
+
+    def getmergedtaghisto(self):
+        '''
+            input: no input
+            output: hito
+            function: retreive hitograms which is applied merged_tag cut from root files.
+        '''
+        h = {}
+        with uproot.open(self.inputrootfile) as f:
+            for sample in self.fileset[self.year].keys():
+                for reg in self.regions:
+                    for cat in self.leptonic_cut_cats:
+                        for tag in self.tags:
+                            for varb in self.config['bininfo'].keys():
+                                if varb == 'mass2lj':
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+
+                                    #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ'
+                                    if reg=='SR' and (temphitoname in f.keys()):
+                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
+
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_boost()
+        return h
+
 #find root files in this dir
 def find_this_rootfiles(dir):
     filename_list = os.listdir(dir)
