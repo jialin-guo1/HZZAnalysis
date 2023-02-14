@@ -29,17 +29,13 @@ OS=OSMethod(2018)
 #OS.FillCRHistos(TTbarfile,'TT')
 #OS.FillCRHistos(qqZZfile,'qqZZ')
 #OS.FillCRHistos(Zjetfile,'DY')
-OS.FillCRHistosTest(WZfile,'WZ')
-OS.FillCRHistosTest(TTbarfile,'TT')
-OS.FillCRHistosTest(qqZZfile,'qqZZ')
-OS.FillCRHistosTest(Zjetfile,'DY')
-OS.FillCRHistosTest(datafile,'data')
-OS.SaveCRHistos()
-
-
-
+#OS.FillCRHistosTest(WZfile,'WZ')
+#OS.FillCRHistosTest(TTbarfile,'TT')
+#OS.FillCRHistosTest(qqZZfile,'qqZZ')
+#OS.FillCRHistosTest(Zjetfile,'DY')
+#OS.FillCRHistosTest(datafile,'data')
+#OS.SaveCRHistos()
 OS.GetCRHistos()
-OS.PlotCR()
 #===============================================================================
 #=====================FakeRates=================================================
 #===============================================================================
@@ -47,11 +43,16 @@ OS.PlotCR()
 #OS.FillFRHistos(WZfile,'WZ')
 #OS.SaveFRHistos(True,'Remove_NegBins_FR')
 
-#OS.GetFRHistos()
+OS.GetFRHistos()
 #OS.OSFRproduce('data')
 
 #===============================================================================
 #========================ZX=====================================================
 #===============================================================================
-#OS.MakeHistogramsZX_test(FakeRateFile,datafile,qqZZfile)
-#OS.SaveZXHistos()
+OS.MakeHistogramsZX_test(FakeRateFile,datafile,qqZZfile)
+OS.SaveZXHistos()
+
+#===============================================================================
+#====================plot Control Region========================================
+#===============================================================================
+#OS.PlotCR()

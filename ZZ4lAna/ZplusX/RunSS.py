@@ -23,20 +23,20 @@ SS=SSMethod(2018)
 #===============================================================================
 #=============produce SSCR samples==============================================
 #===============================================================================
-#SS.FillCRHistos(datafile,'data')
-#SS.FillCRHistos(WZfile,'WZ')
-#SS.FillCRHistos(TTbarfile,'TT')
-#SS.FillCRHistos(qqZZfile,'qqZZ')
-#SS.FillCRHistos(Zjetfile,'DY')
-#SS.SaveCRHistos()
+SS.FillCRHistos(datafile,'data')
+SS.FillCRHistos(WZfile,'WZ')
+SS.FillCRHistos(TTbarfile,'TT')
+SS.FillCRHistos(qqZZfile,'qqZZ')
+SS.FillCRHistos(Zjetfile,'DY')
+SS.SaveCRHistos()
 
-#SS.GetCRHistos()
-#SS.PlotCR()
+SS.GetCRHistos()
+SS.PlotCR()
 
 #===============================================================================
 #=================calculate OS/SS ratio=========================================
 #===============================================================================
-#SS.Calculate_SSOS_Ratio(OSCRfile)
+SS.Calculate_SSOS_Ratio(OSCRfile)
 
 #================================================================================
 #=================produce FakeRates==============================================
@@ -52,4 +52,4 @@ SS.SSFRproduce('data',datafile)
 #================================================================================
 #===========================ZX estimate==========================================
 #================================================================================
-#SS.FillZXHistos(FakeRateFile,datafile)
+SS.FillZXHistos(FakeRateFile,datafile)
