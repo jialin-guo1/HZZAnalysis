@@ -1,6 +1,7 @@
 import uproot
 import numpy as np
 import boost_histogram as bh
+import hist
 import matplotlib.pyplot as plt
 import mplhep as hep
 import awkward as ak
@@ -48,7 +49,8 @@ class GetHisto(setting):
             for sample in self.fileset[self.year].keys():
                 for cat in self.leptonic_cut_cats:
                     for varb in self.config['bininfo'].keys():
-                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_boost()
+                        #h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_boost()
+                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_hist()
         return h
 
 
@@ -66,14 +68,25 @@ class GetHisto(setting):
                         for tag in self.tags:
                             for varb in self.config['bininfo'].keys():
                                 if varb == 'mass2l2jet':
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                    #h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_hist()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_hist()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_hist()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_hist()
 
                                     #if f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
-                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ'
+                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ;1'
                                     if reg=='SR' and (temphitoname in f.keys()):
-                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                        #h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_hist()
 
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                            for varb in self.config['bininfo_resolvedup']:
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                            for varb in self.config['bininfo_resolveddn']:
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
+
         return h
     
     def getmergednotaghisto(self):
@@ -105,13 +118,20 @@ class GetHisto(setting):
                             for varb in self.config['bininfo'].keys():
                                 if varb == 'mass2lj':
                                     h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
 
                                     #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
-                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ'
+                                    temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
                                     if reg=='SR' and (temphitoname in f.keys()):
                                         h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
 
                                 h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                            for varb in self.config['bininfo_mergedup'].keys():
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                            for varb in self.config['bininfo_mergeddn'].keys():
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
         return h
 
 #find root files in this dir
