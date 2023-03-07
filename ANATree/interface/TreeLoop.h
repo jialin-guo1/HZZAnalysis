@@ -60,8 +60,8 @@ protected:
   //=================================================================================================
   //menber object
   bool foundZ1LCandidate;
-  bool foundZ2JCandidate;
-  bool foundZ2MergedCandidata;
+  bool foundZ2JCandidate, foundZ2JCandidate_up, foundZ2JCandidate_dn;
+  bool foundZ2MergedCandidata, foundZ2MergedCandidata_up, foundZ2MergedCandidata_dn;
   bool found4lCandidate;
   bool found2lepCandidate;
   bool foundTTCRCandidate;
@@ -84,26 +84,38 @@ protected:
 
   ULong64_t run,event,lumiSect;
 
-  double lep_1_pt, lep_1_eta;
-  double lep_2_pt, lep_2_eta;
+  double lep_1_pt, lep_1_eta, lep_1_phi;
+  double lep_2_pt, lep_2_eta, lep_2_phi;
 
   int lep_Z1index[2];
-  int jet_Z1index[2];
+  int jet_Z1index[2], jet_Z1index_up[2], jet_Z1index_dn[2];
   int lep_Hindex[4];
-  int jet_1_btag, jet_2_btag;
+  int Nleptons, Ntightleptons;
+  int jet_1_btag, jet_1_btag_up, jet_1_btag_dn;
+  int jet_2_btag, jet_2_btag_up, jet_2_btag_dn;
+  float jet_1_deepbtag, jet_1_deepbtag_up, jet_1_deepbtag_dn;
+  float jet_2_deepbtag, jet_2_deepbtag_up, jet_2_deepbtag_dn;
   int jet_1_hadronflavor, jet_1_partonflavor;
   int jet_2_hadronflavor, jet_2_partonflavor;
-  int merged_Z1index;
+  int merged_Z1index, merged_Z1index_up, merged_Z1index_dn;
+  double jet_1_pt_up, jet_1_eta_up, jet_1_phi_up, jet_1_mass_up;
+  double jet_2_pt_up, jet_2_eta_up, jet_2_phi_up, jet_2_mass_up;
+  double jet_1_pt_dn, jet_1_eta_dn, jet_1_phi_dn, jet_1_mass_dn;
+  double jet_2_pt_dn, jet_2_eta_dn, jet_2_phi_dn, jet_2_mass_dn;
   vector<int> jet_btag;
 
+  double mass2jet_up, mass2jet_dn, pt2jet_up, pt2jet_dn;
   double mass2jet, pt2jet;
   double mass2l, pt2l;
-  double massmerged, ptmerged;
+  double massmerged,massmerged_up, massmerged_dn;
+  double ptmerged, ptmerged_up, ptmerged_dn;
   float mass2l2jet, mass2lj;
-  float mass2l2jet_up, mass2l2jet_down, mass2lj_up, mass2lj_down;
+  float mass2l2jet_up, mass2l2jet_dn, mass2lj_up, mass2lj_dn;
   int nsubjet;
 
-  float particleNetZvsQCD, particleNetZbbvslight, particleNetXbbvsQCD;
+  float particleNetZvsQCD, particleNetZvsQCD_up, particleNetZvsQCD_dn;
+  float particleNetZbbvslight, particleNetZbbvslight_up, particleNetZbbvslight_dn;
+  float particleNetXbbvsQCD, particleNetXbbvsQCD_up, particleNetXbbvsQCD_dn;
 
   vector<double>  associatedjetjj_pt,associatedjetjj_eta,associatedjetjj_phi,associatedjetjj_mass;
   vector<double>  associatedjetJ_pt,associatedjetJ_eta,associatedjetJ_phi,associatedjetJ_mass;
@@ -186,10 +198,10 @@ protected:
 
 
   //KD
-  float KD_jjVBF;
-  float KD_JVBF;
-  float KD_ZJ;
-  float KD_Zjj;
+  float KD_jjVBF, KD_jjVBF_up, KD_jjVBF_dn;
+  float KD_JVBF, KD_JVBF_up, KD_JVBF_dn;
+  float KD_ZJ, KD_ZJ_up, KD_ZJ_dn;
+  float KD_Zjj, KD_Zjj_up, KD_Zjj_dn;
 
 
   //=================================================================================================================
@@ -201,6 +213,7 @@ protected:
   TTreeReaderArray<double> *lep_pt, *lep_eta, *lep_phi, *lep_mass;
   TTreeReaderArray<double> *jet_pt, *jet_eta, *jet_phi, *jet_mass;
   TTreeReaderArray<int> *jet_isbtag;
+  TTreeReaderArray<float> *jet_deepBtag;
   TTreeReaderArray<float> *jet_bTagEffi;
   TTreeReaderArray<float> *lep_RelIsoNoFSR, *mergedjet_pt, *mergedjet_eta, *mergedjet_phi, *mergedjet_subjet_softDropMass;
   TTreeReaderArray<float> *mergedjet_Net_Xbb_de, *mergedjet_Net_Xcc_de, *mergedjet_Net_Xqq_de;
@@ -212,6 +225,8 @@ protected:
   TTreeReaderValue<float> *met, *met_phi;
   //jer and jec
   TTreeReaderArray<float> *mergedjet_jerup_pt,*mergedjet_jerdn_pt, *mergedjet_jer_pterr, *mergedjet_jer_phierr;
+  TTreeReaderArray<float> *mergedjet_jesup_pt,*mergedjet_jesup_eta,*mergedjet_jesup_phi,*mergedjet_jesup_mass;
+  TTreeReaderArray<float> *mergedjet_jesdn_pt,*mergedjet_jesdn_eta,*mergedjet_jesdn_phi,*mergedjet_jesdn_mass;
   TTreeReaderArray<double> *jet_jesup_pt, *jet_jesup_eta, *jet_jesup_phi, *jet_jesup_mass, *jet_jesdn_pt, *jet_jesdn_eta, *jet_jesdn_phi, *jet_jesdn_mass;
   TTreeReaderArray<double> *jet_jerup_pt, *jet_jerup_eta, *jet_jerup_phi, *jet_jerup_mass, *jet_jerdn_pt, *jet_jerdn_eta, *jet_jerdn_phi, *jet_jerdn_mass;
 
@@ -235,8 +250,8 @@ protected:
   int dijetPtCut = 100;
   double mZ1Low = 60.0;
   double mZ1High = 120;
-  double mZ2Low = 12.0;
-  double mZ2High = 120.0;
+  double mZ2Low = 40;
+  double mZ2High = 180;
   double m4lLowCut = 70.0;
   double Zmass = 91.1876;
   bool verbose = false;
