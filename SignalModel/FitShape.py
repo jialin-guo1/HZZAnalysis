@@ -5,7 +5,7 @@ from array import array
 import argparse
 parser = argparse.ArgumentParser(description="A simple ttree plotter")
 parser.add_argument("-y","--year",dest="year",default='2016', help="year to run or run for all three year. Options: 2016, 2016APV, 2017,2018,all")
-parser.add_argument("-c","--cat",dest="cat",default='tt', help="choose cat to decide wichle cut selection will be used. Options: lep,ak4,ak8,net")
+#parser.add_argument("-c","--cat",dest="cat",default='tt', help="choose cat to decide wichle cut selection will be used. Options: lep,ak4,ak8,net")
 args = parser.parse_args()
 
 ROOT.gStyle.SetOptStat(0)
@@ -15,20 +15,25 @@ c = ROOT.TCanvas('c','c',1000,800)
 
 mzz_name = "zz2l2q_mass"
 #inputfile = ROOT.TFile("Histos_sig.root")
-inputfile = ROOT.TFile("Histos_sig_{}.root".format(args.year))
+#inputfile = ROOT.TFile("Histos_sig_{}.root".format(args.year))
+inputfile = ROOT.TFile("Histos_MakeShape_sig_{}.root".format(args.year))
 #massList = [500,600,700,800,900,1000,1500,2500,3000]
 massList = []
-for mass in range(500,1000,50):
+for mass in range(400,1000,50):
     massList.append(mass)
 for mass in range(1000,1600,100):
     massList.append(mass)
-for mass in range(1600,3000,200):
+for mass in range(1600,3400,200):
     massList.append(mass)
-#massList = [500]
+#massList = [600]
 parmList = ['mean','sigma','a1','a2','n1','n2']
-cases = ['merged','resolved']
+cases = ['merged_tag','resolved']
+case_str = {'merged_tag':'merged','resolved':'resolved'}
+#cases = ['resolved']
 #case = 'merged'
 sam = 'sig'
+
+lumi = {'2016':36.33,'2017':41.48,'2018':'59.83'}
 
 #intial Parm TGraphError
 for case in cases:
@@ -45,12 +50,14 @@ for case in cases:
         print "[INFO] fit to {}".format(mass)
 
         #Set fit histo and fit function
+        #low_M = mass-500; high_M = mass+500
         low_M = mass-500; high_M = mass+500
         bins = int((high_M-low_M)/10)
         zz2l2q_mass = ROOT.RooRealVar(mzz_name,mzz_name,low_M,high_M)
         zz2l2q_mass.setBins(bins)
 
-        mean = ROOT.RooRealVar('mean','',mass,mass-500,mass+500)
+        #mean = ROOT.RooRealVar('mean','',mass,mass-500,mass+500)
+        mean = ROOT.RooRealVar('mean','',mass,low_M,high_M)
         sigma = ROOT.RooRealVar('sigma','',0,120)
         a1 = ROOT.RooRealVar('a1','',0,10)
         a2 = ROOT.RooRealVar('a2','',0,10)
@@ -60,7 +67,8 @@ for case in cases:
         signalCB_ggH = ROOT.RooDoubleCB('signalCB_ggH','signalCB_ggH',zz2l2q_mass,mean,sigma,a1,n1,a2,n2)
 
         #h = inputfile.Get('ggh{}_merged'.format(mass))
-        h = inputfile.Get('{}{}_{}'.format(sam,mass,case))
+        #h = inputfile.Get('{}{}_{}'.format(sam,mass,case))
+        h = inputfile.Get('reshape_2lep_{}_all_{}'.format(case,mass))
         roo_h = ROOT.RooDataHist("sig","sig",ROOT.RooArgList(zz2l2q_mass),h)
         #Fit 
         signalCB_ggH.fitTo(roo_h)
@@ -83,7 +91,7 @@ for case in cases:
         frame_massZZ.Draw()
 
         cms_label = ROOT.TLatex(); cms_label.SetTextSize(0.03);cms_label.DrawLatexNDC(0.10, 0.91, '#scale[1.5]{CMS}#font[12]{preliminary}')
-        lumi_label = ROOT.TLatex(); lumi_label.SetTextSize(0.03); lumi_label.DrawLatexNDC(0.80, 0.91, '%s fb^{-1} (13 TeV)'%str(36.33))
+        lumi_label = ROOT.TLatex(); lumi_label.SetTextSize(0.03); lumi_label.DrawLatexNDC(0.80, 0.91, '%s fb^{-1} (13 TeV)'%str(lumi[args.year]))
         ##Draw Parm
         parm_text = ROOT.TLatex(); parm_text.SetNDC(); parm_text.SetTextSize(0.03); parm_text.SetTextFont(42); parm_text.SetTextAlign(23)
         parm_text.DrawLatexNDC(0.78,0.88,"mean = %s"%mean_fit_val)
@@ -93,10 +101,10 @@ for case in cases:
         parm_text.DrawLatexNDC(0.78,0.76,"n1 = %s"%n1_fit_val)
         parm_text.DrawLatexNDC(0.78,0.73,"n2 = %s"%n2_fit_val)  
         c.SaveAs("./plots/{}/Fit_mH{}_{}.png".format(args.year,mass,case))
-    c.Close()
+        #c.Close()
     #======================================================plot Parms Graph======================================================================
 
-    f = ROOT.TFile("2l2q_resolution_{}_{}.root".format(case,args.year),"recreate")
+    f = ROOT.TFile("2l2q_resolution_{}_{}.root".format(case_str[case],args.year),"recreate")
     f.cd()
     colorList = [ROOT.EColor.kGreen,ROOT.EColor.kYellow+2,ROOT.EColor.kRed,ROOT.EColor.kMagenta,ROOT.EColor.kBlue,ROOT.EColor.kCyan]; i=0
     MultiGraph = ROOT.TMultiGraph()
