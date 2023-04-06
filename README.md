@@ -6,6 +6,12 @@ wget https://github.com/jialin-guo1/HZZAnalysis/blob/master/install.sh
 chmod +x install.sh
 ./install.sh
 ```
+## To Run Siganl Model Only
+```shell
+wget https://github.com/jialin-guo1/HZZAnalysis/blob/master/install_SigMod.sh
+chmod +x install_SigMod.sh
+./install_SigMod.sh
+```
 
 ## To install
 ### Setup CMSSW env
