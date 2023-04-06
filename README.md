@@ -7,11 +7,23 @@ chmod +x install.sh
 ./install.sh
 ```
 ## To Run Siganl Model Only
+### NOTE: By running this install, you will be not able to run skimming proccess
+### 1.Install
 ```shell
 wget https://github.com/jialin-guo1/HZZAnalysis/blob/master/install_SigMod.sh
 chmod +x install_SigMod.sh
 ./install_SigMod.sh
 ```
+### 2.To reshape signal model 
+```shell
+cd $CMSSW_BASE/src/HZZAnalysis/SignalModel
+python MakeShape_v2.py -y 2018 -s sig
+```
+### 3.To Fit SignalModel
+```shell
+python FitShape.py -y 2018
+```
+### all files what you need are already there
 
 ## To install
 ### Setup CMSSW env
