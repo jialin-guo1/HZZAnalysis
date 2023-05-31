@@ -14,7 +14,7 @@ wget https://github.com/jialin-guo1/HZZAnalysis/blob/master/install_SigMod.sh
 chmod +x install_SigMod.sh
 ./install_SigMod.sh
 ```
-### 2.To reshape signal model 
+### 2.To reshape signal model(remove, please go step3 directly)
 ```shell
 cd $CMSSW_BASE/src/HZZAnalysis/SignalModel
 python MakeShape_v2.py -y 2018 -s sig
