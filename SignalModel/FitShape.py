@@ -8,6 +8,53 @@ parser = argparse.ArgumentParser(description="A simple ttree plotter")
 parser.add_argument("-y","--year",dest="year",default='2016', help="year to run or run for all three year. Options: 2016, 2016APV, 2017,2018,all")
 #parser.add_argument("-c","--cat",dest="cat",default='tt', help="choose cat to decide wichle cut selection will be used. Options: lep,ak4,ak8,net")
 args = parser.parse_args()
+###############################################
+###############################################Functions
+###############################################
+def get_standard_deviation(histogram):
+    # Compute the standard deviation of a histogram
+    mean = histogram.GetMean()
+    variance = histogram.GetStdDev() ** 2
+    return variance ** 0.5
+
+def draw_hist(diff_histogram,reco_histogram,gen_histogram,case,mass,path):
+    # Print the standard deviation for both histograms
+    gen_std_dev = round(get_standard_deviation(gen_histogram),2)
+    reco_std_dev = round(get_standard_deviation(reco_histogram),2)
+    diff_std_dev = round(get_standard_deviation(diff_histogram), 2)
+
+    # Draw the histograms on a canvas
+    canvas = ROOT.TCanvas("canvas", "Higgs Mass Comparison", 800, 600)
+    gen_histogram.Draw('hist')
+    gen_histogram.SetLineColor(ROOT.kRed)
+    gen_histogram.SetLineWidth(2)
+    reco_histogram.Draw("same hist")
+    reco_histogram.SetLineColor(ROOT.kBlue)
+    reco_histogram.SetLineWidth(2)
+    diff_histogram.Draw("same hist")
+    diff_histogram.SetLineColor(ROOT.kBlack)
+    diff_histogram.SetLineWidth(2)
+
+    # add legend
+    legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
+    legend.AddEntry(gen_histogram, "GEN Higgs Mass", "l")
+    legend.AddEntry(reco_histogram, "RECO Higgs Mass", "l")
+    legend.AddEntry(diff_histogram, "Difference", "l")
+    legend.Draw()
+
+    # print the standard deviation on the canvas
+    text = ROOT.TLatex()
+    text.SetNDC()
+    # round off to 2 decimal places
+    text.DrawLatex(0.1, 0.8, "GEN Std Dev: {}".format(gen_std_dev))
+    text.DrawLatex(0.1, 0.7, "RECO Std Dev: {}".format(reco_std_dev))
+    text.DrawLatex(0.1, 0.6, "Difference Std Dev: {}".format(diff_std_dev))
+
+    canvas.Update()
+    canvas.SaveAs("{}/higgs_mass_comparison_{}_{}.png".format(path,mass,case))
+###############################################
+###############################################
+###############################################
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptFit(1111); ROOT.gStyle.SetStatBorderSize(0)
@@ -81,11 +128,12 @@ for case in cases:
         ##=============================set parameter==========================================
         ##=============================set parameter==========================================
         mean = ROOT.RooRealVar('mean','',mass,low_M,high_M)
-        sigma = ROOT.RooRealVar('sigma','',0,120)
-        a1 = ROOT.RooRealVar('a1','',0.1,10)
-        a2 = ROOT.RooRealVar('a2','',0.1,10)
+        sigma = ROOT.RooRealVar('sigma','',0,200)
+        a1 = ROOT.RooRealVar('a1','',0.1,8)
+        a2 = ROOT.RooRealVar('a2','',0.1,8)
         n1 = ROOT.RooRealVar('n1','',0.1,25)
         n2 = ROOT.RooRealVar('n2','',0.1,30)
+        
         if args.year=='2017':
             print "[INFO] set 2017 parameter"
             if mass == 600:
@@ -109,15 +157,38 @@ for case in cases:
                 a2 = ROOT.RooRealVar('a2','',0.2,15)
                 n1 = ROOT.RooRealVar('n1','',0.2,25)
                 n2 = ROOT.RooRealVar('n2','',2,2)
-        #==================================================================================================
+        elif args.year=='2018':
+            if case=='merged_tag':
+                if mass>=900:
+                    a1 = ROOT.RooRealVar('a1','',0.1,15)
+                    a2 = ROOT.RooRealVar('a2','',0.1,15)
+                    n1 = ROOT.RooRealVar('n1','',0.1,25)
+                    n2 = ROOT.RooRealVar('n2','',0.1,25)
+                else:
+                    a1 = ROOT.RooRealVar('a1','',0.1,5)
+                    a2 = ROOT.RooRealVar('a2','',0.1,5)
+                    n1 = ROOT.RooRealVar('n1','',0.1,15)
+                    n2 = ROOT.RooRealVar('n2','',0.1,25)
+                    
 
+
+        #==================================================================================================
+        #==================================================================================================
+        #==================================================================================================
 
         signalCB_ggH = ROOT.RooDoubleCB('signalCB_ggH','signalCB_ggH',zz2l2q_mass,mean,sigma,a1,n1,a2,n2)
 
         #h = inputfile.Get('ggh{}_merged'.format(mass))
         #h = inputfile.Get('{}{}_{}'.format(sam,mass,case))
         #h = inputfile.Get('reshape_2lep_{}_all_{}'.format(case,mass))
+        
+        #retrieve resolution, reco and gen histogram from file
         h = inputfile.Get('{}{}_{}_resolution'.format(sam,mass,case_str[case]))
+        h_reco = inputfile.Get('{}{}_{}_reco'.format(sam,mass,case_str[case]))
+        h_gen = inputfile.Get('{}{}_{}_gen'.format(sam,mass,case_str[case]))
+        #Draw reco and gen histogram
+        draw_hist(h,h_reco,h_gen,mass,case,path)
+
         roo_h = ROOT.RooDataHist("sig","sig",ROOT.RooArgList(zz2l2q_mass),h)
         #Fit 
         signalCB_ggH.fitTo(roo_h)
@@ -219,7 +290,6 @@ for case in cases:
     #c1.SaveAs('./plots/{}/parms_{}_1GeVbin.png'.format(args.year,case))
     c1.SaveAs('{}/parms_{}.png'.format(path,case))
     c1.Close()
-
 
     f.Write()
 
