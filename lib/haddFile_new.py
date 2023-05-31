@@ -21,23 +21,16 @@ def main():
 
     indir = '/cms/user/guojl/Sample/2L2Q/UL_Legacy/'+str(options.year)+'/'+str(options.indir)
     outdir = options.outdir+str(options.indir)
-
-    #try:
-    #  if args.indir.find('GluGluHToZZTo2L2Q')!=-1:
-    #    outdir = options.outdir+str('ggh')
-    #    os.mkdir(outdir)
-    #  elif args.indir.find('VBF_HToZZTo2L2Q')!=-1:
-    #    outdir = options.outdir+str('vbf')
-    #    os.mkdir(outdir)
-    #  else:
-    #    os.mkdir(outdir)
-    #except:
-      #print "target folder is exist"
-
+    
+    isData = False
     if options.indir.find('GluGluHToZZTo2L2Q')!=-1:
       outdir = options.outdir+str('ggh')
     elif options.indir.find('VBF_HToZZTo2L2Q')!=-1:
       outdir = options.outdir+str('vbf')
+    elif options.indir.find("13TeV")==-1:
+      #it is Data folder
+      isData = True
+      outdir = options.outdir
       
     if(not os.path.exists(outdir)):
       os.mkdir(outdir)
@@ -70,8 +63,11 @@ def main():
         #os.system(cmd)
         #print cmd
         #haddtimes +=1
-
-        if((full_file_size>10) or (i==the_last)):
+        if isData:
+          max_size_hadd_files = 4
+        else:
+          max_size_hadd_files = 10
+        if((full_file_size>max_size_hadd_files) or (i==the_last)):
             cmd = 'hadd -f ' + outdir+'/'+sample+'_'+str(file_index)+'.root'+' '+samples
             haddtimes +=1
             print cmd

@@ -83,15 +83,18 @@ class MakeResolution(MakeResolutionCoffeaProcessor):
         super().__init__(config, year, fileset)
 
         self.massList = setting().massList
-        self.fileset = setting().sigfileset[year]['sig']
+        #self.fileset = setting().sigfileset[year]['sig']
+        self.fileset = setting().sigfileset[year]['ggh500']
         self.h_out = {}
 
+    #getbininfo
     def getbininfo(self,mass):
         '''
             input: any varb exsited in config
             output: bins informations associated with bins start stop name
         '''
-        mean = mass
+        #mean = mass
+        mean = 0
         start = mean-500
         stop = mean+500
         bins = 100
@@ -99,10 +102,15 @@ class MakeResolution(MakeResolutionCoffeaProcessor):
         return mean,start,stop,bins
 
     def writeoutfile(self):
-        with uproot.recreate(f"SignalModel/Hist_resolution{self.year}.root") as fw:
+        #with uproot.recreate(f"SignalModel/Hist_resolution{self.year}.root") as fw:
+        with uproot.recreate(f"SignalModel/Hist_resolution{self.year}_sig500.root") as fw:
             for mass in self.massList:
                 fw[f"sig{mass}_resolved_resolution"] = self.h_out['resolved'][mass]
+                fw[f"sig{mass}_resolved_reco"] = self.h_out['resolved'][f"{mass}_reco"]
+                fw[f"sig{mass}_resolved_gen"] = self.h_out['resolved'][f"{mass}_gen"]
                 fw[f"sig{mass}_merged_resolution"] = self.h_out['merged'][mass]
+                fw[f"sig{mass}_merged_reco"] = self.h_out['merged'][f"{mass}_reco"]
+                fw[f"sig{mass}_merged_gen"] = self.h_out['merged'][f"{mass}_gen"]
 
 
     def run(self):
@@ -115,29 +123,65 @@ class MakeResolution(MakeResolutionCoffeaProcessor):
             width = mass*0.03 if mass < 1000 else mass*0.05
             massLow = mass-width; massHigh = mass+width
 
-            selection = f"{self.config['cut']['resolved'][self.regions][self.leptonic_cut_cats][self.tags]} & (mass2l2jet>{massLow}) & (mass2l2jet<{massHigh})"
+            #cut on resolved case
+            #selection = f"{self.config['cut']['resolved'][self.regions][self.leptonic_cut_cats][self.tags]} & (mass2l2jet>{massLow}) & (mass2l2jet<{massHigh})"
+            selection = f"{self.config['cut']['resolved'][self.regions][self.leptonic_cut_cats][self.tags]}"
             cut = ak.numexpr.evaluate(selection,events)
             cut_event = events[cut]
-    
+            #save resolution histogram
             self.h_out['resolved'][mass] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
+            #self.h_out['resolved'][mass].fill(
+            #    cut_event[self.varb['resolved']]-cut_event[self.gen_higss_str]+mean,
+            #    weight = ak.ones_like(cut_event[self.varb['resolved']])
+            #)
             self.h_out['resolved'][mass].fill(
-                cut_event[self.varb['resolved']]-cut_event[self.gen_higss_str]+mean,
+                cut_event[self.varb['resolved']]-cut_event[self.gen_higss_str],
                 weight = ak.ones_like(cut_event[self.varb['resolved']])
             )
-    
-            selection = f"{self.config['cut']['merged']['net'][self.regions][self.leptonic_cut_cats][self.tags]} & (mass2lj>{massLow}) & (mass2lj<{massHigh})"
+            #save reconstruction level histogram
+            self.h_out['resolved'][f"{mass}_reco"] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
+            self.h_out['resolved'][f"{mass}_reco"].fill(
+                cut_event[self.varb['resolved']],
+                weight = ak.ones_like(cut_event[self.varb['resolved']])
+            )
+            #save generator level histogram
+            self.h_out['resolved'][f"{mass}_gen"] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
+            self.h_out['resolved'][f"{mass}_gen"].fill(
+                cut_event[self.gen_higss_str],
+                weight = ak.ones_like(cut_event[self.gen_higss_str])
+            )
+
+            #cut on merged case
+            #selection = f"{self.config['cut']['merged']['net'][self.regions][self.leptonic_cut_cats][self.tags]} & (mass2lj>{massLow}) & (mass2lj<{massHigh})"
+            selection = f"{self.config['cut']['merged']['net'][self.regions][self.leptonic_cut_cats][self.tags]}"
             cut = ak.numexpr.evaluate(selection,events)
             cut_event = events[cut]
-    
+
+            #save resolution histogram
             self.h_out['merged'][mass] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
             self.h_out['merged'][mass].fill(
                 cut_event[self.varb['merged']]-cut_event[self.gen_higss_str]+mean,
                 weight = ak.ones_like(cut_event[self.varb['merged']])
             )
+            #save reconstruction level histogram
+            self.h_out['merged'][f"{mass}_reco"] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
+            self.h_out['merged'][f"{mass}_reco"].fill(
+                cut_event[self.varb['merged']],
+                weight = ak.ones_like(cut_event[self.varb['merged']])
+            )
+            #save generator level histogram
+            self.h_out['merged'][f"{mass}_gen"] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop))
+            self.h_out['merged'][f"{mass}_gen"].fill(
+                cut_event[self.gen_higss_str],
+                weight = ak.ones_like(cut_event[self.gen_higss_str])
+            )
+
         
         self.writeoutfile()
 
 
+
+#older version
 class MakeResolutionUnit():
     def __init__(self,year) -> None:
         self.processor = MakeResolutionCoffeaProcessor

@@ -30,7 +30,7 @@ for mass in range(1000,1600,100):
 for mass in range(1600,3200,200):
     massList.append(mass)
 #massList = [500,600,700,800,900,1000,1500,2000,2500,3000]
-#massList = [650]
+#massList = [600]
 
 parmList = ['mean','sigma','a1','a2','n1','n2']
 cases = ['merged_tag','resolved']
@@ -76,20 +76,41 @@ for case in cases:
         #zz2l2q_mass.setBins(bins)
 
         #mean = ROOT.RooRealVar('mean','',mass,mass-500,mass+500)
-        if mass==650:
+        ##=============================set parameter==========================================
+        ##=============================set parameter==========================================
+        ##=============================set parameter==========================================
+        ##=============================set parameter==========================================
+        mean = ROOT.RooRealVar('mean','',mass,low_M,high_M)
+        sigma = ROOT.RooRealVar('sigma','',0,120)
+        a1 = ROOT.RooRealVar('a1','',0.1,10)
+        a2 = ROOT.RooRealVar('a2','',0.1,10)
+        n1 = ROOT.RooRealVar('n1','',0.1,25)
+        n2 = ROOT.RooRealVar('n2','',0.1,30)
+        if args.year=='2017':
+            print "[INFO] set 2017 parameter"
+            if mass == 600:
+                a2 = ROOT.RooRealVar('a2','',5,20)
+            if (mass == 700 or mass==750) and case=='merged_tag':
+                a1 = ROOT.RooRealVar('a1','',0,10)
+                a2 = ROOT.RooRealVar('a2','',0,10)
+                n1 = ROOT.RooRealVar('n1','',0,25)
+                n2 = ROOT.RooRealVar('n2','',0.1,30)
+        elif args.year=='2016':
+            print "[INFO] set 2016 parameter"
             mean = ROOT.RooRealVar('mean','',mass,low_M,high_M)
             sigma = ROOT.RooRealVar('sigma','',0,120)
-            a1 = ROOT.RooRealVar('a1','',0,10)
-            a2 = ROOT.RooRealVar('a2','',0,10)
-            n1 = ROOT.RooRealVar('n1','',0,25)
-            n2 = ROOT.RooRealVar('n2','',0,25)
-        else:
-            mean = ROOT.RooRealVar('mean','',mass,low_M,high_M)
-            sigma = ROOT.RooRealVar('sigma','',0,120)
-            a1 = ROOT.RooRealVar('a1','',0,20)
-            a2 = ROOT.RooRealVar('a2','',0,20)
-            n1 = ROOT.RooRealVar('n1','',0,30)
-            n2 = ROOT.RooRealVar('n2','',0,30)
+            a1 = ROOT.RooRealVar('a1','',0.2,15)
+            a2 = ROOT.RooRealVar('a2','',0.2,15)
+            n1 = ROOT.RooRealVar('n1','',0.2,25)
+            n2 = ROOT.RooRealVar('n2','',2,2)
+            #tune parameter at 1500Gev in merged case
+            if mass == 1500 and case=='merged_tag':
+                a1 = ROOT.RooRealVar('a1','',0.2,10)
+                a2 = ROOT.RooRealVar('a2','',0.2,15)
+                n1 = ROOT.RooRealVar('n1','',0.2,25)
+                n2 = ROOT.RooRealVar('n2','',2,2)
+        #==================================================================================================
+
 
         signalCB_ggH = ROOT.RooDoubleCB('signalCB_ggH','signalCB_ggH',zz2l2q_mass,mean,sigma,a1,n1,a2,n2)
 
@@ -100,7 +121,7 @@ for case in cases:
         roo_h = ROOT.RooDataHist("sig","sig",ROOT.RooArgList(zz2l2q_mass),h)
         #Fit 
         signalCB_ggH.fitTo(roo_h)
-        #retrieve Parm
+        #retrieve Parameter from fit result 
         mean_fit_val = mean.getVal(); sigma_fit_val = sigma.getVal(); a1_fit_val = a1.getVal(); a2_fit_val = a2.getVal(); n1_fit_val = n1.getVal(); n2_fit_val = n2.getVal()
         mean_fit_err = mean.getError(); sigma_fit_err = sigma.getError(); a1_fit_err = a1.getError(); a2_fit_err = a2.getError(); n1_fit_err = n1.getError(); n2_fit_err = n2.getError()
 
@@ -136,6 +157,7 @@ for case in cases:
     #f = ROOT.TFile("2l2q_resolution_{}_{}.root".format(case_str[case],args.year),"recreate")
     #f = ROOT.TFile("2l2q_resolution_{}_{}_1GevBin.root".format(case_str[case],args.year),"recreate")
     f = ROOT.TFile("2l2q_resolution_{}_{}.root".format(case_str[case],args.year),"recreate")
+    #f = ROOT.TFile("2l2q_resolution_{}_{}.root".format(case_str[case],args.year),"recreate")
     f.cd()
     colorList = [ROOT.EColor.kGreen,ROOT.EColor.kYellow+2,ROOT.EColor.kRed,ROOT.EColor.kMagenta,ROOT.EColor.kBlue,ROOT.EColor.kCyan]; i=0
     MultiGraph = ROOT.TMultiGraph()
@@ -153,6 +175,20 @@ for case in cases:
         #parm_graph[p].Fit("pol5","qw","",fit_min,fit_max)
         if p=='sigma':
             parm_graph[p].Fit("pol1","qw","",fit_min,fit_max)
+        elif p=='n2':
+            print("fit n2")
+            #Define fit function for n2
+            fitfuc = ROOT.TF1("fitfuc", "pol5", 500, 3000)
+            #Set fix parameters for fit function
+            #fitfuc.SetParameters(1,1,1,1,1,1)
+            fitfuc.SetParLimits(0,-10,50)
+            fitfuc.SetParLimits(1,-10,50)
+            fitfuc.SetParLimits(2,-10,50)
+            fitfuc.SetParLimits(3,-10,50)
+            fitfuc.SetParLimits(4,-10,50)
+            fitfuc.SetParLimits(5,-10,50)
+
+            parm_graph[p].Fit("fitfuc","qw","",fit_min,fit_max)
         else:
             parm_graph[p].Fit("pol5","qw","",fit_min,fit_max)
         parm_graph[p].SetTitle("{}_{}".format(p,case))

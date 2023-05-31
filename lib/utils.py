@@ -12,17 +12,22 @@ from setting import setting
 ##================================Retrive histos from root file====================================================
 ##==================================================================================================================
 class GetHisto(setting):
-    def __init__(self,year: str, cutcat: str) -> None:
+    def __init__(self,year: str, cutcat: str, binlists=None, invarb=None, option = None) -> None:
         '''input: lep, resolved merged_notag or merged_tag or all'''
         super().__init__() #attribute from setting
-
+        self.binlists = binlists
+        self.invarb = invarb
         self.year = year
         #self.leptonic_cut_cats=['isEE','isMuMu','2lep']
-        #self.regions = ['CR','SR']
+        #self.regions = ['CR','SR','ALL']
         #self.tags = ['btag','untag','vbftag','all']
         self.cutcat = cutcat
         self.hist = {}
-        self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}.root'
+        if option == 'masszz': #read masszz root file
+            self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}_masszz.root'
+        else:
+            self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}.root'
+        print(f'[INFO] get histo from {self.inputrootfile}')
 
         if self.cutcat == 'lep':
             self.hist['lep'] = self.getlepthisto()
@@ -48,11 +53,10 @@ class GetHisto(setting):
         with uproot.open(self.inputrootfile) as f:
             for sample in self.fileset[self.year].keys():
                 for cat in self.leptonic_cut_cats:
-                    for varb in self.config['bininfo'].keys():
+                    for varb in self.config['bininfo_lep'].keys():
                         #h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_boost()
                         h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/lep/{cat}/{varb}'].to_hist()
         return h
-
 
     def getresolvedhisto(self):
         '''
@@ -61,32 +65,53 @@ class GetHisto(setting):
             function: retreive hitograms which is applied resolved cut from root files.
         '''
         h = {}
-        with uproot.open(self.inputrootfile) as f:
-            for sample in self.fileset[self.year].keys():
-                for reg in self.regions:
-                    for cat in self.leptonic_cut_cats:
-                        for tag in self.tags:
-                            for varb in self.config['bininfo'].keys():
-                                if varb == 'mass2l2jet':
-                                    #h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_hist()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_hist()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_hist()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_hist()
+        if(self.binlists==None and self.invarb==None):
+            print(f'[INFO] get histo from {self.inputrootfile} with all resolved variables')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                for varb in self.config['bininfo_resolved'].keys():
+                                    if varb == 'mass2l2jet':
+                                        #h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_allrange'].to_hist()
 
-                                    #if f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
-                                    temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ;1'
-                                    if reg=='SR' and (temphitoname in f.keys()):
-                                        #h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
-                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_hist()
+                                        #if f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            #h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY_resolved_{reg}_{cat}_{tag}_massZZ'].to_hist()
 
-                                #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                    #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.config['bininfo_resolvedup']:
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.config['bininfo_resolveddn']:
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.config['bininfo_resolved_split'].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
+        elif(self.binlists==None and self.invarb!=None):
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                varb = self.invarb
                                 h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
-                            for varb in self.config['bininfo_resolvedup']:
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
-                            for varb in self.config['bininfo_resolveddn']:
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
-
+        elif(self.binlists!=None and self.invarb==None):
+            print(f'[INFO] get histo from {self.inputrootfile} with {self.binlists} variables in resolved')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                for varb in self.config[self.binlists].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
         return h
     
     def getmergednotaghisto(self):
@@ -96,11 +121,21 @@ class GetHisto(setting):
             function: retreive hitograms which is applied merged_notag cut from root files.
         '''
         h = {}
-        with uproot.open(self.inputrootfile) as f:
-            for sample in self.fileset[self.year].keys():
-                for cat in self.leptonic_cut_cats:
-                    for varb in self.config['bininfo'].keys():
-                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_boost()
+        if(self.binlists==None and self.invarb==None):
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for cat in self.leptonic_cut_cats:
+                        for varb in self.config['bininfo'].keys():
+                            if varb.find('mass2l2jet')!=-1 or varb=='mass2lj_allrange': continue
+                            h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_hist()
+        elif(self.binlists==None and self.invarb!=None):
+            print(f'[INFO] only get {self.invarb} in merged no tag ')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for cat in self.leptonic_cut_cats:
+                        varb = self.invarb
+                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_hist()
+
         return h
 
     def getmergedtaghisto(self):
@@ -110,29 +145,118 @@ class GetHisto(setting):
             function: retreive hitograms which is applied merged_tag cut from root files.
         '''
         h = {}
-        with uproot.open(self.inputrootfile) as f:
-            for sample in self.fileset[self.year].keys():
-                for reg in self.regions:
-                    for cat in self.leptonic_cut_cats:
-                        for tag in self.tags:
-                            for varb in self.config['bininfo'].keys():
-                                if varb == 'mass2lj':
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
-                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
+        if(self.binlists==None and self.invarb==None):
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                for varb in self.config['bininfo'].keys():
+                                    if varb == 'mass2l2jet_allrange' or varb == 'mass2lj_allrange': continue
+                                    if varb == 'mass2lj':
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_allrange'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
 
-                                    #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
-                                    temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
-                                    if reg=='SR' and (temphitoname in f.keys()):
-                                        h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                        #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
 
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_boost()
-                            for varb in self.config['bininfo_mergedup'].keys():
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
-                            for varb in self.config['bininfo_mergeddn'].keys():
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                for varb in self.config['bininfo_mergedup'].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.config['bininfo_mergeddn'].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}'].to_hist()
+        elif(self.binlists!=None and self.invarb==None):
+            print(f'[INFO] get histo from {self.inputrootfile} with {self.binlists} variables in merged_tag')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                for varb in self.config[self.binlists].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+        elif(self.binlists!=None and self.invarb!=None):
+            print(f'[INFO] only get {self.invarb} in merged tag ')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                varb = self.invarb
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+        elif(self.binlists==None and self.invarb!=None):
+            print(f'[INFO] only get {self.invarb} in merged tag ')
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                varb = self.invarb
+                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+
+        else:
+            with uproot.open(self.inputrootfile) as f:
+                for sample in self.fileset[self.year].keys():
+                    for reg in self.regions:
+                        for cat in self.leptonic_cut_cats:
+                            for tag in self.tags:
+                                for varb in self.config[self.binlists].keys():
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
         return h
+
+
+
+##==================================================================================================================
+##================================Make cut and return array====================================================
+##==================================================================================================================
+def MakeCut(events,selection)-> ak.Array:
+    cut = ak.numexpr.evaluate(selection,events)
+    cut_event = events[cut]
+    return cut_event
+
+def get_bh(array, bins=10, xmin=None, xmax=None, underflow=False, overflow=False, mergeflowbin=True, normed=False,
+            weights=None, **kwargs):
+    r"""Plot histogram from input array.
+
+    Arguments:
+        array (np.ndarray, ak.Aarray): input array.
+        bins (int, list or tuple of numbers, np.ndarray, bh.axis): bins
+        weights (None, or np.ndarray): weights
+        # normed (bool): deprecated.
+
+    Returns:
+        hist (boost_histogram.Histogram)
+    """
+    if isinstance(bins, int):
+        if xmin is None:
+            xmin = array.min()
+        if xmax is None:
+            xmax = array.max()
+        width = 1.*(xmax-xmin)/bins
+        if mergeflowbin and underflow:
+            xmin += width
+            bins -= 1
+        if mergeflowbin and underflow:
+            xmax -= width
+            bins -= 1
+        bins = bh.axis.Regular(bins, xmin, xmax, underflow=underflow, overflow=overflow)
+    elif isinstance(bins, (list, tuple, np.ndarray)):
+        if mergeflowbin and underflow:
+            bins = bins[1:]
+        if mergeflowbin and overflow:
+            bins = bins[:-1]
+        bins = bh.axis.Variable(bins, underflow=underflow, overflow=overflow)
+
+    hist = bh.Histogram(bins, storage=bh.storage.Weight())
+    if weights is None:
+        #weights = np.ones_like(array)
+        weights = ak.ones_like(array)
+    hist.fill(array, weight=weights)
+    return hist
 
 #find root files in this dir
 def find_this_rootfiles(dir):
@@ -169,6 +293,20 @@ def replace_nan(arr,isunc):
 
     return arr
 
+#get bin info from boot_histogram object, edge, xmin , xmax, nbins sperately
+def GetBinInfoFromBH(hist):
+    r'''
+        Get bin info from boot_histogram object, return a dict with keys: edge, xmin , xmax, nbins
+        intput: hist (boost_histogram.Histogram) or hist.Histogram
+        output: bininfo : edge, nbins, xmin , xmax, nbins sperately
+    '''
+    edge = hist.axes[0].edges
+    xmin = hist.axes[0].edges[0]
+    xmax= hist.axes[0].edges[-1]
+    nbins= hist.axes[0].size
+    return edge, nbins ,xmin ,xmax
+
+
 #plot hist using mplhep
 def plot_hist(hists, normed=False, **kwargs):
     r"""Plot the histogram in the type of boost_histogram
@@ -191,6 +329,27 @@ def plot_hist(hists, normed=False, **kwargs):
     if len(hists) == 1:
         content, yerr = content[0], yerr[0]
     hep.histplot(content, bins=bins, yerr=yerr, **kwargs)
+
+
+#crate boost_histogram object from ROOT histogram
+def CreateBoostHistoFromROOT(hist):
+    r'''
+       input: ROOT histogram
+       output: boost_histogram object
+    '''
+    # Extract the number of bins, minimum value, and maximum value from the ROOT histogram
+    n_bins = hist.GetNbinsX()
+    x_min = hist.GetXaxis().GetXmin()
+    x_max = hist.GetXaxis().GetXmax()
+    # Create bin edges array
+    bin_edges = [hist.GetBinLowEdge(i) for i in range(1, n_bins + 2)]
+    # Create an empty boost_histogram object
+    boost_hist = bh.Histogram(bh.axis.Variable(bin_edges))
+    # Fill the boost_histogram object with bin contents
+    for i in range(1, n_bins + 1):
+        bin_content = hist.GetBinContent(i)
+        boost_hist[hist.GetBinLowEdge(i)] = bin_content
+    return boost_hist
 
 #get SF for WZ ZZ and HZZ signal sample
 def GetParticleNetSignalSF(array,tagger,sf_particleNet_signal):
@@ -244,6 +403,16 @@ def GetParticleNetbkgSF(array,tagger,cat):
         
     return sf_arr
 
+def getbininfo(varb):
+    '''
+        input: any varb exsited in config
+        output: bins informations associated with bins start stop name
+    '''
+    bins = setting().config['bininfo'][varb][0]
+    start = setting().config['bininfo'][varb][1]
+    stop = setting().config['bininfo'][varb][2]
+    name = setting().config['bininfo'][varb][3]
+    return bins, start, stop, name
 ##==================================================================================================================
 ##================================extractCutedBranch================================================================
 ##==================================================================================================================
@@ -387,11 +556,13 @@ def extractCutedCatBranch(config,year,cat):
                     #print(f'this sum weight = {this_sumWeight}')
                     sumWeight[sample] += this_sumWeight
 
-            bkg_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+            #bkg_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+            bkg_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"])
 
         else:
             data_path = config['ori_dir']+f'/{year}/'+f'Data/skimed/Data{year}UL_noDuplicates.root'
-            data_array = uproot.lazy([f"{data_path}:passedEvents"],filter_name=config['var_read_lists'])
+            #data_array = uproot.lazy([f"{data_path}:passedEvents"],filter_name=config['var_read_lists'])
+            data_array = uproot.lazy([f"{data_path}:passedEvents"])
 
     if(year!='2016APV' and year!='2017'):
         for sample in config['signal_lists']:
@@ -409,7 +580,8 @@ def extractCutedCatBranch(config,year,cat):
                     #print(f'this sum weight = {this_sumWeight}')
                     sumWeight[sample] += this_sumWeight
 
-            signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+            #signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
+            signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"])
     
     #=======cut=============
     if cat=='tt':
@@ -450,3 +622,51 @@ def extractCutedCatBranch(config,year,cat):
                         signal_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
             
     return bkg_array_cut,signal_array_cut,data_array_cut,sumWeight
+
+
+##==================================================================================================================
+##================================extractCutedBranch for region====================================================
+##==================================================================================================================
+def extractCutedRegionBranch(conig,year,reg,case,samplelist = setting().sample_list,cats = setting().leptonic_cut_cats,tags = setting().tags):
+    tags = ['btag','untag','vbftag']
+    #load root file and read array
+    bkg_array = {}
+    data_array = None
+    signal_array = {}
+    sumWeight = {}
+    #loop sample list to read array
+    for sample in samplelist:
+        print(f"[INFO] This is {sample}")
+        if sample!='Data':
+            #get sumWeight
+            f = uproot.open(setting().fileset[sample][0])['sumWeights']
+            sumWeight[sample] = (f.to_boost()).sum()
+            f.close()
+
+            #get array
+            bkg_array[sample] = uproot.lazy([f"{setting().fileset[sample][0]}:passedEvents"])
+        else:
+            data_array = uproot.lazy([f"{setting().fileset[sample][0]}:passedEvents"])
+    
+    #=======cut=============
+    #define out put array
+    bkg_array_cut = {}; data_array_cut = {}
+    for cat in cats:
+        bkg_array_cut[cat] = {}; data_array_cut[cat] = {}
+        for tag in tags:
+
+            print(f"[INFO] This is {cat} in {tag}")
+            #selection = setting().cut[reg][cat][tag]
+            selection = config['cut'][reg][cat][tag]
+            print(f"[INFO] selection text = {selection}")
+
+            for sample in samplelist:
+                if sample!='Data':
+                    temp_array = bkg_array[sample]
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    bkg_array_cut[reg][cat][tag][sample] = temp_array[cut_array]
+                else:
+                    temp_array = data_array
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    data_array_cut[reg][cat][tag] = temp_array[cut_array]
+

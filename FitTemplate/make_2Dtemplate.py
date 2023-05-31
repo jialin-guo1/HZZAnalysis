@@ -7,6 +7,7 @@ import awkward1 as ak
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import hist
 
 import argparse
 parser = argparse.ArgumentParser(description="A simple ttree plotter")
@@ -17,13 +18,14 @@ args = parser.parse_args()
 import sys,os
 sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/lib")
 from utils import *
+from setting import setting
 
 import yaml
 sf_particleNet_signal = {}
 with open('/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/NetSF_signal_2016Legacy.yml') as f:
     sf_particleNet_signal = yaml.safe_load(f)
 config = {}
-with open("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL16.yml") as f:
+with open("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL16_old.yml") as f:
     config = yaml.safe_load(f)
 
 outfilepath = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/ttoutfile"
@@ -45,7 +47,8 @@ else:
 #=================================================================================================================================================================================================
 #=================================================================================================================================================================================================
 #=================================================================================================================================================================================================
-bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config,args.year,args.cat)
+#bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config,args.year,args.cat)
+
 
 ##===================================================================================================================================================================
 def Conditional_norm_2Dhisto(h,nbins):
@@ -62,30 +65,43 @@ def Conditional_norm_2Dhisto(h,nbins):
 ##===================================================================================================================================================================
 ##===================================================================================================================================================================
 ##===================================================================================================================================================================
-massZZ_low_bins = np.linspace(500,1700,25)
-#massZZ_high_bins = np.array([2000,3500])
-massZZ_high_bins = np.array([2000,4000])
-massZZ_bins = bh.axis.Variable(ak.from_numpy(np.append(massZZ_low_bins,massZZ_high_bins)).to_list())
+#massZZ_low_bins = np.linspace(500,1700,25)
+##massZZ_high_bins = np.array([2000,3500])
+#massZZ_high_bins = np.array([2000,4000])
+massZZ_bins = bh.axis.Variable(ak.from_numpy(np.append(setting().massZZ_low_bins,setting().massZZ_high_bins)).to_list())
+#massZZ_bins = setting().massZZ_bins()
 regions = ['CR','SR']
 #reg = 'SR'
 print(f'massZZ bins = {massZZ_bins}')
 
 if(args.cat=='ak4'):
-    massZZ='mass2l2jet'; kd = 'KD_Zjj'; case= 'resolved'
+    massZZ='mass2l2jet'; kd = 'KD_Zjj'; case= 'resolved'; casename = 'resolved'
 elif(args.cat=='net'):
-    massZZ='mass2lj'; kd = 'KD_ZJ'; case='merged'
+    massZZ='mass2lj'; kd = 'KD_ZJ'; case='merged'; casename = 'merged_tag'
 
-Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaRaio{args.year}_{case}.root'
-Alph_array = uproot.lazy([f"{Alph_path}:alphatree"])
+#Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaRaio{args.year}_{case}.root'
+#Alph_array = uproot.lazy([f"{Alph_path}:alphatree"])
+
+Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaHistoFromROOT_{args.year}.root'
+Alpha_file = uproot.open(Alph_path)
 
 nbins, xmin, xmax = config['bininfo'][kd][0], config['bininfo'][kd][1], config['bininfo'][kd][2]
-with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
+#with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
+with uproot.recreate(f'./template_{case}_{args.year}.root') as outfile:
     cat = '2lep'
     bkg_hists = {}; Data_hist = {}; signal_hists = {}
     for reg in regions:
         bkg_hists[reg] = {}; Data_hist[reg] = {}; signal_hists[reg] = {}
-        bkg_hists[reg][cat] = [None,None,None]; Data_hist[reg][cat] = None; signal_hists[reg][cat] = {}
-        signal_hists[reg][cat] = {'ggh':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
+        Data_hist[reg][cat] = None; 
+        bkg_hists[reg][cat]={}; bkg_hists[reg][cat]['mean'] = [None,None,None];   bkg_hists[reg][cat]['up'] = [None,None,None];  bkg_hists[reg][cat]['dn'] = [None,None,None]
+        signal_hists[reg][cat] = {}
+        signal_hists[reg][cat]['mean'] = {'ggh':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
+                              'vbf':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
+                              'sig':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()) }
+        signal_hists[reg][cat]['up'] = {'ggh':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
+                              'vbf':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
+                              'sig':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()) }
+        signal_hists[reg][cat]['dn'] = {'ggh':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
                               'vbf':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()),
                               'sig':bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight()) }
 
@@ -107,22 +123,59 @@ with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
                 #temp_hist = get_hist(temp_array[var],weights,nbins,xmin,xmax)
                 temp_hist = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
                 temp_hist.fill(temp_array[massZZ],temp_array[kd],weight = weights)
+
+                temp_hist_up = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
+                temp_hist_up.fill(temp_array[f'{massZZ}_up'],temp_array[f'{kd}_up'],weight = weights)
+
+                temp_hist_dn = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
+                temp_hist_dn.fill(temp_array[f'{massZZ}_dn'],temp_array[f'{kd}_dn'],weight = weights)
                 
                 if sample.find('DY')!=-1:
-                    if (bkg_hists[reg][cat])[2]==None:
-                        (bkg_hists[reg][cat])[2] = temp_hist
+                    if (bkg_hists[reg][cat]['mean'])[2]==None:
+                        (bkg_hists[reg][cat]['mean'])[2] = temp_hist
                     else:
-                        (bkg_hists[reg][cat])[2]+=temp_hist
+                        (bkg_hists[reg][cat]['mean'])[2]+=temp_hist
+
+                    if (bkg_hists[reg][cat]['up'])[2]==None:
+                        (bkg_hists[reg][cat]['up'])[2] = temp_hist_up
+                    else:
+                        (bkg_hists[reg][cat]['up'])[2]+=temp_hist_up
+
+                    if (bkg_hists[reg][cat]['dn'])[2]==None:
+                        (bkg_hists[reg][cat]['dn'])[2] = temp_hist_dn
+                    else:
+                        (bkg_hists[reg][cat]['dn'])[2]+=temp_hist_dn
+
                 if sample.find('TTJets')!=-1 or sample.find('WWTo2L2Nu')!=-1:
-                    if (bkg_hists[reg][cat])[1]==None:
-                        (bkg_hists[reg][cat])[1] = temp_hist
+                    if (bkg_hists[reg][cat]['mean'])[1]==None:
+                        (bkg_hists[reg][cat]['mean'])[1] = temp_hist
                     else:
-                        (bkg_hists[reg][cat])[1]+=temp_hist
+                        (bkg_hists[reg][cat]['mean'])[1]+=temp_hist
+
+                    if (bkg_hists[reg][cat]['up'])[1]==None:
+                        (bkg_hists[reg][cat]['up'])[1] = temp_hist_up
+                    else:
+                        (bkg_hists[reg][cat]['up'])[1]+=temp_hist_up
+
+                    if (bkg_hists[reg][cat]['dn'])[1]==None:
+                        (bkg_hists[reg][cat]['dn'])[1] = temp_hist_dn
+                    else:
+                        (bkg_hists[reg][cat]['dn'])[1]+=temp_hist_dn
                 if sample.find('WZTo2Q2L')!=-1 or sample.find('ZZTo2Q2L')!=-1:
-                    if (bkg_hists[reg][cat])[0]==None:
-                        (bkg_hists[reg][cat])[0] = temp_hist
+                    if (bkg_hists[reg][cat]['mean'])[0]==None:
+                        (bkg_hists[reg][cat]['mean'])[0] = temp_hist
                     else:
-                        (bkg_hists[reg][cat])[0]+=temp_hist
+                        (bkg_hists[reg][cat]['mean'])[0]+=temp_hist
+
+                    if (bkg_hists[reg][cat]['up'])[0]==None:
+                        (bkg_hists[reg][cat]['up'])[0] = temp_hist_up
+                    else:
+                        (bkg_hists[reg][cat]['up'])[0]+=temp_hist_up
+
+                    if (bkg_hists[reg][cat]['dn'])[0]==None:
+                        (bkg_hists[reg][cat]['dn'])[0] = temp_hist_dn
+                    else:
+                        (bkg_hists[reg][cat]['dn'])[0]+=temp_hist_dn
                     #print(f"this is ZV in {reg} with {cat} = ", (bkg_hists[reg][cat])[0].view(flow=False).value)
                     #print(f'massZZ  = {massZZ}, KD = {kd}')
             else:
@@ -150,12 +203,24 @@ with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
                 temp_hist = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
                 temp_hist.fill(temp_array[massZZ],temp_array[kd],weight = weights)
 
+                temp_hist_up = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
+                temp_hist_up.fill(temp_array[f'{massZZ}_up'],temp_array[f'{kd}_up'],weight = weights)
+
+                temp_hist_dn = bh.Histogram(massZZ_bins,bh.axis.Regular(50, 0, 1),storage=bh.storage.Weight())
+                temp_hist_dn.fill(temp_array[f'{massZZ}_dn'],temp_array[f'{kd}_dn'],weight = weights)
+
                 if sample.find('ggh')!=-1:
-                    signal_hists[reg][cat]['ggh'] = signal_hists[reg][cat]['ggh']+temp_hist
+                    signal_hists[reg][cat]['mean']['ggh'] = signal_hists[reg][cat]['ggh']+temp_hist
+                    signal_hists[reg][cat]['up']['ggh'] = signal_hists[reg][cat]['ggh']+temp_hist_up
+                    signal_hists[reg][cat]['dn']['ggh'] = signal_hists[reg][cat]['ggh']+temp_hist_dn
                 elif sample.find('vbf')!=-1:
-                    signal_hists[reg][cat]['vbf'] = signal_hists[reg][cat]['vbf']+temp_hist
+                    signal_hists[reg][cat]['mean']['vbf'] = signal_hists[reg][cat]['vbf']+temp_hist
+                    signal_hists[reg][cat]['up']['vbf'] = signal_hists[reg][cat]['vbf']+temp_hist_up
+                    signal_hists[reg][cat]['dn']['vbf'] = signal_hists[reg][cat]['vbf']+temp_hist_dn
                 elif sample.find('sig')!=-1:
-                    signal_hists[reg][cat]['sig'] = signal_hists[reg][cat]['sig']+temp_hist
+                    signal_hists[reg][cat]['mean']['sig'] = signal_hists[reg][cat]['sig']+temp_hist
+                    signal_hists[reg][cat]['up']['sig'] = signal_hists[reg][cat]['sig']+temp_hist_up
+                    signal_hists[reg][cat]['dn']['sig'] = signal_hists[reg][cat]['sig']+temp_hist_dn
 
     reg='SR'
     xbins = massZZ_bins.size
@@ -166,6 +231,8 @@ with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
         print(f"[INOF] this is signal")
         #sig_hist = (signal_hists[reg][cat]['ggh']+signal_hists[reg][cat]['vbf'])
         sig_hist = Conditional_norm_2Dhisto((signal_hists[reg][cat]['sig']),xbins)
+        sig_hist_up = Conditional_norm_2Dhisto((signal_hists[reg][cat]['']['sig']),xbins)
+        sig_hist_dn = Conditional_norm_2Dhisto((signal_hists[reg][cat]['']['sig']),xbins)
         #for x in range(0,xbins):
         #    nevents = sig_hist[x,:].values(flow=False).sum()
         #    sig_hist.view(flow=False).value[x,:] = sig_hist.view(flow=False).value[x,:]/nevents
@@ -178,34 +245,41 @@ with uproot.recreate(f'./Files/template_{case}_{args.year}.root') as outfile:
         #outfile[f'sig_{case}_up'] = (signal_hists[reg][cat]['ggh']+signal_hists[reg][cat]['vbf'])
         #outfile[f'sig_{case}_dn'] = (signal_hists[reg][cat]['ggh']+signal_hists[reg][cat]['vbf'])
         outfile[f'sig_{case}'] = sig_hist
-        outfile[f'sig_{case}_up'] = sig_hist
-        outfile[f'sig_{case}_dn'] = sig_hist
+        outfile[f'sig_{case}_up'] = sig_hist_up
+        outfile[f'sig_{case}_dn'] = sig_hist_up
 
         dir_h['sig'] = sig_hist
     #TTbar and Diboson
     print(f"[INOF] this is TTbar")
-    print((bkg_hists[reg][cat])[1].view(flow=False).value)
-    TTbar_hist = Conditional_norm_2Dhisto((bkg_hists[reg][cat])[1],xbins)
+    print((bkg_hists[reg][cat]['mean'])[1].view(flow=False).value)
+    TTbar_hist = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['mean'])[1],xbins)
+    TTbar_hist_up = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['up'])[1],xbins)
+    TTbar_hist_up = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['dn'])[1],xbins)
     outfile[f'TTbar_{case}']  = TTbar_hist
-    outfile[f'TTbar_{case}_up']  = TTbar_hist
-    outfile[f'TTbar_{case}_dn']  = TTbar_hist
+    outfile[f'TTbar_{case}_up']  = TTbar_hist_up
+    outfile[f'TTbar_{case}_dn']  = TTbar_hist_up
 
     dir_h['TTbar'] = TTbar_hist
 
     print(f"[INOF] this is Diboson")
-    print((bkg_hists[reg][cat])[0].view(flow=False).value)
-    Diboson_hist = Conditional_norm_2Dhisto((bkg_hists[reg][cat])[0],xbins)
+    print((bkg_hists[reg][cat]['mean'])[0].view(flow=False).value)
+    Diboson_hist = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['mean'])[0],xbins)
+    Diboson_hist_up = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['up'])[0],xbins)
+    Diboson_hist_dn = Conditional_norm_2Dhisto((bkg_hists[reg][cat]['dn'])[0],xbins)
     outfile[f'Diboson_{case}']  = Diboson_hist    
-    outfile[f'Diboson_{case}_up']  = Diboson_hist    
-    outfile[f'Diboson_{case}_dn']  = Diboson_hist
+    outfile[f'Diboson_{case}_up']  = Diboson_hist_up  
+    outfile[f'Diboson_{case}_dn']  = Diboson_hist_dn
 
     dir_h['Diboson'] = Diboson_hist
 
     #Z+jet
     print(f"[INOF] this is Z+jet")
     #apply Alph ratio
+    Alph_hist = Alpha_file[f'{casename}_{cat}_all'].to_hist()
+    Alpha_array = Alph_hist.values()
     Data_hist['CR']['2lep'].view(flow=False).value = Data_hist['CR']['2lep'].view(flow=False).value - (bkg_hists['CR']['2lep'])[0].view(flow=False).value- (bkg_hists['CR']['2lep'])[1].view(flow=False).value
-    Data_hist['CR']['2lep'].view(flow=False).value[:,0] = Data_hist['CR']['2lep'].view(flow=False).value[:,0]*Alph_array[f'{case}_{cat}']
+    #Data_hist['CR']['2lep'].view(flow=False).value[:,0] = Data_hist['CR']['2lep'].view(flow=False).value[:,0]*Alph_array[f'{case}_{cat}']
+    Data_hist['CR']['2lep'].view(flow=False).value[:,0] = Data_hist['CR']['2lep'].view(flow=False).value[:,0]*Alpha_array
     #replace KD in data CR by MC SR
     for x in range(0,xbins):
         Data_hist['CR']['2lep'].view(flow=False).value[x,:] = bkg_hists['SR']['2lep'][2].view(flow=False).value[x,:]
