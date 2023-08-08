@@ -2,6 +2,7 @@
 #define TREELOOP_H
 
 #include <vector>
+#include <cmath>
 #include <string>
 #include <typeinfo>
 #include "IvyBase.h"
@@ -16,6 +17,10 @@
 #include "DiscriminantClasses.h"
 //#include <ROOT/RDataFrame.hxx>
 
+#include "FWCore/ParameterSet/interface/FileInPath.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+
 using namespace std;
 using namespace IvyStreamHelpers;
 
@@ -23,7 +28,7 @@ class TreeLoop : public IvyBase
 //class TreeLoop
 {
 public:
-  TreeLoop(TString inputfile,TString outputfile);
+  TreeLoop(TString inputfile,TString outputfile, string year);
   ~TreeLoop();
 
   void setMatrixElementList(std::vector<std::string> const& MElist, bool const& isGen);
@@ -37,10 +42,15 @@ public:
   void SetVBFGen();
   void initialize();
   void SetMEsFile();
+  void SetCrossSection(TString inputfile);
 
 
 protected:
-  int year= 2016;
+  int tempyear= 2016;
+  string jecUncFile_ = "";
+  vector<string> uncSources {};
+  vector<JetCorrectionUncertainty*> ak4splittedUncerts_;
+  vector<JetCorrectionUncertainty*> ak8splittedUncerts_;
   //TString treeName = "Ana/passedEvents";
   // ME lists
   std::vector<std::string> lheMElist;
@@ -79,7 +89,8 @@ protected:
 
   bool passedGENH;
 
-  float EventWeight, GenWeight, PileupWeight, PrefiringWeight,SumWeight;
+  float EventWeight, GenWeight, PileupWeight, PrefiringWeight,SumWeight, CrossSectionWeight=1.0;
+  float xsec = 1.0;
   Long64_t nentries;
 
   ULong64_t run,event,lumiSect;
@@ -89,8 +100,10 @@ protected:
 
   int lep_Z1index[2];
   int jet_Z1index[2], jet_Z1index_up[2], jet_Z1index_dn[2];
+  int jet_Z1index_mass_bais[2];
   int lep_Hindex[4];
   int Nleptons, Ntightleptons;
+  int n_jets, n_mergedjets;
   int jet_1_btag, jet_1_btag_up, jet_1_btag_dn;
   int jet_2_btag, jet_2_btag_up, jet_2_btag_dn;
   float jet_1_deepbtag, jet_1_deepbtag_up, jet_1_deepbtag_dn;
@@ -98,14 +111,60 @@ protected:
   int jet_1_hadronflavor, jet_1_partonflavor;
   int jet_2_hadronflavor, jet_2_partonflavor;
   int merged_Z1index, merged_Z1index_up, merged_Z1index_dn;
+  double jet_1_pt, jet_1_eta, jet_1_phi, jet_1_mass;
+  double jet_2_pt, jet_2_eta, jet_2_phi, jet_2_mass;
   double jet_1_pt_up, jet_1_eta_up, jet_1_phi_up, jet_1_mass_up;
   double jet_2_pt_up, jet_2_eta_up, jet_2_phi_up, jet_2_mass_up;
   double jet_1_pt_dn, jet_1_eta_dn, jet_1_phi_dn, jet_1_mass_dn;
   double jet_2_pt_dn, jet_2_eta_dn, jet_2_phi_dn, jet_2_mass_dn;
+
+  double jet_1_jesunc_split_Total,    jet_1_jesunc_split_Abs,        jet_1_jesunc_split_Abs_year; 
+  double jet_1_jesunc_split_BBEC1,    jet_1_jesunc_split_BBEC1_year, jet_1_jesunc_split_EC2; 
+  double jet_1_jesunc_split_EC2_year, jet_1_jesunc_split_FlavQCD,    jet_1_jesunc_split_HF; 
+  double jet_1_jesunc_split_HF_year,  jet_1_jesunc_split_RelBal,     jet_1_jesunc_split_RelSample_year;
+  double jet_2_jesunc_split_Total,    jet_2_jesunc_split_Abs,        jet_2_jesunc_split_Abs_year; 
+  double jet_2_jesunc_split_BBEC1,    jet_2_jesunc_split_BBEC1_year, jet_2_jesunc_split_EC2; 
+  double jet_2_jesunc_split_EC2_year, jet_2_jesunc_split_FlavQCD,    jet_2_jesunc_split_HF; 
+  double jet_2_jesunc_split_HF_year,  jet_2_jesunc_split_RelBal,     jet_2_jesunc_split_RelSample_year;
+
+  double jetpt_1_jesup_split_Total,      jetpt_1_jesup_split_Abs, jetpt_1_jesup_split_Abs_year, jetpt_1_jesup_split_BBEC1;
+  double jetpt_1_jesup_split_BBEC1_year, jetpt_1_jesup_split_EC2, jetpt_1_jesup_split_EC2_year;
+  double jetpt_1_jesup_split_FlavQCD,    jetpt_1_jesup_split_HF,  jetpt_1_jesup_split_HF_year,  jetpt_1_jesup_split_RelBal;
+  double jetpt_1_jesup_split_RelSample_year;
+  double jetpt_2_jesup_split_Total,      jetpt_2_jesup_split_Abs, jetpt_2_jesup_split_Abs_year, jetpt_2_jesup_split_BBEC1;
+  double jetpt_2_jesup_split_BBEC1_year, jetpt_2_jesup_split_EC2, jetpt_2_jesup_split_EC2_year;
+  double jetpt_2_jesup_split_FlavQCD,    jetpt_2_jesup_split_HF,  jetpt_2_jesup_split_HF_year,  jetpt_2_jesup_split_RelBal;
+  double jetpt_2_jesup_split_RelSample_year;
+
+  double jetpt_1_jesdn_split_Total,      jetpt_1_jesdn_split_Abs, jetpt_1_jesdn_split_Abs_year, jetpt_1_jesdn_split_BBEC1;
+  double jetpt_1_jesdn_split_BBEC1_year, jetpt_1_jesdn_split_EC2, jetpt_1_jesdn_split_EC2_year;
+  double jetpt_1_jesdn_split_FlavQCD,    jetpt_1_jesdn_split_HF,  jetpt_1_jesdn_split_HF_year,  jetpt_1_jesdn_split_RelBal;
+  double jetpt_1_jesdn_split_RelSample_year;
+  double jetpt_2_jesdn_split_Total,      jetpt_2_jesdn_split_Abs, jetpt_2_jesdn_split_Abs_year, jetpt_2_jesdn_split_BBEC1;
+  double jetpt_2_jesdn_split_BBEC1_year, jetpt_2_jesdn_split_EC2, jetpt_2_jesdn_split_EC2_year;
+  double jetpt_2_jesdn_split_FlavQCD,    jetpt_2_jesdn_split_HF,  jetpt_2_jesdn_split_HF_year,  jetpt_2_jesdn_split_RelBal;
+  double jetpt_2_jesdn_split_RelSample_year;
   vector<int> jet_btag;
+
+
+  double mergedjet_jesunc_split_Total,    mergedjet_jesunc_split_Abs,        mergedjet_jesunc_split_Abs_year; 
+  double mergedjet_jesunc_split_BBEC1,    mergedjet_jesunc_split_BBEC1_year, mergedjet_jesunc_split_EC2; 
+  double mergedjet_jesunc_split_EC2_year, mergedjet_jesunc_split_FlavQCD,    mergedjet_jesunc_split_HF; 
+  double mergedjet_jesunc_split_HF_year,  mergedjet_jesunc_split_RelBal,     mergedjet_jesunc_split_RelSample_year;
+
+  double mergedjetpt_jesup_split_Total,    mergedjetpt_jesup_split_Abs,        mergedjetpt_jesup_split_Abs_year; 
+  double mergedjetpt_jesup_split_BBEC1,    mergedjetpt_jesup_split_BBEC1_year, mergedjetpt_jesup_split_EC2; 
+  double mergedjetpt_jesup_split_EC2_year, mergedjetpt_jesup_split_FlavQCD,    mergedjetpt_jesup_split_HF; 
+  double mergedjetpt_jesup_split_HF_year,  mergedjetpt_jesup_split_RelBal,     mergedjetpt_jesup_split_RelSample_year;
+
+  double mergedjetpt_jesdn_split_Total,    mergedjetpt_jesdn_split_Abs,        mergedjetpt_jesdn_split_Abs_year; 
+  double mergedjetpt_jesdn_split_BBEC1,    mergedjetpt_jesdn_split_BBEC1_year, mergedjetpt_jesdn_split_EC2; 
+  double mergedjetpt_jesdn_split_EC2_year, mergedjetpt_jesdn_split_FlavQCD,    mergedjetpt_jesdn_split_HF; 
+  double mergedjetpt_jesdn_split_HF_year,  mergedjetpt_jesdn_split_RelBal,     mergedjetpt_jesdn_split_RelSample_year;
 
   double mass2jet_up, mass2jet_dn, pt2jet_up, pt2jet_dn;
   double mass2jet, pt2jet;
+  double mass2jet_mass_bais, pt2jet_mass_bais, mass2l2jet_mass_bais;
   double mass2l, pt2l;
   double massmerged,massmerged_up, massmerged_dn;
   double ptmerged, ptmerged_up, ptmerged_dn;
@@ -153,6 +212,8 @@ protected:
   double Reco_quark12_match_mass, Reco_quark12_match_DEta;
   bool passedRecoquarkMatch;
   int match2_recoindex, match1_recoindex;
+  int n_match_vbfquarks_to_recojet = 0;
+  int n_match_vbfquarks_to_genjet = 0;
 
   double DR_merged_VBF1_matched, DR_merged_VBF2_matched;
   vector<double> DR_merged_asccoiacted;
@@ -199,7 +260,9 @@ protected:
 
   //KD
   float KD_jjVBF, KD_jjVBF_up, KD_jjVBF_dn;
-  float KD_JVBF, KD_JVBF_up, KD_JVBF_dn;
+  float KD_jVBF;
+  float KD_JJVBF, KD_JVBF_up, KD_JVBF_dn;
+  float KD_JVBF;
   float KD_ZJ, KD_ZJ_up, KD_ZJ_dn;
   float KD_Zjj, KD_Zjj_up, KD_Zjj_dn;
 
@@ -239,7 +302,7 @@ protected:
   TTreeReaderArray<float> *lep_dataMC;
   TTreeReaderArray<int> *mergedjet_nbHadrons, *mergedjet_ncHadrons;
   TTreeReaderArray<int> *jet_hadronFlavour, *jet_partonFlavour;
-  TTreeReaderArray<double> *GENH_status, *GENH_mass;
+  TTreeReaderArray<double> *GENH_status, *GENH_mass, *GENH_pt, *GENH_eta, *GENH_phi;
   TTreeReaderArray<int> *GENH_isHard;
 
 

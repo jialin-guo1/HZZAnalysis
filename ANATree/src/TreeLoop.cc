@@ -1,8 +1,7 @@
 #include "TreeLoop.h"
 
-
 //construtor
-TreeLoop::TreeLoop(TString inputfile, TString outputfile){
+TreeLoop::TreeLoop(TString inputfile, TString outputfile, string year){
 
   if(strstr(inputfile,"MuonEG") || strstr(inputfile,"DoubleMuon") || strstr(inputfile,"SingleMuon") || strstr(inputfile,"SingleElectron") || strstr(inputfile,"DoubleEG") || strstr(inputfile,"EGamma")){
     isData = true;
@@ -10,6 +9,48 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile){
   }else{
     isMC = true;
     cout<<"This is MC process"<<endl;
+    if(inputfile.Contains("GluGluHToZZTo2L2Q") || inputfile.Contains("VBF_HToZZTo2L2Q")){
+      SetCrossSection(inputfile);
+      std::cout << "Cross Section Value: " << xsec << std::endl;
+    }
+  }
+
+  //tempyear = static_cast<int>(year);
+  //set up splited jes uncertainty source
+  tempyear = stoi(year); //convert string to int
+  if(tempyear==2016){
+    jecUncFile_ = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/ANATree/data/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt";
+    uncSources.push_back("Total");
+    uncSources.push_back("Absolute"); uncSources.push_back("Absolute_2016");
+    uncSources.push_back("BBEC1"); uncSources.push_back("BBEC1_2016");
+    uncSources.push_back("EC2"); uncSources.push_back("EC2_2016");
+    uncSources.push_back("FlavorQCD");
+    uncSources.push_back("HF"); uncSources.push_back("HF_2016");
+    uncSources.push_back("RelativeBal");
+    uncSources.push_back("RelativeSample_2016");
+    ////['Absolute', 'Absolute_2016', 'BBEC1', 'BBEC1_2016', 'EC2', 'EC2_2016', 'FlavorQCD', 'HF', 'HF_2016', 'RelativeBal', 'RelativeSample_2016']='total'
+  }else if(tempyear==2017){
+    jecUncFile_ = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/ANATree/data/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+    uncSources.push_back("Total");
+    uncSources.push_back("Absolute"); uncSources.push_back("Absolute_2017");
+    uncSources.push_back("BBEC1"); uncSources.push_back("BBEC1_2017");
+    uncSources.push_back("EC2"); uncSources.push_back("EC2_2017");
+    uncSources.push_back("FlavorQCD");
+    uncSources.push_back("HF"); uncSources.push_back("HF_2017");
+    uncSources.push_back("RelativeBal");
+    uncSources.push_back("RelativeSample_2017"); 
+    //['Absolute', 'Absolute_2017', 'BBEC1', 'BBEC1_2017', 'EC2', 'EC2_2017', 'FlavorQCD', 'HF', 'HF_2017', 'RelativeBal', 'RelativeSample_2017'] + 'Total'
+  }else if(tempyear==2018){
+    jecUncFile_ = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/ANATree/data/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+    uncSources.push_back("Total");
+    uncSources.push_back("Absolute"); uncSources.push_back("Absolute_2018");
+    uncSources.push_back("BBEC1"); uncSources.push_back("BBEC1_2018");
+    uncSources.push_back("EC2"); uncSources.push_back("EC2_2018");
+    uncSources.push_back("FlavorQCD");
+    uncSources.push_back("HF"); uncSources.push_back("HF_2018");
+    uncSources.push_back("RelativeBal");
+    uncSources.push_back("RelativeSample_2018");
+    //['Absolute', 'Absolute_2018', 'BBEC1', 'BBEC1_2018', 'EC2', 'EC2_2018', 'FlavorQCD', 'HF', 'HF_2018', 'RelativeBal', 'RelativeSample_2018'] + 'Total'
   }
   //df = new ROOT:
   oldfile = new TFile(inputfile);
@@ -24,6 +65,8 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile){
   myreader = new TTreeReader("Ana/passedEvents",oldfile);
   TH1F *temph = (TH1F*)oldfile->Get("Ana/sumWeights");
   SumWeight = temph->GetBinContent(1);
+
+  CrossSectionWeight = 1000*xsec/SumWeight;
 
   TH1F *nEvents = (TH1F*)oldfile->Get("Ana/nEvents");
   nentries = nEvents->GetBinContent(1);
@@ -40,7 +83,6 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile){
   passedEventsTree_All = new TTree("passedEvents","passedEvents");
 
   if(verbose){cout<<"[INFO] construtor done"<<endl;}
-
 
 }
 
@@ -131,18 +173,66 @@ void TreeLoop::Loop(){
   for (auto const& KDtype:KDtypes) KDlist.emplace_back(KDtype);
   DiscriminantClasses::constructDiscriminants(KDlist, 169*121, "JJVBFTagged");
 
+  //KD_jVBf for resolved case========================================================================
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_jVBF"<<endl;
+  vector<DiscriminantClasses::Type> KDtypes_jVBF{DiscriminantClasses::kDjVBF};
+  unsigned int const nKDs_jVBF = KDtypes_jVBF.size();
+  vector<DiscriminantClasses::KDspecs> KDlist_jVBF;
+  KDlist_jVBF.reserve(nKDs_jVBF);
+  for (auto const& KDtype:KDtypes_jVBF) KDlist_jVBF.emplace_back(KDtype);
+  DiscriminantClasses::constructDiscriminants(KDlist_jVBF, 169*121, "JJVBFTagged");
+
+  //KD_JJVBF========================================================================
+  if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_JJVBF"<<endl;
+  vector<DiscriminantClasses::Type> KDtypes_JJVBF{DiscriminantClasses::kDjjVBF};
+  unsigned int const nKDs_JJVBF = KDtypes_JJVBF.size();
+  vector<DiscriminantClasses::KDspecs> KDlist_JJVBF;
+  KDlist_JJVBF.reserve(nKDs_JJVBF);
+  for (auto const& KDtype:KDtypes_JJVBF) KDlist_JJVBF.emplace_back(KDtype);
+  DiscriminantClasses::constructDiscriminants(KDlist_JJVBF, 169*121, "JJVBFTagged");
   //KD_JVBF========================================================================
   if(verbose) cout<<"[INFO] constuct DiscriminantClasses objet for KD_JVBF"<<endl;
-  vector<DiscriminantClasses::Type> KDtypes_JVBF{DiscriminantClasses::kDjjVBF};
+  vector<DiscriminantClasses::Type> KDtypes_JVBF{DiscriminantClasses::kDjVBF};
   unsigned int const nKDs_JVBF = KDtypes_JVBF.size();
   vector<DiscriminantClasses::KDspecs> KDlist_JVBF;
   KDlist_JVBF.reserve(nKDs_JVBF);
   for (auto const& KDtype:KDtypes_JVBF) KDlist_JVBF.emplace_back(KDtype);
   DiscriminantClasses::constructDiscriminants(KDlist_JVBF, 169*121, "JJVBFTagged");
 
+  //jecsplit
+  if(isMC){
+    for(unsigned s_unc = 0; s_unc < uncSources.size(); s_unc++){
+      JetCorrectorParameters ak4corrParams = JetCorrectorParameters(jecUncFile_, uncSources[s_unc]);
+      JetCorrectorParameters ak8corrParams = JetCorrectorParameters(jecUncFile_, uncSources[s_unc]);
+      ak4splittedUncerts_.push_back(new JetCorrectionUncertainty(ak4corrParams));
+      ak8splittedUncerts_.push_back(new JetCorrectionUncertainty(ak8corrParams));
+      cout<<"uncSources["<<s_unc<<"]"<<uncSources[s_unc]<<endl;
+      cout<<"ak4splittedUncerts_["<<s_unc<<"]"<<ak4splittedUncerts_[s_unc]<<endl;
+    }
+  }
+
   if(verbose){cout<<"[INFO]============loop tree reader========================"<<endl;}
   int nevents_negative = 0;
-  int nevents_nassociatedjets_lesstwo = 0;
+  int npassed_resolved = 0;
+  int times_calculation_KD_jjVBF = 0;
+  int n_negative_KD_jjVBF_resolved  = 0;
+  int n_events_associatedjets_lesstwo_resolved = 0;
+
+  int n_times_calculation_KD_jVBF_resolved = 0;
+  int n_associatedjets_0_resolved = 0;
+  int n_negative_KD_jVBF_resolved = 0;
+
+  int n_passed_merged = 0;
+  int n_negative_KD_VBF_merged = 0;
+  int n_negative_KD_jjVBF_merged = 0;
+  int n_times_calculation_KD_jjVBF_merged = 0;
+  int n_events_associatedjets_lesstwo_merged = 0;
+
+  int n_times_calculation_KD_jVBF_merged = 0;
+  int n_associatedjets_0_merged = 0;
+  int n_negative_KD_jVBF_merged = 0;
+
+
   int ievent = 0;
   //loop
   while (myreader->Next()) {
@@ -150,6 +240,7 @@ void TreeLoop::Loop(){
     if(ievent%10000==0){
       cout<<ievent<<"/"<<nentries<<std::endl;
     }
+    //if(ievent==5000){break;} //test for 50000 events
 
     if(!(*(*passedTrig))){
       if(verbose){cout<<"[INFO] failed pass trigger,skip to next tree loop"<<endl;}
@@ -170,6 +261,10 @@ void TreeLoop::Loop(){
 
     Met = *(*met);
     Met_phi = *(*met_phi);
+
+    //save then number of ak4 jets and ak8 jets
+    n_jets = jet_pt->GetSize();
+    n_mergedjets = mergedjet_pt->GetSize();
 
     if(verbose){cout<<"[INFO] try to find higgs candidate"<<endl;}
     findZ1LCandidate();
@@ -216,13 +311,138 @@ void TreeLoop::Loop(){
     }
 
     if(foundZ2MergedCandidata) {
+      passed_MergedolonlyHiggs++;
       foundZ2JCandidate=false;
       foundZ2JCandidate_up=false;
       foundZ2JCandidate_dn=false;
     }
+    else{passed_resovedonlyHiggs++;}
 
-    //find resolved higgs
-    if(foundZ2JCandidate ){
+    //================================
+    //====resolved category============
+    //================================
+    if(foundZ2JCandidate){
+      //split JEC UnCertainty
+      vector<float> jes_unc_split {};
+      vector<float> pt_jesup_split {};
+      vector<float> pt_jesdn_split {};
+      float singleContr_jes_unc = 0;
+      if(isMC){
+
+        for(unsigned s_unc = 0; s_unc < uncSources.size(); s_unc++){
+			    singleContr_jes_unc = 0;
+			    ak4splittedUncerts_[s_unc]->setJetEta((*jet_eta)[jet_Z1index[0]]);
+			    ak4splittedUncerts_[s_unc]->setJetPt((*jet_pt)[jet_Z1index[0]]);
+			    singleContr_jes_unc = ak4splittedUncerts_[s_unc]->getUncertainty(true); 
+			    jes_unc_split.push_back(singleContr_jes_unc);
+			    pt_jesup_split.push_back( (*jet_pt)[jet_Z1index[0]] * (1.0 + singleContr_jes_unc));
+			    pt_jesdn_split.push_back( (*jet_pt)[jet_Z1index[0]] * (1.0 - singleContr_jes_unc));
+        }
+      }else{
+        jes_unc_split.push_back(-999.);
+			  pt_jesup_split.push_back(-999.);
+			  pt_jesdn_split.push_back(-999.);
+      }
+      jet_1_jesunc_split_Total=jes_unc_split[0]; 
+      jet_1_jesunc_split_Abs=jes_unc_split[1]; 
+      jet_1_jesunc_split_Abs_year=jes_unc_split[2]; 
+      jet_1_jesunc_split_BBEC1=jes_unc_split[3]; 
+      jet_1_jesunc_split_BBEC1_year=jes_unc_split[4];
+      jet_1_jesunc_split_EC2=jes_unc_split[5]; 
+      jet_1_jesunc_split_EC2_year=jes_unc_split[6]; 
+      jet_1_jesunc_split_FlavQCD=jes_unc_split[7]; 
+      jet_1_jesunc_split_HF=jes_unc_split[8]; 
+      jet_1_jesunc_split_HF_year=jes_unc_split[9];
+      jet_1_jesunc_split_RelBal=jes_unc_split[10]; 
+      jet_1_jesunc_split_RelSample_year=jes_unc_split[11];
+
+      jetpt_1_jesup_split_Total=pt_jesup_split[0]; 
+      jetpt_1_jesup_split_Abs=pt_jesup_split[1]; 
+      jetpt_1_jesup_split_Abs_year=pt_jesup_split[2]; 
+      jetpt_1_jesup_split_BBEC1=pt_jesup_split[3]; 
+      jetpt_1_jesup_split_BBEC1_year=pt_jesup_split[4];
+      jetpt_1_jesup_split_EC2=pt_jesup_split[5]; 
+      jetpt_1_jesup_split_EC2_year=pt_jesup_split[6]; 
+      jetpt_1_jesup_split_FlavQCD=pt_jesup_split[7]; 
+      jetpt_1_jesup_split_HF=pt_jesup_split[8]; 
+      jetpt_1_jesup_split_HF_year=pt_jesup_split[9];
+      jetpt_1_jesup_split_RelBal=pt_jesup_split[10]; 
+      jetpt_1_jesup_split_RelSample_year=pt_jesup_split[11];
+	    //dn	
+      jetpt_1_jesdn_split_Total=pt_jesdn_split[0]; 
+      jetpt_1_jesdn_split_Abs=pt_jesdn_split[1]; 
+      jetpt_1_jesdn_split_Abs_year=pt_jesdn_split[2]; 
+      jetpt_1_jesdn_split_BBEC1=pt_jesdn_split[3]; 
+      jetpt_1_jesdn_split_BBEC1_year=pt_jesdn_split[4];
+      jetpt_1_jesdn_split_EC2=pt_jesdn_split[5]; 
+      jetpt_1_jesdn_split_EC2_year=pt_jesdn_split[6]; 
+      jetpt_1_jesdn_split_FlavQCD=pt_jesdn_split[7]; 
+      jetpt_1_jesdn_split_HF=pt_jesdn_split[8]; 
+      jetpt_1_jesdn_split_HF_year=pt_jesdn_split[9];
+      jetpt_1_jesdn_split_RelBal=pt_jesdn_split[10]; 
+      jetpt_1_jesdn_split_RelSample_year=pt_jesdn_split[11];
+
+      ////jet 2
+      jes_unc_split.clear();
+      pt_jesup_split.clear();
+      pt_jesdn_split.clear();
+      singleContr_jes_unc = 0;
+      if(isMC){
+
+        for(unsigned s_unc = 0; s_unc < uncSources.size(); s_unc++){
+			    singleContr_jes_unc = 0;
+			    ak4splittedUncerts_[s_unc]->setJetEta((*jet_eta)[jet_Z1index[1]]);
+			    ak4splittedUncerts_[s_unc]->setJetPt((*jet_pt)[jet_Z1index[1]]);
+			    singleContr_jes_unc = ak4splittedUncerts_[s_unc]->getUncertainty(true); 
+			    jes_unc_split.push_back(singleContr_jes_unc);
+			    pt_jesup_split.push_back( (*jet_pt)[jet_Z1index[1]] * (1.0 + singleContr_jes_unc));
+			    pt_jesdn_split.push_back( (*jet_pt)[jet_Z1index[1]] * (1.0 - singleContr_jes_unc));
+        }
+      }else{
+        jes_unc_split.push_back(-999.);
+			  pt_jesup_split.push_back(-999.);
+			  pt_jesdn_split.push_back(-999.);
+      }
+      jet_2_jesunc_split_Total=jes_unc_split[0]; 
+      jet_2_jesunc_split_Abs=jes_unc_split[1]; 
+      jet_2_jesunc_split_Abs_year=jes_unc_split[2]; 
+      jet_2_jesunc_split_BBEC1=jes_unc_split[3]; 
+      jet_2_jesunc_split_BBEC1_year=jes_unc_split[4];
+      jet_2_jesunc_split_EC2=jes_unc_split[5]; 
+      jet_2_jesunc_split_EC2_year=jes_unc_split[6]; 
+      jet_2_jesunc_split_FlavQCD=jes_unc_split[7]; 
+      jet_2_jesunc_split_HF=jes_unc_split[8]; 
+      jet_2_jesunc_split_HF_year=jes_unc_split[9];
+      jet_2_jesunc_split_RelBal=jes_unc_split[10]; 
+      jet_2_jesunc_split_RelSample_year=jes_unc_split[11];
+
+      jetpt_2_jesup_split_Total=pt_jesup_split[0]; 
+      jetpt_2_jesup_split_Abs=pt_jesup_split[1]; 
+      jetpt_2_jesup_split_Abs_year=pt_jesup_split[2]; 
+      jetpt_2_jesup_split_BBEC1=pt_jesup_split[3]; 
+      jetpt_2_jesup_split_BBEC1_year=pt_jesup_split[4];
+      jetpt_2_jesup_split_EC2=pt_jesup_split[5]; 
+      jetpt_2_jesup_split_EC2_year=pt_jesup_split[6]; 
+      jetpt_2_jesup_split_FlavQCD=pt_jesup_split[7];
+      jetpt_2_jesup_split_HF=pt_jesup_split[8]; 
+      jetpt_2_jesup_split_HF_year=pt_jesup_split[9];
+      jetpt_2_jesup_split_RelBal=pt_jesup_split[10]; 
+      jetpt_2_jesup_split_RelSample_year=pt_jesup_split[11];
+	    //dn	
+      jetpt_2_jesdn_split_Total=pt_jesdn_split[0]; 
+      jetpt_2_jesdn_split_Abs=pt_jesdn_split[1]; 
+      jetpt_2_jesdn_split_Abs_year=pt_jesdn_split[2]; 
+      jetpt_2_jesdn_split_BBEC1=pt_jesdn_split[3]; 
+      jetpt_2_jesdn_split_BBEC1_year=pt_jesdn_split[4];
+      jetpt_2_jesdn_split_EC2=pt_jesdn_split[5]; 
+      jetpt_2_jesdn_split_EC2_year=pt_jesdn_split[6]; 
+      jetpt_2_jesdn_split_FlavQCD=pt_jesdn_split[7]; 
+      jetpt_2_jesdn_split_HF=pt_jesdn_split[8]; 
+      jetpt_2_jesdn_split_HF_year=pt_jesdn_split[9];
+      jetpt_2_jesdn_split_RelBal=pt_jesdn_split[10]; 
+      jetpt_2_jesdn_split_RelSample_year=pt_jesdn_split[11];
+
+
       TLorentzVector p4_ZZ, Lep1, Lep2, Jet1,Jet2;
       Lep1.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[0]],(*lepFSR_eta)[lep_Z1index[0]],(*lep_phi)[lep_Z1index[0]],(*lepFSR_mass)[lep_Z1index[0]]);
       Lep2.SetPtEtaPhiM((*lepFSR_pt)[lep_Z1index[1]],(*lepFSR_eta)[lep_Z1index[1]],(*lep_phi)[lep_Z1index[1]],(*lepFSR_mass)[lep_Z1index[1]]);
@@ -231,9 +451,16 @@ void TreeLoop::Loop(){
 
       p4_ZZ = Lep1 + Lep2 + Jet1 + Jet2;
       mass2l2jet = p4_ZZ.M(); //mass2l2jet_up = p4_ZZ_up.M(); mass2l2jet_dn = p4_ZZ_dn.M();
+
+      TLorentzVector Jet1_mass_bais, Jet2_mass_bais;
+      Jet1_mass_bais.SetPtEtaPhiM((*jet_pt)[jet_Z1index_mass_bais[0]],(*jet_eta)[jet_Z1index_mass_bais[0]],(*jet_phi)[jet_Z1index_mass_bais[0]],(*jet_mass)[jet_Z1index_mass_bais[0]]);
+      Jet2_mass_bais.SetPtEtaPhiM((*jet_pt)[jet_Z1index_mass_bais[1]],(*jet_eta)[jet_Z1index_mass_bais[1]],(*jet_phi)[jet_Z1index_mass_bais[1]],(*jet_mass)[jet_Z1index_mass_bais[1]]);
+
+      mass2l2jet_mass_bais = (Lep1 + Lep2 + Jet1_mass_bais + Jet2_mass_bais).M();
       //cout<<"this mass2l2jet = "<< mass2l2jet<<endl;
 
       if(foundZ1LCandidate){
+        npassed_resolved++;
         if (doMela){
           //check number of associated jets
           int njets = jet_pt->GetSize();
@@ -351,8 +578,9 @@ void TreeLoop::Loop(){
             if(verbose) cout<<"[INFO] This KD_Zjj = "<<KD_Zjj<<endl;
           }
 
+          //KDjjVBF=========================================================================
           if(nassociatedjets>=2){ //compute KD_jjVBF
-            //cout<<" nassociatedjets>=2 "<<endl;
+            times_calculation_KD_jjVBF ++;
             if(verbose) cout<<"[INFO] found at least two nassociatedjets"<<endl;
             passedNassociated_jj = true;
             //Update discriminants
@@ -365,14 +593,42 @@ void TreeLoop::Loop(){
               KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
               //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
               KD_jjVBF = *(KDspec.KD);
-              if(nassociatedjets<2){
-                nevents_nassociatedjets_lesstwo++;
-              }
+
               if(KD_jjVBF<0){
+                //cout<< "WARNING: KD_jjVBF = "<<KD_jjVBF<<endl;
                 nevents_negative++;
+                n_negative_KD_jjVBF_resolved ++;
               }
           
             }
+          } else if(nassociatedjets==1){
+            //KDjVBF=========================================================================
+            if(verbose) cout<<"[INFO] found at least one nassociatedjets"<<endl;
+            //Update discriminants
+            for (auto& KDspec:KDlist_jVBF){
+              n_times_calculation_KD_jVBF_resolved ++;
+              n_events_associatedjets_lesstwo_resolved ++;
+
+              std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+              for (auto const& strKDvar:KDspec.KDvars){
+                KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+              } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
+
+              KDspec.KD->update(KDvars, mass2l2jet); // Use mZZ!
+              //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
+              KD_jVBF = *(KDspec.KD);
+              if(verbose) cout<<"[INFO] This KD_jVBF = "<<KD_jVBF<<endl;
+              //cout<<"KD_jVBF = "<<KD_jVBF<<endl;
+            }
+            //count how many events have negative KD
+            if(KD_jVBF<0){
+              nevents_negative++;
+              n_negative_KD_jVBF_resolved ++;
+            }
+
+          } else{
+            //count how many events have nassociatedjets = 0 
+            n_associatedjets_0_resolved ++;
           }
         }
       }
@@ -635,8 +891,70 @@ void TreeLoop::Loop(){
       }
     }
 
-    //find merged higgs
+    //================================
+    //====Merged category============
+    //================================
     if(foundZ2MergedCandidata){
+      //split JEC UnCertainty
+      vector<float> jes_unc_split {};
+      vector<float> pt_jesup_split {};
+      vector<float> pt_jesdn_split {};
+      float singleContr_jes_unc = 0;
+      if(isMC){
+
+        for(unsigned s_unc = 0; s_unc < uncSources.size(); s_unc++){
+			    singleContr_jes_unc = 0;
+			    ak8splittedUncerts_[s_unc]->setJetEta((*mergedjet_eta)[merged_Z1index]);
+			    ak8splittedUncerts_[s_unc]->setJetPt((*mergedjet_pt)[merged_Z1index]);
+			    singleContr_jes_unc = ak8splittedUncerts_[s_unc]->getUncertainty(true); 
+			    jes_unc_split.push_back(singleContr_jes_unc);
+			    pt_jesup_split.push_back( (*mergedjet_pt)[merged_Z1index] * (1.0 + singleContr_jes_unc));
+			    pt_jesdn_split.push_back( (*mergedjet_pt)[merged_Z1index] * (1.0 - singleContr_jes_unc));
+        }
+      }else{
+        jes_unc_split.push_back(-999.);
+			  pt_jesup_split.push_back(-999.);
+			  pt_jesdn_split.push_back(-999.);
+      }
+      mergedjet_jesunc_split_Total=jes_unc_split[0]; 
+      mergedjet_jesunc_split_Abs=jes_unc_split[1]; 
+      mergedjet_jesunc_split_Abs_year=jes_unc_split[2]; 
+      mergedjet_jesunc_split_BBEC1=jes_unc_split[3]; 
+      mergedjet_jesunc_split_BBEC1_year=jes_unc_split[4];
+      mergedjet_jesunc_split_EC2=jes_unc_split[5]; 
+      mergedjet_jesunc_split_EC2_year=jes_unc_split[6]; 
+      mergedjet_jesunc_split_FlavQCD=jes_unc_split[7]; 
+      mergedjet_jesunc_split_HF=jes_unc_split[8]; 
+      mergedjet_jesunc_split_HF_year=jes_unc_split[9];
+      mergedjet_jesunc_split_RelBal=jes_unc_split[10]; 
+      mergedjet_jesunc_split_RelSample_year=jes_unc_split[11];
+
+      mergedjetpt_jesup_split_Total=pt_jesup_split[0]; 
+      mergedjetpt_jesup_split_Abs=pt_jesup_split[1]; 
+      mergedjetpt_jesup_split_Abs_year=pt_jesup_split[2]; 
+      mergedjetpt_jesup_split_BBEC1=pt_jesup_split[3]; 
+      mergedjetpt_jesup_split_BBEC1_year=pt_jesup_split[4];
+      mergedjetpt_jesup_split_EC2=pt_jesup_split[5]; 
+      mergedjetpt_jesup_split_EC2_year=pt_jesup_split[6]; 
+      mergedjetpt_jesup_split_FlavQCD=pt_jesup_split[7]; 
+      mergedjetpt_jesup_split_HF=pt_jesup_split[8]; 
+      mergedjetpt_jesup_split_HF_year=pt_jesup_split[9];
+      mergedjetpt_jesup_split_RelBal=pt_jesup_split[10]; 
+      mergedjetpt_jesup_split_RelSample_year=pt_jesup_split[11];
+	    //dn	
+      mergedjetpt_jesdn_split_Total=pt_jesdn_split[0]; 
+      mergedjetpt_jesdn_split_Abs=pt_jesdn_split[1]; 
+      mergedjetpt_jesdn_split_Abs_year=pt_jesdn_split[2]; 
+      mergedjetpt_jesdn_split_BBEC1=pt_jesdn_split[3]; 
+      mergedjetpt_jesdn_split_BBEC1_year=pt_jesdn_split[4];
+      mergedjetpt_jesdn_split_EC2=pt_jesdn_split[5]; 
+      mergedjetpt_jesdn_split_EC2_year=pt_jesdn_split[6]; 
+      mergedjetpt_jesdn_split_FlavQCD=pt_jesdn_split[7]; 
+      mergedjetpt_jesdn_split_HF=pt_jesdn_split[8]; 
+      mergedjetpt_jesdn_split_HF_year=pt_jesdn_split[9];
+      mergedjetpt_jesdn_split_RelBal=pt_jesdn_split[10]; 
+      mergedjetpt_jesdn_split_RelSample_year=pt_jesdn_split[11];
+
       nsubjet = (*mergedjet_nsubjet)[merged_Z1index];
 
       TLorentzVector p4_ZZ,Lep1,Lep2,Jet1,Jet2,Mergedjet;
@@ -651,6 +969,7 @@ void TreeLoop::Loop(){
 
 
       if(foundZ1LCandidate){
+        n_passed_merged ++;
         if (doMela){
           int njets = jet_pt->GetSize();
           int nassociatedjets = 0;
@@ -676,7 +995,7 @@ void TreeLoop::Loop(){
             associatedjetsJ_index.push_back(i);
           }
 
-          //compute KD_JVBF and KD_Zjj
+          //compute KD_JJVBF and KD_Zjj
           //MEs
           //signal like objets
           TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
@@ -789,13 +1108,13 @@ void TreeLoop::Loop(){
             if(verbose) cout<<"[INFO] This KD_ZJ = "<<KD_ZJ<<endl;
           }
 
-          if(nassociatedjets>=2){ //compute KD_JVBF
-
+          if(nassociatedjets>=2){ //compute KD_JJVBF
+            n_times_calculation_KD_jjVBF_merged ++;
             passedNassociated_J = true;
-            //KD_JVBF========================================================================
+            //KD_JJVBF========================================================================
             //Update discriminants
-            if(verbose) cout<<"[INFO] Get Discriminant for KD_VBF"<<endl;
-            for (auto& KDspec:KDlist_JVBF){
+            if(verbose) cout<<"[INFO] Get Discriminant for KD_JJVBF"<<endl;
+            for (auto& KDspec:KDlist_JJVBF){
               std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
               for (auto const& strKDvar:KDspec.KDvars){
                 //cout<<typeid(strKDvar).name()<<endl;
@@ -806,17 +1125,37 @@ void TreeLoop::Loop(){
 
               KDspec.KD->update(KDvars, mass2lj); // Use mZZ!
               //cout<<"value of KD for this evnet  = "<<*(KDspec.KD)<<endl;
-              KD_JVBF = *(KDspec.KD);
+              KD_JJVBF = *(KDspec.KD);
               KD_JVBF_up = *(KDspec.KD);
               KD_JVBF_dn = *(KDspec.KD);
-              if(nassociatedjets<2){
-                nevents_nassociatedjets_lesstwo++;
-              }
-              if(KD_JVBF<0){
-              nevents_negative++;
+
+              if(KD_JJVBF<0){
+                n_negative_KD_VBF_merged ++;
+                n_negative_KD_jjVBF_merged++;
               }
             }
+          }else if(nassociatedjets==1){
+            //KD_JVBF========================================================================
+            n_events_associatedjets_lesstwo_merged++;
+            n_times_calculation_KD_jVBF_merged ++;
+            //Update discriminants
+            if(verbose) cout<<"[INFO] Get Discriminant for KD_JVBF"<<endl;
+            for (auto& KDspec:KDlist_JVBF){
+              std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
+              for (auto const& strKDvar:KDspec.KDvars){
+                KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
+              } // ME_Kfactor_values here is just a map of TString->float. You should have something equivalent.
 
+              KDspec.KD->update(KDvars, mass2lj); // Use mZZ!
+              KD_JVBF = *(KDspec.KD);
+
+              if(KD_JVBF<0){
+                n_negative_KD_VBF_merged ++;
+                n_negative_KD_jVBF_merged++;
+              }
+            }
+          }else{
+            n_associatedjets_0_merged++;
           }
 
           if(verbose){
@@ -867,7 +1206,7 @@ void TreeLoop::Loop(){
             associatedjets.push_back(thisjet);
           }
 
-          //compute KD_JVBF and KD_Zjj
+          //compute KD_JJVBF and KD_Zjj
           //MEs
           //signal like objets
           TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
@@ -946,13 +1285,13 @@ void TreeLoop::Loop(){
             if(verbose) cout<<"[INFO] This KD_ZJ = "<<KD_ZJ<<endl;
           }
 
-          if(nassociatedjets>=2){ //compute KD_JVBF
+          if(nassociatedjets>=2){ //compute KD_JJVBF
 
             passedNassociated_J = true;
-            //KD_JVBF========================================================================
+            //KD_JJVBF========================================================================
             //Update discriminants
             if(verbose) cout<<"[INFO] Get Discriminant for KD_VBF"<<endl;
-            for (auto& KDspec:KDlist_JVBF){
+            for (auto& KDspec:KDlist_JJVBF){
               std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
               for (auto const& strKDvar:KDspec.KDvars){
                 KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
@@ -1009,7 +1348,7 @@ void TreeLoop::Loop(){
             associatedjets.push_back(thisjet);
           }
 
-          //compute KD_JVBF and KD_Zjj
+          //compute KD_JJVBF and KD_Zjj
           //MEs
           //signal like objets
           TLorentzVector selectedLep1,selectedLep2,selectedJet1,selectedJet2;
@@ -1086,13 +1425,13 @@ void TreeLoop::Loop(){
             if(verbose) cout<<"[INFO] This KD_ZJ = "<<KD_ZJ<<endl;
           }
 
-          if(nassociatedjets>=2){ //compute KD_JVBF
+          if(nassociatedjets>=2){ //compute KD_JJVBF
 
             passedNassociated_J = true;
-            //KD_JVBF========================================================================
+            //KD_JJVBF========================================================================
             //Update discriminants
             if(verbose) cout<<"[INFO] Get Discriminant for KD_VBF"<<endl;
-            for (auto& KDspec:KDlist_JVBF){
+            for (auto& KDspec:KDlist_JJVBF){
               std::vector<float> KDvars; KDvars.reserve(KDspec.KDvars.size());
               for (auto const& strKDvar:KDspec.KDvars){
                 KDvars.push_back(ME_Kfactor_values[static_cast<string>(strKDvar)]);
@@ -1179,8 +1518,8 @@ void TreeLoop::Loop(){
   if(verbose) cout<<"[INFO] KD_VBF done"<<endl;
 
   if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
-  for (auto& KDspec:KDlist_JVBF) KDspec.resetKD();
-  if(verbose) cout<<"[INFO] KD_JVBF done"<<endl;
+  for (auto& KDspec:KDlist_JJVBF) KDspec.resetKD();
+  if(verbose) cout<<"[INFO] KD_JJVBF done"<<endl;
 
   if(verbose) cout<<"[INFO] Clean DiscriminantClasses"<<endl;
   for (auto& KDspec:KDlist_Zjj) KDspec.resetKD();
@@ -1190,13 +1529,60 @@ void TreeLoop::Loop(){
   for (auto& KDspec:KDlist_ZJ) KDspec.resetKD();
   if(verbose) cout<<"[INFO] KD_ZJ done"<<endl;
 
-  cout<<"[INFO] there are "<<nevents_negative<<" "<<"events have negative KD value"<<endl;
-  cout<<"[INFO] there are "<<nevents_nassociatedjets_lesstwo<<" "<<"events with number of associated jets less than two"<<endl;
+  cout<<"[INFO] there are "<<npassed_resolved<<" "<<"events have passed full resolved selection"<<endl;
+  cout<<"[INFP] there are "<<times_calculation_KD_jjVBF<<" "<<"times calculation KD_jjVBF in resolved case"<<endl;
+  cout<<"[INFO] there are "<<n_negative_KD_jjVBF_resolved<<" "<<"events have negative KD_jjVBF value in resolved case"<<endl;
+  cout<<"[INFO] there are "<<n_events_associatedjets_lesstwo_resolved<<" "<<"events with number of associated jets less than two in resolved case"<<endl;
+  cout<<"[INFO] there are "<<n_times_calculation_KD_jVBF_resolved<<" "<<"times calculation KD_jVBF in resolved case"<<endl;
+  cout<<"[INFO] there are "<<n_associatedjets_0_resolved<<" "<<"events with number of associated jets equal to zero in resolved case"<<endl;
+  cout<<"[INFO] there are "<<n_negative_KD_jVBF_resolved<<" "<<"events have negative KD_jVBF value in resolved case"<<endl;
+  cout<<"[INFO] there are "<<nevents_negative<<" "<< "events have negative KD in resolved case"<<endl;
+
+  cout<<"[INFO] there are "<<n_passed_merged<<" "<<"events have passed full merged selection"<<endl;
+  cout<<"[INFP] there are "<<n_times_calculation_KD_jjVBF_merged<<" "<<"times calculation KD_jjVBF in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_negative_KD_jjVBF_merged<<" "<<"events have negative KD_jjVBF value in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_events_associatedjets_lesstwo_merged<<"events with number of associated jets less than two in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_times_calculation_KD_jVBF_merged<<" "<<"times calculation KD_jVBF in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_associatedjets_0_merged<<" "<<"events with number of associated jets equal to zero in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_negative_KD_jVBF_merged<<" "<<"events have negative KD_jVBF value in merged case"<<endl;
+  cout<<"[INFO] there are "<<n_negative_KD_VBF_merged<<" "<< "events have negative KD in merged case"<<endl;
+
+  cout<<"[INFO] there are "<<n_match_vbfquarks_to_recojet<<" "<< "events with vbf quarks match to reco jets in all events in resolved case"<<endl;
 
   outfile->cd();
   //passedEventsTree_All->Write();
   TH1F h("sumWeights","sum Weights of Sample",2,0,2);
   h.SetBinContent(1,SumWeight);
+  //
+  TH1F h_1("cutflow","cutflow",23,0,23);
+  h_1.SetBinContent(1,ievent); h_1.GetXaxis()->SetBinLabel(1,"nEvents");
+  h_1.SetBinContent(2,passed_trig); h_1.GetXaxis()->SetBinLabel(2,"passed_trig");
+  h_1.SetBinContent(3,passed_n_2leps); h_1.GetXaxis()->SetBinLabel(3,"passed_n_2leps");
+  h_1.SetBinContent(4,passed_flavor_charge); h_1.GetXaxis()->SetBinLabel(4,"passed_flavor_charge");
+  h_1.SetBinContent(5,passed_lepZpt_40_25); h_1.GetXaxis()->SetBinLabel(5,"passed_lepZpt_40_25");
+  h_1.SetBinContent(6,passed_dR_lilj0point2); h_1.GetXaxis()->SetBinLabel(6,"passed_dR_lilj0point2");
+  h_1.SetBinContent(7,passed_Mll_4); h_1.GetXaxis()->SetBinLabel(7,"passed_Mll_4");
+  h_1.SetBinContent(8,passed_lepisolation); h_1.GetXaxis()->SetBinLabel(8,"passed_lepisolation");
+  h_1.SetBinContent(9,passed_leptightID); h_1.GetXaxis()->SetBinLabel(9,"passed_leptightID");
+  h_1.SetBinContent(10,passed_lepZmass40_180); h_1.GetXaxis()->SetBinLabel(10,"passed_lepZmass40_180");
+  h_1.SetBinContent(11,passed_lepZ); h_1.GetXaxis()->SetBinLabel(11,"passed_lepZ");
+
+  h_1.SetBinContent(12,passed_n_2ak4jets); h_1.GetXaxis()->SetBinLabel(12,"passed_n_2ak4jets");
+  h_1.SetBinContent(13,passed_lepclean); h_1.GetXaxis()->SetBinLabel(13,"passed_lepclean");
+  h_1.SetBinContent(14,passed_jetpt30); h_1.GetXaxis()->SetBinLabel(14,"passed_jetpt30");
+  h_1.SetBinContent(15,passed_jeteta2opint4); h_1.GetXaxis()->SetBinLabel(15,"passed_jeteta2opint4");
+  h_1.SetBinContent(16,passed_dijetpt100); h_1.GetXaxis()->SetBinLabel(16,"passed_dijetpt100");
+  h_1.SetBinContent(17,passed_ak4jetZm_40_180); h_1.GetXaxis()->SetBinLabel(17,"passed_ak4jetZm_40_180");
+  h_1.SetBinContent(18,passed_resovedonlyHiggs); h_1.GetXaxis()->SetBinLabel(18,"passed_resovedonlyHiggs");
+
+
+  h_1.SetBinContent(18,passed_nmergedjets_lepclean); h_1.GetXaxis()->SetBinLabel(18,"passed_nmergedjets_lepclean");
+  h_1.SetBinContent(19,passed_mergedjetsPt200); h_1.GetXaxis()->SetBinLabel(19,"passed_mergedjetsPt200");
+  h_1.SetBinContent(20,passed_mergedjetEta2opint4); h_1.GetXaxis()->SetBinLabel(20,"passed_mergedjetEta2opint4");
+  h_1.SetBinContent(21,passed_mergedmass_40_180); h_1.GetXaxis()->SetBinLabel(21,"passed_mergedmass_40_180");
+  h_1.SetBinContent(22,passed_particleNetZvsQCD0opint9); h_1.GetXaxis()->SetBinLabel(22,"passed_particleNetZvsQCD0opint9");
+  h_1.SetBinContent(23,passed_MergedolonlyHiggs); h_1.GetXaxis()->SetBinLabel(23,"passed_MergedolonlyHiggs");
+
   outfile->Write();
 
   //print cut table infor
@@ -1240,7 +1626,7 @@ void TreeLoop::findZ1LCandidate(){
   if(verbose){cout<<"[INFO] loop leptons in this event"<<endl;}
   unsigned int Nlep = lepFSR_pt->GetSize();
   if(Nlep<2){return;}
-  passed_n_2leps++;
+  //passed_n_2leps++;
   Nleptons = Nlep;
   if(verbose){cout<<"[INFO] found at least tow leptons"<<endl;}
 
@@ -1249,13 +1635,18 @@ void TreeLoop::findZ1LCandidate(){
   vector<int> Z_Z1L_lepindex1;
   vector<int> Z_Z1L_lepindex2;
 
-  //variables for cut table
-  bool pass_flavor_charge = false;
-
+  //check if n tight lepton==2
   for(unsigned int i=0; i<Nlep; i++){
     if ((*lep_tightId)[i]){ Ntightleptons+=1;}
-    for(unsigned int j=i+1; j<Nlep; j++){
+  }
+  if(Ntightleptons!=2){return;}
+  passed_n_2leps++;
 
+  //variables for cut table
+  bool pass_flavor_charge = false;
+  //flavor and charge cut
+  for(unsigned int i=0; i<Nlep; i++){
+    for(unsigned int j=i+1; j<Nlep; j++){
       // same flavor opposite charge for Z+jet CR. different sgin with different flavor for TTjet CR
       if( (((*lep_id)[i]+(*lep_id)[j])!=0) && ((((*lep_id)[i]*(*lep_id)[j])>0) || (abs((*lep_id)[i])==abs((*lep_id)[j]))) ) continue;
       pass_flavor_charge = true;
@@ -1294,7 +1685,7 @@ void TreeLoop::findZ1LCandidate(){
   // Consider all Z candidates
   double minZ1DeltaM=9999.9;
 
-  if(Ntightleptons!=2){return;}
+  //if(Ntightleptons!=2){return;}
   if(verbose){cout<<"[INFO] checkout all leptons pairs if is Z candidate"<<endl;}
   for (int i=0; i<n_Zs; i++) {
 
@@ -1410,15 +1801,7 @@ void TreeLoop::findZ2JCandidata(){
   bool pass_ak4jetZm_40_180 = false;
 
   // Consider all Z candidates
-  //double minZ1DeltaM=9999.9;
-
-  if(pass_jetpt30) passed_jetpt30++;
-  if(pass_jeteta2opint4) passed_jeteta2opint4++;
-  if(pass_lepclean) passed_lepclean++;
-  if(pass_dijetpt100) passed_dijetpt100++;
-  if(pass_ak4jetZm_40_180) passed_ak4jetZm_40_180++;
-
-
+  double minZ1DeltaM=9999.9;
   unsigned int Njets = jet_pt->GetSize();
   //if(Njets<2){ return; } //found at least two jets
   passed_n_2ak4jets++;
@@ -1457,22 +1840,12 @@ void TreeLoop::findZ2JCandidata(){
       jet_i1.SetPtEtaPhiM((*jet_pt)[i1],(*jet_eta)[i1],(*jet_phi)[i1],(*jet_mass)[i1]);
       jet_i2.SetPtEtaPhiM((*jet_pt)[i2],(*jet_eta)[i2],(*jet_phi)[i2],(*jet_mass)[i2]);
 
-      //TLorentzVector jet_i1_up, jet_i1_dn, jet_i2_up, jet_i2_dn;
-      //jet_i1_up.SetPtEtaPhiM((*jet_jesup_pt)[i1],(*jet_jesup_eta)[i1],(*jet_jesup_phi)[i1],(*jet_jesup_mass)[i1]);
-      //jet_i1_dn.SetPtEtaPhiM((*jet_jesdn_pt)[i1],(*jet_jesdn_eta)[i1],(*jet_jesdn_phi)[i1],(*jet_jesdn_mass)[i1]);
-      //jet_i2_up.SetPtEtaPhiM((*jet_jesup_pt)[i2],(*jet_jesup_eta)[i2],(*jet_jesup_phi)[i2],(*jet_jesup_mass)[i2]);
-      //jet_i2_dn.SetPtEtaPhiM((*jet_jesdn_pt)[i2],(*jet_jesdn_eta)[i2],(*jet_jesdn_phi)[i2],(*jet_jesdn_mass)[i2]);
-
 
       TLorentzVector Zi;
       Zi = jet_i1+jet_i2;
 
-      //TLorentzVector Zi_up, Zi_dn;
-      //Zi_up = jet_i1_up+jet_i2_up;
-      //Zi_dn = jet_i1_dn+jet_i2_dn;
-
       TLorentzVector Z1 = Zi;
-      //double Z1DeltaM = abs(Zi.M()-Zmass);
+      double Z1DeltaM = abs(Zi.M()-Zmass);
 
       //all jet must not overlap with tight leptons
       /*
@@ -1523,21 +1896,22 @@ void TreeLoop::findZ2JCandidata(){
       //check loose dijet mass for 40-180Gev
       if(Zi.M()<mZ2Low || Zi.M()>mZ2High){ continue;}
       pass_ak4jetZm_40_180 = true;
-      /*
+      
       if ( Z1DeltaM<=minZ1DeltaM ) {
 
         minZ1DeltaM = Z1DeltaM;
 
-        jet_Z1index[0] = Z2_jetindex[0];
-        jet_Z1index[1] = Z2_jetindex[1];
+        jet_Z1index_mass_bais[0] = Z2_jetindex[0];
+        jet_Z1index_mass_bais[1] = Z2_jetindex[1];
 
-        mass2jet = Zi.M();
-        pt2jet = Zi.Pt();
+        mass2jet_mass_bais = Zi.M();
+        pt2jet_mass_bais = Zi.Pt();
 
         //if (verbose) cout<<" new best Z1L candidate: massZ1: "<<massZ1<<" (mass3l: "<<mass3l<<")"<<endl;
         foundZ2JCandidate=true;
       }
-      */
+      
+
       //select as di-jet pt order
       if(Zi.Pt()>temp_pt){
         temp_pt = Zi.Pt();
@@ -1562,13 +1936,11 @@ void TreeLoop::findZ2JCandidata(){
           jet_2_partonflavor = (*jet_partonFlavour)[Z2_jetindex[1]];
         }
 
-        //jet_1_pt_up = (*jet_jesup_pt)[Z2_jetindex[0]]; jet_1_eta_up = (*jet_jesup_eta)[Z2_jetindex[0]]; jet_1_phi_up = (*jet_jesup_phi)[Z2_jetindex[0]]; jet_1_mass_up = (*jet_jesup_mass)[Z2_jetindex[0]];
-        //jet_1_pt_dn = (*jet_jesdn_pt)[Z2_jetindex[0]]; jet_1_eta_dn = (*jet_jesdn_eta)[Z2_jetindex[0]]; jet_1_phi_dn = (*jet_jesdn_phi)[Z2_jetindex[0]]; jet_1_mass_dn = (*jet_jesdn_mass)[Z2_jetindex[0]];
-        //jet_2_pt_up = (*jet_jesup_pt)[Z2_jetindex[1]]; jet_2_eta_up = (*jet_jesup_eta)[Z2_jetindex[1]]; jet_2_phi_up = (*jet_jesup_phi)[Z2_jetindex[1]]; jet_2_mass_up = (*jet_jesup_mass)[Z2_jetindex[1]];
-        //jet_2_pt_dn = (*jet_jesdn_pt)[Z2_jetindex[1]]; jet_2_eta_dn = (*jet_jesdn_eta)[Z2_jetindex[1]]; jet_2_phi_dn = (*jet_jesdn_phi)[Z2_jetindex[1]]; jet_2_mass_dn = (*jet_jesdn_mass)[Z2_jetindex[1]];
-
         mass2jet = Zi.M(); //mass2jet_up = Zi_up.M(); mass2jet_dn = Zi_dn.M();
         pt2jet = Zi.Pt(); //pt2jet_up = Zi_up.Pt(); pt2jet_dn = Zi_dn.Pt();
+
+        jet_1_pt = (*jet_pt)[Z2_jetindex[0]];
+        jet_2_pt = (*jet_pt)[Z2_jetindex[1]];
 
         foundZ2JCandidate=true;
         if(verbose) cout<<"[INFO] find resovled jet candidates"<<endl;
@@ -1576,7 +1948,12 @@ void TreeLoop::findZ2JCandidata(){
       }
     }
   }
-  //=============UP and donw=====
+  if(pass_jetpt30) passed_jetpt30++;
+  if(pass_jeteta2opint4) passed_jeteta2opint4++;
+  if(pass_lepclean) passed_lepclean++;
+  if(pass_dijetpt100) passed_dijetpt100++;
+  if(pass_ak4jetZm_40_180) passed_ak4jetZm_40_180++;
+  //=============JES UP and donw===============
   if(isMC){
     unsigned int Njets_up = jet_jesup_pt->GetSize();
     int n_Zs_up=0;
@@ -1778,7 +2155,7 @@ void TreeLoop::findZ2MergedCandidata(){
     float temp_particleNetZvsQCD = (*mergedjet_Net_Xbb_de)[i]+(*mergedjet_Net_Xcc_de)[i]+(*mergedjet_Net_Xqq_de)[i];
     float temp_particleNetZbbvslight = (*mergedjet_Net_Xbb_de)[i]/temp_particleNetZvsQCD;
     float temp_particleNetXbbvsQCD = (*mergedjet_Net_Xbb_de)[i]/((*mergedjet_Net_Xbb_de)[i]+(*mergedjet_Net_QCDbb_de)[i]+(*mergedjet_Net_QCDcc_de)[i]+(*mergedjet_Net_QCDother_de)[i]+(*mergedjet_Net_QCDb_de)[i]+(*mergedjet_Net_QCDc_de)[i]);
-    //if(temp_particleNetZvsQCD<0.9) continue;
+    if(temp_particleNetZvsQCD>=0.9) pass_particleNetZvsQCD0opint9 = true;
     //cout<<"this passed ZvsQCD = "<<temp_particleNetZvsQCD<<endl;
     //pass_particleNetZvsQCD0opint9 = true;
 
@@ -1794,6 +2171,11 @@ void TreeLoop::findZ2MergedCandidata(){
       if(verbose) cout<<"found merged jet candidates"<<endl;
     }
   }
+
+  if(pass_mergedjetsPt200) passed_mergedjetsPt200++;
+  if(pass_mergedjetEta2opint4) passed_mergedjetEta2opint4++;
+  if(pass_mergedmass_40_180) passed_mergedmass_40_180++;
+  if(pass_particleNetZvsQCD0opint9) passed_particleNetZvsQCD0opint9++;
 
   if(isMC){
     //=====up
@@ -1843,11 +2225,6 @@ void TreeLoop::findZ2MergedCandidata(){
       }
     }
   }
-
-  if(pass_mergedjetsPt200) passed_mergedjetsPt200++;
-  if(pass_mergedjetEta2opint4) passed_mergedjetEta2opint4++;
-  if(pass_mergedmass_40_180) passed_mergedmass_40_180++;
-  if(pass_particleNetZvsQCD0opint9) passed_particleNetZvsQCD0opint9++;
   //cout<<"this passed_particleNetZvsQCD0opint9 = "<<passed_particleNetZvsQCD0opint9<<endl;
 
 }
@@ -1861,6 +2238,9 @@ void TreeLoop::SetVBFGen(){
     for(int i=0; i<nGEN_higgs; i++){
       if( (*GENH_status)[i]==22 && (*GENH_isHard)[i]){
         GEN_H1_mass = (*GENH_mass)[i];
+        GEN_H1_pt = (*GENH_pt)[i];
+        GEN_H1_eta = (*GENH_eta)[i];
+        GEN_H1_phi = (*GENH_phi)[i];
       }
       else{ continue; }
     }
@@ -1919,6 +2299,7 @@ void TreeLoop::SetVBFGen(){
     }
 
     if(passedGenquarkMatch){
+      n_match_vbfquarks_to_genjet ++;
       GEN_quark1_match_pt = (*GENjet_pt)[match1_index];
       GEN_quark1_match_eta = (*GENjet_eta)[match1_index];
       GEN_quark1_match_phi = (*GENjet_phi)[match1_index];
@@ -1968,6 +2349,7 @@ void TreeLoop::SetVBFGen(){
     }
 
     if(passedRecoquarkMatch){
+      n_match_vbfquarks_to_recojet ++;
       Reco_quark1_match_pt = (*jet_pt)[match1_recoindex];
       Reco_quark1_match_eta = (*jet_eta)[match1_recoindex];
       Reco_quark1_match_phi = (*jet_phi)[match1_recoindex];
@@ -2070,9 +2452,9 @@ void TreeLoop::SetVBFGen(){
 void TreeLoop::SetMEsFile(){// Set the MEs
   // ME lists
   setMatrixElementListFromFile(
-    "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities.me",
+    "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_800.me",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
-    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,DecayProbabilities_MCFM",
+    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,DecayProbabilities_MCFM,LHE_PropagatorRewgt",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,AJetsVHProbabilities_SpinZero_JHUGen,PMAVJJ_SUPERDIJETMELA",
     false
   );
@@ -2080,7 +2462,8 @@ void TreeLoop::SetMEsFile(){// Set the MEs
   // Build the MEs if they are specified
   if (!lheMElist.empty() || !recoMElist.empty()){
     // Set up MELA (done only once inside IvyMELAHelpers)
-    IvyMELAHelpers::setupMela(year, 125., MiscUtils::INFO);
+    //IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::INFO);
+    IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::ERROR);
     //IvyMELAHelpers::setupMela(year, 125., MiscUtils::DEBUG_VERBOSE);
     // If there are output trees, set the output trees of the MEblock.
     // Do this before building the branches.
@@ -2301,6 +2684,9 @@ void TreeLoop::setTree(){
   GENH_status = new TTreeReaderArray<double>(*myreader,"GENH_status");
   GENH_isHard = new TTreeReaderArray<int>(*myreader,"GENH_isHard");
   GENH_mass = new TTreeReaderArray<double>(*myreader,"GENH_mass");
+  GENH_pt = new TTreeReaderArray<double>(*myreader,"GENH_pt");
+  GENH_eta = new TTreeReaderArray<double>(*myreader,"GENH_eta");
+  GENH_phi = new TTreeReaderArray<double>(*myreader,"GENH_phi");
 
   passedEventsTree_All->Branch("lep_1_pt",&lep_1_pt);
   passedEventsTree_All->Branch("lep_1_phi",&lep_1_phi);
@@ -2313,16 +2699,21 @@ void TreeLoop::setTree(){
 
 
   passedEventsTree_All->Branch("mass2jet",&mass2jet);
+  passedEventsTree_All->Branch("mass2jet_mass_bais",&mass2jet_mass_bais);
   passedEventsTree_All->Branch("mass2jet_up",&mass2jet_up);
   passedEventsTree_All->Branch("mass2jet_dn",&mass2jet_dn);
   passedEventsTree_All->Branch("pt2jet",&pt2jet);
+  passedEventsTree_All->Branch("pt2jet_mass_bais",&pt2jet_mass_bais);
   passedEventsTree_All->Branch("pt2jet_up",&pt2jet_up);
   passedEventsTree_All->Branch("pt2jet_dn",&pt2jet_dn);
   passedEventsTree_All->Branch("mass2l",&mass2l);
   passedEventsTree_All->Branch("pt2l",&pt2l);
   passedEventsTree_All->Branch("mass2l2jet",&mass2l2jet);
+  passedEventsTree_All->Branch("mass2l2jet_mass_bais",&mass2l2jet_mass_bais);
   passedEventsTree_All->Branch("mass2l2jet_up",&mass2l2jet_up);
   passedEventsTree_All->Branch("mass2l2jet_dn",&mass2l2jet_dn);
+  passedEventsTree_All->Branch("n_jets",&n_jets);
+  passedEventsTree_All->Branch("n_mergedjets",&n_mergedjets);
 
   passedEventsTree_All->Branch("mass2lj",&mass2lj);
   passedEventsTree_All->Branch("mass2lj_up",&mass2lj_up);
@@ -2330,9 +2721,11 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("KD_jjVBF",&KD_jjVBF);
   passedEventsTree_All->Branch("KD_jjVBF_up",&KD_jjVBF_up);
   passedEventsTree_All->Branch("KD_jjVBF_dn",&KD_jjVBF_dn);
-  passedEventsTree_All->Branch("KD_JVBF",&KD_JVBF);
+  passedEventsTree_All->Branch("KD_jVBF",&KD_jVBF);
+  passedEventsTree_All->Branch("KD_JJVBF",&KD_JJVBF);
   passedEventsTree_All->Branch("KD_JVBF_up",&KD_JVBF_up);
   passedEventsTree_All->Branch("KD_JVBF_dn",&KD_JVBF_dn);
+  passedEventsTree_All->Branch("KD_JVBF",&KD_JVBF);
   passedEventsTree_All->Branch("KD_ZJ",&KD_ZJ);
   passedEventsTree_All->Branch("KD_ZJ_up",&KD_ZJ_up);
   passedEventsTree_All->Branch("KD_ZJ_dn",&KD_ZJ_dn);
@@ -2376,6 +2769,7 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("PileupWeight",&PileupWeight);
   passedEventsTree_All->Branch("PrefiringWeight",&PrefiringWeight);
   passedEventsTree_All->Branch("SumWeight",&SumWeight);
+  passedEventsTree_All->Branch("CrossSectionWeight",&CrossSectionWeight);
   passedEventsTree_All->Branch("run",&run,"run/l");
   passedEventsTree_All->Branch("event",&event,"event/l");
   passedEventsTree_All->Branch("lumiSect",&lumiSect,"lumiSect/l");
@@ -2423,6 +2817,8 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("jet_2_hadronflavor",&jet_2_hadronflavor);
   passedEventsTree_All->Branch("jet_1_partonflavor",&jet_1_partonflavor);
   passedEventsTree_All->Branch("jet_2_partonflavor",&jet_2_partonflavor);
+  passedEventsTree_All->Branch("jet_1_pt",&jet_1_pt);
+  passedEventsTree_All->Branch("jet_2_pt",&jet_2_pt);
   passedEventsTree_All->Branch("jet_1_pt_up",&jet_1_pt_up);
   passedEventsTree_All->Branch("jet_1_eta_up",&jet_1_eta_up);
   passedEventsTree_All->Branch("jet_1_phi_up",&jet_1_phi_up);
@@ -2439,6 +2835,118 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("jet_2_eta_dn",&jet_2_eta_dn);
   passedEventsTree_All->Branch("jet_2_phi_dn",&jet_2_phi_dn);
   passedEventsTree_All->Branch("jet_2_mass_dn",&jet_2_mass_dn);
+
+  passedEventsTree_All->Branch("jet_1_jesunc_split_Total",         &jet_1_jesunc_split_Total);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_Abs",           &jet_1_jesunc_split_Abs);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_Abs_year",      &jet_1_jesunc_split_Abs_year);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_BBEC1",         &jet_1_jesunc_split_BBEC1);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_BBEC1_year",    &jet_1_jesunc_split_BBEC1_year);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_EC2",           &jet_1_jesunc_split_EC2);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_EC2_year",      &jet_1_jesunc_split_EC2_year);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_FlavQCD",       &jet_1_jesunc_split_FlavQCD);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_HF",            &jet_1_jesunc_split_HF);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_HF_year",       &jet_1_jesunc_split_HF_year);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_RelBal",        &jet_1_jesunc_split_RelBal);
+  passedEventsTree_All->Branch("jet_1_jesunc_split_RelSample_year",&jet_1_jesunc_split_RelSample_year);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_Total",         &jet_2_jesunc_split_Total);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_Abs",           &jet_2_jesunc_split_Abs);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_Abs_year",      &jet_2_jesunc_split_Abs_year);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_BBEC1",         &jet_2_jesunc_split_BBEC1);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_BBEC1_year",    &jet_2_jesunc_split_BBEC1_year);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_EC2",           &jet_2_jesunc_split_EC2);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_EC2_year",      &jet_2_jesunc_split_EC2_year);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_FlavQCD",       &jet_2_jesunc_split_FlavQCD);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_HF",            &jet_2_jesunc_split_HF);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_HF_year",       &jet_2_jesunc_split_HF_year);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_RelBal",        &jet_2_jesunc_split_RelBal);
+  passedEventsTree_All->Branch("jet_2_jesunc_split_RelSample_year",&jet_2_jesunc_split_RelSample_year);
+
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_Total",         &jetpt_1_jesup_split_Total);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_Abs",           &jetpt_1_jesup_split_Abs);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_Abs_year",      &jetpt_1_jesup_split_Abs_year);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_BBEC1",         &jetpt_1_jesup_split_BBEC1);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_BBEC1_year",    &jetpt_1_jesup_split_BBEC1_year);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_EC2",           &jetpt_1_jesup_split_EC2);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_EC2_year",      &jetpt_1_jesup_split_EC2_year);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_FlavQCD",       &jetpt_1_jesup_split_FlavQCD);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_HF",            &jetpt_1_jesup_split_HF);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_HF_year",       &jetpt_1_jesup_split_HF_year);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_RelBal",        &jetpt_1_jesup_split_RelBal);
+  passedEventsTree_All->Branch("jetpt_1_jesup_split_RelSample_year",&jetpt_1_jesup_split_RelSample_year);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_Total",         &jetpt_1_jesdn_split_Total);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_Abs",           &jetpt_1_jesdn_split_Abs);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_Abs_year",      &jetpt_1_jesdn_split_Abs_year);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_BBEC1",         &jetpt_1_jesdn_split_BBEC1);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_BBEC1_year",    &jetpt_1_jesdn_split_BBEC1_year);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_EC2",           &jetpt_1_jesdn_split_EC2);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_EC2_year",      &jetpt_1_jesdn_split_EC2_year);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_FlavQCD",       &jetpt_1_jesdn_split_FlavQCD);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_HF",            &jetpt_1_jesdn_split_HF);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_HF_year",       &jetpt_1_jesdn_split_HF_year);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_RelBal",        &jetpt_1_jesdn_split_RelBal);
+  passedEventsTree_All->Branch("jetpt_1_jesdn_split_RelSample_year",&jetpt_1_jesdn_split_RelSample_year);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_Total",         &jetpt_2_jesup_split_Total);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_Abs",           &jetpt_2_jesup_split_Abs);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_Abs_year",      &jetpt_2_jesup_split_Abs_year);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_BBEC1",         &jetpt_2_jesup_split_BBEC1);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_BBEC1_year",    &jetpt_2_jesup_split_BBEC1_year);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_EC2",           &jetpt_2_jesup_split_EC2);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_EC2_year",      &jetpt_2_jesup_split_EC2_year);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_FlavQCD",       &jetpt_2_jesup_split_FlavQCD);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_HF",            &jetpt_2_jesup_split_HF);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_HF_year",       &jetpt_2_jesup_split_HF_year);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_RelBal",        &jetpt_2_jesup_split_RelBal);
+  passedEventsTree_All->Branch("jetpt_2_jesup_split_RelSample_year",&jetpt_2_jesup_split_RelSample_year);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_Total",         &jetpt_2_jesdn_split_Total);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_Abs",           &jetpt_2_jesdn_split_Abs);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_Abs_year",      &jetpt_2_jesdn_split_Abs_year);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_BBEC1",         &jetpt_2_jesdn_split_BBEC1);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_BBEC1_year",    &jetpt_2_jesdn_split_BBEC1_year);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_EC2",           &jetpt_2_jesdn_split_EC2);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_EC2_year",      &jetpt_2_jesdn_split_EC2_year);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_FlavQCD",       &jetpt_2_jesdn_split_FlavQCD);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_HF",            &jetpt_2_jesdn_split_HF);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_HF_year",       &jetpt_2_jesdn_split_HF_year);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_RelBal",        &jetpt_2_jesdn_split_RelBal);
+  passedEventsTree_All->Branch("jetpt_2_jesdn_split_RelSample_year",&jetpt_2_jesdn_split_RelSample_year);
+
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_Total",         &mergedjet_jesunc_split_Total);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_Abs",           &mergedjet_jesunc_split_Abs);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_Abs_year",      &mergedjet_jesunc_split_Abs_year);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_BBEC1",         &mergedjet_jesunc_split_BBEC1);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_BBEC1_year",    &mergedjet_jesunc_split_BBEC1_year);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_EC2",           &mergedjet_jesunc_split_EC2);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_EC2_year",      &mergedjet_jesunc_split_EC2_year);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_FlavQCD",       &mergedjet_jesunc_split_FlavQCD);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_HF",            &mergedjet_jesunc_split_HF);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_HF_year",       &mergedjet_jesunc_split_HF_year);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_RelBal",        &mergedjet_jesunc_split_RelBal);
+  passedEventsTree_All->Branch("mergedjet_jesunc_split_RelSample_year",&mergedjet_jesunc_split_RelSample_year);
+
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_Total",         &mergedjetpt_jesup_split_Total);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_Abs",           &mergedjetpt_jesup_split_Abs);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_Abs_year",      &mergedjetpt_jesup_split_Abs_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_BBEC1",         &mergedjetpt_jesup_split_BBEC1);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_BBEC1_year",    &mergedjetpt_jesup_split_BBEC1_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_EC2",           &mergedjetpt_jesup_split_EC2);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_EC2_year",      &mergedjetpt_jesup_split_EC2_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_FlavQCD",       &mergedjetpt_jesup_split_FlavQCD);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_HF",            &mergedjetpt_jesup_split_HF);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_HF_year",       &mergedjetpt_jesup_split_HF_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_RelBal",        &mergedjetpt_jesup_split_RelBal);
+  passedEventsTree_All->Branch("mergedjetpt_jesup_split_RelSample_year",&mergedjetpt_jesup_split_RelSample_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_Total",         &mergedjetpt_jesdn_split_Total);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_Abs",           &mergedjetpt_jesdn_split_Abs);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_Abs_year",      &mergedjetpt_jesdn_split_Abs_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_BBEC1",         &mergedjetpt_jesdn_split_BBEC1);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_BBEC1_year",    &mergedjetpt_jesdn_split_BBEC1_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_EC2",           &mergedjetpt_jesdn_split_EC2);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_EC2_year",      &mergedjetpt_jesdn_split_EC2_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_FlavQCD",       &mergedjetpt_jesdn_split_FlavQCD);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_HF",            &mergedjetpt_jesdn_split_HF);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_HF_year",       &mergedjetpt_jesdn_split_HF_year);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_RelBal",        &mergedjetpt_jesdn_split_RelBal);
+  passedEventsTree_All->Branch("mergedjetpt_jesdn_split_RelSample_year",&mergedjetpt_jesdn_split_RelSample_year);
 
   passedEventsTree_All->Branch("GEN_H1_pt",&GEN_H1_pt);
   passedEventsTree_All->Branch("GEN_H1_eta",&GEN_H1_eta);
@@ -2578,6 +3086,7 @@ void TreeLoop::initialize(){
   for (int i=0; i<2; ++i) {jet_Z1index_up[i]=-1;}
   for (int i=0; i<2; ++i) {jet_Z1index_dn[i]=-1;}
   for (int i=0; i<2; ++i) {lep_Hindex[i]=-1;}
+  for (int i=0; i<2; ++i) {jet_Z1index_mass_bais[i]=-1;}
   merged_Z1index = -1; merged_Z1index_up = -1; merged_Z1index_dn = -1;
 
   EventWeight = 1.0; GenWeight = 1.0; PileupWeight = 1.0; PrefiringWeight = 1.0;
@@ -2585,13 +3094,16 @@ void TreeLoop::initialize(){
   Nleptons = -999; Ntightleptons = 0;
   mass2jet=-999.99; mass2jet_up=-999.99; mass2jet_dn=-999.99;
   pt2jet=-999.99; pt2jet_up=-999.00; pt2jet_dn=-999.99;
+  mass2jet_mass_bais=-999.99; pt2jet_mass_bais=-999.99; mass2l2jet_mass_bais=-999.99;
   mass2l=-999.99;
   pt2l=-999.99;
   mass2l2jet=-999.99;
   mass2l2jet_dn = -999.99;
   mass2l2jet_up = -999.99;
-  KD_jjVBF = -999.99; KD_jjVBF_up = -999.99; KD_jjVBF_dn = -999.99;
-  KD_JVBF = -999.99; KD_JVBF_up = -999.99; KD_JVBF_dn = -999.99;
+  KD_jjVBF = -999.9; KD_jjVBF_up = -999.99; KD_jjVBF_dn = -999.99;
+  KD_jVBF = -999.9;
+  KD_JJVBF = -999.99; KD_JVBF_up = -999.99; KD_JVBF_dn = -999.99;
+  KD_JVBF = -999.99;
   KD_ZJ = -999.99; KD_ZJ_dn = -999.99; KD_ZJ_up = -999.99;
   KD_Zjj = -999.99; KD_Zjj_up = -999.99; KD_Zjj_dn = -999.99;
   massmerged = -999.99; massmerged_up = -999.99; massmerged_dn = -999.99;
@@ -2601,11 +3113,14 @@ void TreeLoop::initialize(){
   mass2lj_up = -999.99;
   mass2lj_dn = -999.00;
 
+  n_jets = 0; n_mergedjets = 0;
+
   jet_1_btag=-999; jet_2_btag=-999; jet_1_hadronflavor=-999; jet_1_partonflavor=-999;
   jet_1_deepbtag = -999; jet_1_deepbtag_up = -999; jet_1_deepbtag_dn = -999;
   jet_2_deepbtag = -999; jet_2_deepbtag_up = -999; jet_2_deepbtag_dn = -999;
   jet_1_btag_up = -999; jet_1_btag_dn=-999; jet_2_btag_up = -999; jet_2_btag_dn=-999;
   jet_2_hadronflavor=-999; jet_2_partonflavor=-999;
+  jet_1_pt = -999.99;
   jet_1_pt_up=-999.99; jet_1_pt_dn=-999.99;
   jet_1_eta_up=-999.99; jet_1_eta_dn=-999.99;
   jet_1_phi_up=-999.00; jet_1_phi_dn=-999.99;
@@ -2671,4 +3186,37 @@ void TreeLoop::initialize(){
   time_associatedjetJ_eta = -999.0;
   //initialize done
 
+}
+
+//========================Set Cross Section=================================
+void TreeLoop::SetCrossSection(TString inputfile){
+    std::ifstream file("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/ANATree/CrossSection.txt"); // Open the text file
+
+    if (file.is_open()) { // Check if the file is successfully opened
+        std::string line;
+        //split TString inputfile by "/" and get the last one
+        TString delimiter_input = "/";
+        TObjArray *parts = inputfile.Tokenize(delimiter_input); // split inputfile by "/"
+        //Get the last part after splitting 
+        TString extractedPart = ((TObjString *)(parts->At(parts->GetLast())))->String();
+        std::cout << "Input File name after splitting = "<<extractedPart << std::endl;
+
+        TString targetString = extractedPart;
+
+        std::string delimiter = " ";
+        while (std::getline(file, line)) {
+            // Check if the target string is present in the current line
+            if (line.find(targetString) != std::string::npos) {
+                // Extract the associated value
+                size_t pos = line.find(delimiter);
+                std::string value = line.substr(pos + delimiter.length());
+                xsec = std::stof(value);
+                break; // Stop further processing if the target is found
+            }
+        }
+
+        file.close(); // Close the file
+    } else {
+        std::cout << "Failed to open the file." << std::endl;
+    }
 }

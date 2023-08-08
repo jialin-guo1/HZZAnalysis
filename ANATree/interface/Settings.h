@@ -1,5 +1,7 @@
 #ifndef Settings_h
 #define Settings_h
+#include <iostream>
+#include <string>
 
 // options
 struct Options {
@@ -8,6 +10,7 @@ struct Options {
     TString outfile = nullptr;
     TString input_file_path = "${CMSSW_BASE}/src/HZZAnalysis/ANATree/testfiles/";
     TString output_file_path = "${CMSSW_BASE}/src/HZZAnalysis/fileout/";
+    std::string year = "2018";
 };
 
 struct setting{

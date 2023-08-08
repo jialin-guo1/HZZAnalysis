@@ -1037,6 +1037,9 @@ void DiscriminantClasses::constructDiscriminants(std::vector<DiscriminantClasses
     case kDjjVBF:
       KDspec.KD = constructKDFromType(KDspec.KDtype, ANALYSISTREEPKGDATAPATH + "RecoMEConstants/SmoothKDConstant_m4l_DjjVBF_13TeV.root", "sp_gr_varReco_Constant_Smooth");
       break;
+    case kDjVBF:
+      KDspec.KD = constructKDFromType(KDspec.KDtype, ANALYSISTREEPKGDATAPATH + "RecoMEConstants/SmoothKDConstant_m4l_DjVBF_13TeV.root", "sp_gr_varReco_Constant_Smooth");
+      break;
     case kDjjZH:
       KDspec.KD = constructKDFromType(KDspec.KDtype, ANALYSISTREEPKGDATAPATH + "RecoMEConstants/SmoothKDConstant_m4l_DjjZH_13TeV.root", "sp_gr_varReco_Constant_Smooth");
       break;
