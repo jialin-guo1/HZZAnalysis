@@ -20,6 +20,8 @@ sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/lib")
 from utils import *
 from setting import setting
 
+logger.setLevel(logging.DEBUG)
+
 import yaml
 sf_particleNet_signal = {}
 with open('/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/NetSF_signal_2016Legacy.yml') as f:
@@ -48,7 +50,11 @@ else:
 #=================================================================================================================================================================================================
 #=================================================================================================================================================================================================
 #bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config,args.year,args.cat)
-hist = GetHisto(args.year,args.cat).hist
+invarbs = ['mass2l2jet'] if args.cat == 'resolved' else ['mass2lj']
+hist = GetHisto(args.year,args.cat,invarb=invarbs).hist
+#hist = GetHisto(args.year,args.cat).hist
+#logger.debug(f'keys in hist = {hist[args.cat].keys()}')
+logger.info(f'Get Hist done')
 
 ##===================================================================================================================================================================
 def Conditional_norm_2Dhisto(h,nbins):
@@ -60,6 +66,29 @@ def Conditional_norm_2Dhisto(h,nbins):
         temp_h.view(flow=False).value[bin,:] = temp_h.view(flow=False).value[bin,:]/nevents
     return temp_h
 
+#evaluate alpha value by given massZZ histogram as type of boost_histogram from alpha histo and create a new alpha array
+def getAlphaArray(alpha_histo,massZZ_histo):
+    nbins = massZZ_histo.axes[0].size
+    nbins_alpha = alpha_histo.axes[0].size
+    logger.debug(f'nbins for this massZZ histo = {nbins}')
+    alpha_array = np.zeros(nbins)
+    for i in range(nbins):
+        logger.debug(f'i for loop nbins = {i}')
+        massZZ = massZZ_histo.axes[0].centers[i]
+        logger.debug(f'massZZ = {massZZ}')
+        bin = alpha_histo.axes[0].index(int(massZZ))
+        #if the range of massZZ is out of alpha histo range, set the bin to the last bin of alpha histo
+        if bin>=nbins_alpha:
+            bin = nbins_alpha-1
+            logger.warning(f'bin is out of alpha histo range, set bin to the last bin of alpha histo. last bin value of alpha histo = {alpha_histo.axes[0].centers[bin]}')
+            alpha_array[i] = alpha_histo[bin].value
+        else:
+            logger.debug(f'bin = {bin}')
+            logger.debug(f'alpha_histo.axes[0].centers[bin] = {alpha_histo.axes[0].centers[bin]}')
+            logger.debug(f'alpha_histo[bin].value = {alpha_histo[bin].value}')
+            alpha_array[i] = alpha_histo[bin].value
+        #alpha_array[i] = alpha_histo[int(massZZ)].value
+    return alpha_array
 ##==================================================================================================================================================================
 
 ##===================================================================================================================================================================
@@ -68,7 +97,8 @@ def Conditional_norm_2Dhisto(h,nbins):
 #massZZ_low_bins = np.linspace(500,1700,25)
 ##massZZ_high_bins = np.array([2000,3500])
 #massZZ_high_bins = np.array([2000,4000])
-massZZ_bins = bh.axis.Variable(ak.from_numpy(np.append(setting().massZZ_low_bins,setting().massZZ_high_bins)).to_list())
+#massZZ_bins = bh.axis.Variable(ak.from_numpy(np.append(setting().massZZ_low_bins,setting().massZZ_high_bins)).to_list())
+massZZ_bins = setting().massZZ_bins['resolved' if args.cat =='resolved' else 'merged']
 #massZZ_bins = setting().massZZ_bins()
 regions = ['CR','SR']
 #reg = 'SR'
@@ -83,7 +113,7 @@ extra_str = 'rebin_2d'
 #Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaRaio{args.year}_{case}.root'
 #Alph_array = uproot.lazy([f"{Alph_path}:alphatree"])
 
-Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaHistoFromROOT_{args.year}.root'
+Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaHistoFromROOTProduction_{args.year}.root'
 Alpha_file = uproot.open(Alph_path)
 
 nbins, xmin, xmax = config['bininfo'][kd][0], config['bininfo'][kd][1], config['bininfo'][kd][2]
@@ -118,14 +148,17 @@ with uproot.recreate(f'./template_{case}_{args.year}.root') as outfile:
                                         +hist[args.cat][f'DY_pt250To400_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'DY_pt400To650_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'DY_pt650ToInf_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']    
 
         ##TT,WW
-        (bkg_hists[reg][cat]['mean'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']
-        (bkg_hists[reg][cat]['up'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']
-        (bkg_hists[reg][cat]['dn'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']
+        #(bkg_hists[reg][cat]['mean'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']
+        #(bkg_hists[reg][cat]['up'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']
+        #(bkg_hists[reg][cat]['dn'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']
+        (bkg_hists[reg][cat]['mean'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'tZq_{reg}_{cat}_all_{massZZ}_{extra_str}']
+        (bkg_hists[reg][cat]['up'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'tZq_{reg}_{cat}_all_{massZZ}_up_{extra_str}']
+        (bkg_hists[reg][cat]['dn'])[1] = hist[args.cat][f'TTTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'tZq_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']
 
         ##ZV
-        (bkg_hists[reg][cat]['mean'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_{extra_str}']
-        (bkg_hists[reg][cat]['up'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_up_{extra_str}']
-        (bkg_hists[reg][cat]['dn'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']
+        (bkg_hists[reg][cat]['mean'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_{extra_str}']
+        (bkg_hists[reg][cat]['up'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_up_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_up_{extra_str}']
+        (bkg_hists[reg][cat]['dn'])[0] = hist[args.cat][f'WZTo2Q2L_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'ZZTo2Q2L_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']+hist[args.cat][f'WWTo2L2Nu_{reg}_{cat}_all_{massZZ}_dn_{extra_str}']
 
         ##sig
         signal_hists[reg][cat]['mean']['sig'] = hist[args.cat][f'sig_{reg}_{cat}_all_{massZZ}_{extra_str}']
@@ -269,3 +302,4 @@ with uproot.recreate(f'./template_{case}_{args.year}.root') as outfile:
         #fig.colorbar(mesh)
         plt.savefig(f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/Plot/plotnew/{args.cat}/{args.year}/template_2D_{key}.png')
         plt.close()
+
