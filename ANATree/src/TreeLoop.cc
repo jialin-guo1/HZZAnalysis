@@ -52,6 +52,19 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile, string year){
     uncSources.push_back("RelativeSample_2018");
     //['Absolute', 'Absolute_2018', 'BBEC1', 'BBEC1_2018', 'EC2', 'EC2_2018', 'FlavorQCD', 'HF', 'HF_2018', 'RelativeBal', 'RelativeSample_2018'] + 'Total'
   }
+
+  //jecsplit
+  if(isMC){
+    for(unsigned s_unc = 0; s_unc < uncSources.size(); s_unc++){
+      JetCorrectorParameters ak4corrParams = JetCorrectorParameters(jecUncFile_, uncSources[s_unc]);
+      JetCorrectorParameters ak8corrParams = JetCorrectorParameters(jecUncFile_, uncSources[s_unc]);
+      ak4splittedUncerts_.push_back(new JetCorrectionUncertainty(ak4corrParams));
+      ak8splittedUncerts_.push_back(new JetCorrectionUncertainty(ak8corrParams));
+      cout<<"uncSources["<<s_unc<<"]"<<uncSources[s_unc]<<endl;
+      cout<<"ak4splittedUncerts_["<<s_unc<<"]"<<ak4splittedUncerts_[s_unc]<<endl;
+    }
+  }
+  
   //df = new ROOT:
   oldfile = new TFile(inputfile);
   if(verbose){
@@ -1553,6 +1566,10 @@ void TreeLoop::Loop(){
   //passedEventsTree_All->Write();
   TH1F h("sumWeights","sum Weights of Sample",2,0,2);
   h.SetBinContent(1,SumWeight);
+
+  //store total number of events in a histogram for further reference
+  TH1F h_0("nEvents","nEvents",1,0,1);
+  h_0.SetBinContent(1,nentries);
   //
   TH1F h_1("cutflow","cutflow",23,0,23);
   h_1.SetBinContent(1,ievent); h_1.GetXaxis()->SetBinLabel(1,"nEvents");
@@ -1739,7 +1756,7 @@ void TreeLoop::findZ1LCandidate(){
     if (!((*lep_tightId)[Z1_lepindex[1]])) continue; // checking tight lepton ID
     pass_leptightID = true;
 
-    if(Z1.Pt()<100) continue;
+    //if(Z1.Pt()<100) continue;
 
     if ( (Z1.M() < mZ1Low) || (Z1.M() > mZ1High) ) continue;
     pass_lepZmass40_180 = true;
@@ -1803,7 +1820,7 @@ void TreeLoop::findZ2JCandidata(){
   // Consider all Z candidates
   double minZ1DeltaM=9999.9;
   unsigned int Njets = jet_pt->GetSize();
-  //if(Njets<2){ return; } //found at least two jets
+  if(Njets<2){ return; } //found at least two jets
   passed_n_2ak4jets++;
   if(verbose){cout<<"[INFO] find at least two jets. number of jets = "<<Njets<<" in this events"<<endl;}
 
@@ -1890,7 +1907,7 @@ void TreeLoop::findZ2JCandidata(){
       pass_jeteta2opint4 = true;
 
       //check dijet pt
-      if(Zi.Pt()<dijetPtCut){ continue;}
+      //if(Zi.Pt()<dijetPtCut){ continue;}
       pass_dijetpt100 = true;
 
       //check loose dijet mass for 40-180Gev

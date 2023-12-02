@@ -41,11 +41,11 @@ def main():
     args = parser.parse_args()
 
     ##############################################path for samples#############################################
-    samples_dirs = {'DY_pt50To100':'MC/DYJetsToLL_Pt-50To100_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
-                    'DY_pt100To250':'MC/DYJetsToLL_Pt-100To250_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
-                    'DY_pt250To400':'MC/DYJetsToLL_Pt-250To400_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
-                    'DY_pt400To650':'MC/DYJetsToLL_Pt-400To650_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
-                    'DY_pt650ToInf':'MC/DYJetsToLL_Pt-650ToInf_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+    samples_dirs = {'DY_pt50To100':'MC/DYJetsToLL_LHEFilterPtZ-50To100_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt100To250':'MC/DYJetsToLL_LHEFilterPtZ-100To250_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt250To400':'MC/DYJetsToLL_LHEFilterPtZ-250To400_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt400To650':'MC/DYJetsToLL_LHEFilterPtZ-400To650_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt650ToInf':'MC/DYJetsToLL_LHEFilterPtZ-650ToInf_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
                     'TTJets':'MC/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8',
                     'TTTo2L2Nu':'MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8',
                     'WW_TuneCP5':'MC/WW_TuneCP5_13TeV-pythia8',
@@ -74,6 +74,13 @@ def main():
                     'vbf':'MC/vbf',
                     #'test':'MC/test',
                     'Data':'Data',
+                    }
+    
+    samples_zjet = {'DY_pt50To100':'MC/DYJetsToLL_LHEFilterPtZ-50To100_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt100To250':'MC/DYJetsToLL_LHEFilterPtZ-100To250_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt250To400':'MC/DYJetsToLL_LHEFilterPtZ-250To400_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt400To650':'MC/DYJetsToLL_LHEFilterPtZ-400To650_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'DY_pt650ToInf':'MC/DYJetsToLL_LHEFilterPtZ-650ToInf_MatchEWPDG20_TuneCP5_13TeV-amcatnloFXFX-pythia8',
                     }
 
     path_subscript = '/cms/user/guojl/SubmitJobOnIHEP/subfiles/'
@@ -106,12 +113,20 @@ def main():
                     subIHEPjob(indir,path_subscript,args.path,args.excute,year)
                 else:
                     continue
+        elif(args.name=='zjet'):
+            for sample in samples_zjet.keys():
+                indir = path_sample+samples_zjet[sample]
+                if(os.path.exists(indir)):
+                    mknewdir(indir+'/skimed')
+                    subIHEPjob(indir,path_subscript,args.path,args.excute,year)
+                else:
+                    continue
         else:
             print "[INFO] this is {}".format(args.name)
             indir = path_sample+samples_dirs[args.name]
             if(os.path.exists(indir)):
-                    mknewdir(indir+'/skimed')
-                    subIHEPjob(indir,path_subscript,args.path,args.excute,year)
+                mknewdir(indir+'/skimed')
+                subIHEPjob(indir,path_subscript,args.path,args.excute,year)
             else:
                 sys.exit()
 

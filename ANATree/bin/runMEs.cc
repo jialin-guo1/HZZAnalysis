@@ -33,6 +33,8 @@ void read_options(int argc, char *argv[], Options &opt){
         opt.infile = argv[i+1];
         opt.infile = opt.input_file_path+'/'+opt.infile;
         opt.outfile = opt.output_file_path+argv[i+1];
+      }else if (strcmp("--year",argv[i]) == 0 || strcmp("-y",argv[i]) == 0){
+        opt.year = argv[i+1];
       }
     }
   }
@@ -46,7 +48,7 @@ int main(int argc, char *argv[]){
   read_options(argc, argv,opt);
   cout<<"input file ="<<opt.infile<<endl;
   cout<<"out file ="<<opt.outfile<<endl;
-  TreeLoop *lp = new TreeLoop(opt.infile,opt.outfile);
+  TreeLoop *lp = new TreeLoop(opt.infile,opt.outfile,opt.year);
   lp->Loop();
   //TreeLoop loop("${CMSSW_BASE}/src/HZZAnalysis/ANATree/testfile/test.root");
 
