@@ -6,6 +6,62 @@ import matplotlib.pyplot as plt
 import mplhep as hep
 import awkward as ak
 import os
+import logging
+import datetime
+
+from setting import setting
+
+##==================================================================================================================
+##================================logger setting ===================================================================
+##==================================================================================================================
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+class ColorLogFormatter(logging.Formatter):
+     """A class for formatting colored logs.
+     Reference: https://stackoverflow.com/a/70796089/2302094
+     """
+
+     # FORMAT = "%(prefix)s%(msg)s%(suffix)s"
+     FORMAT = "%(prefix)s[%(levelname)s] - [%(filename)s:#%(lineno)d] - %(message)s %(suffix)s"
+    #  FORMAT = "{}[%(levelname)5s] - [%(filename)s:#%(lineno)d] - [%(funcName)s; %(module)s]{} - %(prefix)s%(message)s %(suffix)s".format(
+        #  bcolors.HEADER, bcolors.ENDC
+    #  )
+    #  FORMAT = "\n%(asctime)s - [%(filename)s:#%(lineno)d] - %(prefix)s%(levelname)s - %(message)s %(suffix)s\n"
+
+     LOG_LEVEL_COLOR = {
+         "INFO": {'prefix': bcolors.OKGREEN, 'suffix': bcolors.ENDC},
+         "DEBUG": {'prefix': bcolors.OKBLUE, 'suffix': bcolors.ENDC},
+         "WARNING": {'prefix': bcolors.WARNING, 'suffix': bcolors.ENDC},
+         "CRITICAL": {'prefix': bcolors.FAIL, 'suffix': bcolors.ENDC},
+         "ERROR": {'prefix': bcolors.FAIL+bcolors.BOLD, 'suffix': bcolors.ENDC+bcolors.ENDC},
+     }
+
+     def format(self, record):
+         """Format log records with a default prefix and suffix to terminal color codes that corresponds to the log level name."""
+         if not hasattr(record, 'prefix'):
+             record.prefix = self.LOG_LEVEL_COLOR.get(record.levelname.upper()).get('prefix')
+
+         if not hasattr(record, 'suffix'):
+             record.suffix = self.LOG_LEVEL_COLOR.get(record.levelname.upper()).get('suffix')
+
+         formatter = logging.Formatter(self.FORMAT, datefmt='%m/%d/%Y %I:%M:%S %p' )
+         return formatter.format(record)
+
+logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(ColorLogFormatter())
+logger.addHandler(stream_handler)
+logger.setLevel(logging.ERROR) # DEBUG, INFO, WARNING, ERROR, CRITICAL. Default is ERROR.
+
 
 from setting import setting
 ##==================================================================================================================
@@ -26,7 +82,8 @@ class GetHisto(setting):
         if option == 'masszz': #read masszz root file
             self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}_masszz.root'
         else:
-            self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}.root'
+            self.inputrootfile = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/hist_{self.year}_150GeV.root'
+
         print(f'[INFO] get histo from {self.inputrootfile}')
 
         if self.cutcat == 'lep':
@@ -77,6 +134,9 @@ class GetHisto(setting):
                                         #h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_hist()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_hist()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_hist()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_hist()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_allrange'].to_hist()
@@ -88,6 +148,7 @@ class GetHisto(setting):
                                             h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY_resolved_{reg}_{cat}_{tag}_massZZ'].to_hist()
 
                                     #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_boost()
+                                    logger.debug(f"access {sample}/resolved/{reg}/{cat}/{tag}/{varb}")
                                     h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
                                 for varb in self.config['bininfo_resolvedup']:
                                     h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}'].to_hist()
@@ -101,8 +162,29 @@ class GetHisto(setting):
                     for reg in self.regions:
                         for cat in self.leptonic_cut_cats:
                             for tag in self.tags:
-                                varb = self.invarb
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                #varb = self.invarb
+                                for varb in self.invarb:
+                                    logger.debug(f"access {sample}/resolved/{reg}/{cat}/{tag}/{varb}")
+                                    if varb == 'mass2l2jet':
+                                        #h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/resolved_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/resolved_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_hist()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}_allrange'].to_hist()
+
+                                        #if f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/resolved/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            #h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/resolved/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY_resolved_{reg}_{cat}_{tag}_massZZ'].to_hist()
+
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/resolved/{reg}/{cat}/{tag}/{varb}'].to_hist()
         elif(self.binlists!=None and self.invarb==None):
             print(f'[INFO] get histo from {self.inputrootfile} with {self.binlists} variables in resolved')
             with uproot.open(self.inputrootfile) as f:
@@ -134,7 +216,9 @@ class GetHisto(setting):
                 for sample in self.fileset[self.year].keys():
                     for cat in self.leptonic_cut_cats:
                         varb = self.invarb
-                        h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_hist()
+                        for varb in self.invarb:
+                            h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_hist()
+                        #h[f'{sample}_{cat}_{varb}'] = f[f'{sample}/merged_notag/{cat}/{varb}'].to_hist()
 
         return h
 
@@ -146,17 +230,21 @@ class GetHisto(setting):
         '''
         h = {}
         if(self.binlists==None and self.invarb==None):
+            print(f'[INFO] get histo from {self.inputrootfile} with all merged variables')
             with uproot.open(self.inputrootfile) as f:
                 for sample in self.fileset[self.year].keys():
                     for reg in self.regions:
                         for cat in self.leptonic_cut_cats:
                             for tag in self.tags:
-                                for varb in self.config['bininfo'].keys():
+                                for varb in self.config['bininfo_merged'].keys():
                                     if varb == 'mass2l2jet_allrange' or varb == 'mass2lj_allrange': continue
                                     if varb == 'mass2lj':
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_allrange'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost() c0879bec1b8874e41a2a3f887231a8adea0c79f8
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
 
@@ -178,6 +266,21 @@ class GetHisto(setting):
                         for cat in self.leptonic_cut_cats:
                             for tag in self.tags:
                                 for varb in self.config[self.binlists].keys():
+                                    if varb == 'mass2l2jet_allrange' or varb == 'mass2lj_allrange': continue
+                                    if varb == 'mass2lj':
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_allrange'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
+
+                                        #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
                                     h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
         elif(self.binlists!=None and self.invarb!=None):
             print(f'[INFO] only get {self.invarb} in merged tag ')
@@ -187,7 +290,24 @@ class GetHisto(setting):
                         for cat in self.leptonic_cut_cats:
                             for tag in self.tags:
                                 varb = self.invarb
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.invarb:
+                                    if varb == 'mass2l2jet_allrange' or varb == 'mass2lj_allrange': continue
+                                    if varb == 'mass2lj':
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_allrange'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
+
+                                        #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
         elif(self.binlists==None and self.invarb!=None):
             print(f'[INFO] only get {self.invarb} in merged tag ')
             with uproot.open(self.inputrootfile) as f:
@@ -196,7 +316,24 @@ class GetHisto(setting):
                         for cat in self.leptonic_cut_cats:
                             for tag in self.tags:
                                 varb = self.invarb
-                                h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                for varb in self.invarb:
+                                    if varb == 'mass2l2jet_allrange' or varb == 'mass2lj_allrange': continue
+                                    if varb == 'mass2lj':
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_allrange'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_allrange'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
+
+                                        #if f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'] and reg=='SR':
+                                        temphitoname = f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ;1'
+                                        if reg=='SR' and (temphitoname in f.keys()):
+                                            h[f'DY_{reg}_{cat}_{tag}_massZZ'] = f[f'DY/merged_tag/{reg}/{cat}/{tag}/massZZ'].to_boost()
+                                    h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
+                                #h[f'{sample}_{reg}_{cat}_{tag}_{varb}'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}'].to_hist()
 
         else:
             with uproot.open(self.inputrootfile) as f:
@@ -375,7 +512,6 @@ def GetParticleNetSignalSF(array,tagger,sf_particleNet_signal):
                 cut_arr = ak.numexpr.evaluate(cut,array)
                 sf_arr[cut_arr] = float(sf_particleNet_signal[tagger][flavor][pur][pt_range])
     sf_arr = ak.from_numpy(sf_arr)
-    print("This sf_array = ",sf_arr)
     return sf_arr
 
 def GetParticleNetbkgSF(array,tagger,cat):
@@ -533,19 +669,29 @@ def extractCutedBranch(config,year,cat):
 ##==================================================================================================================
 ##================================extractCutedBranch for catgory====================================================
 ##==================================================================================================================
-def extractCutedCatBranch(config,year,cat):
-    tags = ['btag','untag','vbftag']
+def extractCutedCatBranch(config,year,cat,signal_extract_lists = None, tags = None):
+    logger.info(f"Extracting {cat} category cuted array")
+    if signal_extract_lists == None:
+        signal_extract_lists = ['ggh1000','vbf1000','sig']
+    logger.debug(f"signal_extract_lists = {signal_extract_lists}")
+    
+    if tags == None:
+        tags = ['btag','untag','vbftag']
+    else:
+        tags = tags
     #load root file and read array
     bkg_array = {}
     data_array = None
     signal_array = {}
     sumWeight = {}
-    filepath = config['ori_dir']+f'/{year}/'
-    print(f'File path is {filepath}')
+
+    #filepath = config['ori_dir']+f'/{year}/' # is not using in this function
+
+    #extract bkg and data array
     for sample in config['Samples_lists']:
-        print(f"This is {sample}")
         if sample!='Data':
             indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+            logger.info(f"This is {sample} in {indir}")
             files = find_this_rootfiles(indir)
             sumWeight[sample] = 0
 
@@ -561,29 +707,29 @@ def extractCutedCatBranch(config,year,cat):
 
         else:
             data_path = config['ori_dir']+f'/{year}/'+f'Data/skimed/Data{year}UL_noDuplicates.root'
+            logger.info(f"This is {sample} in {data_path}")
             #data_array = uproot.lazy([f"{data_path}:passedEvents"],filter_name=config['var_read_lists'])
             data_array = uproot.lazy([f"{data_path}:passedEvents"])
 
-    if(year!='2016APV' and year!='2017'):
-        for sample in config['signal_lists']:
-            indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
-            files = find_this_rootfiles(indir)
+    #extract signal array. Only ggh1000,vbf1000 and sig will be used
+    for sample in signal_extract_lists:
+        indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+        logger.info(f"This is {sample} in {indir}")
+        
+        files = indir+'/'+sample+'.root'
+        logger.debug(f"file path of {sample}= {files}")
 
-            print(f"This is {sample}")
-            signal_path = config['ori_dir']+f"/{year}/"+config['samples_inf'][sample][0]+'/skimed'
-
-            sumWeight[sample] = 0
-            for file in files:
-                with uproot.open(f'{indir}/{file}') as f:
-                    this_sumWeight_h = f['sumWeights'].to_boost()
-                    this_sumWeight = this_sumWeight_h.sum()
-                    #print(f'this sum weight = {this_sumWeight}')
-                    sumWeight[sample] += this_sumWeight
-
-            #signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"],filter_name=config['var_read_lists'])
-            signal_array[sample] = uproot.lazy([f"{indir}/*.root:passedEvents"])
+        #extract sumWeight
+        with uproot.open(files) as f:
+            this_sumWeight_h = f['sumWeights'].to_boost()
+            this_sumWeight = this_sumWeight_h.sum()
+            sumWeight[sample] = this_sumWeight
+        
+        #load array
+        signal_array[sample] = uproot.lazy([f"{files}:passedEvents"])
     
     #=======cut=============
+    logger.info(f"Start to make cut array")
     if cat=='tt':
         regions = ['CR','SR']
         channels = ['ak4','net']
@@ -598,11 +744,12 @@ def extractCutedCatBranch(config,year,cat):
             bkg_array_cut[reg][channel] = {}; data_array_cut[reg][channel] = {}; signal_array_cut[reg][channel] = {}
             for tag in tags:
                 bkg_array_cut[reg][channel][tag] = {}; data_array_cut[reg][channel][tag] = None; signal_array_cut[reg][channel][tag] = {}
+                #cut bkg and data array
                 for sample in config['Samples_lists']:
-                    print(f"This is {sample} in {reg} in {channel}")
-                    #print(f"selection text = {selection}")
+
+                    logger.info(f"This is {sample} in {reg} in {channel} with {tag}")
                     selection = config['cut'][reg][channel][cat][tag]
-                    print(f"selection text = {selection}")
+                    logger.debug(f"In {reg} {channel} {tag}, selection text = {selection}")
 
                     if sample!='Data':
                         temp_array = bkg_array[sample]
@@ -614,12 +761,14 @@ def extractCutedCatBranch(config,year,cat):
                         cut_array = ak.numexpr.evaluate(selection,temp_array)
                         #cut_array = make_cut(temp_array,region = reg, cat = cat)
                         data_array_cut[reg][channel][tag] = temp_array[cut_array]
-                if(year!='2016APV' and year!='2017'):
-                    for sample in config['signal_lists']:
-                        temp_array = signal_array[sample]
-                        cut_array = ak.numexpr.evaluate(selection,temp_array)
-                        #cut_array = make_cut(temp_array,region = reg, cat = cat)
-                        signal_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
+                #cut signal arrary
+                for sample in signal_extract_lists:
+                    logger.info(f"This is {sample} in {reg} in {channel} with {tag}")
+                    selection = config['cut'][reg][channel][cat][tag]
+                    logger.debug(f"In {reg} {channel} {tag}, selection text = {selection}")
+                    temp_array = signal_array[sample]
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    signal_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
             
     return bkg_array_cut,signal_array_cut,data_array_cut,sumWeight
 
@@ -670,3 +819,71 @@ def extractCutedRegionBranch(conig,year,reg,case,samplelist = setting().sample_l
                     cut_array = ak.numexpr.evaluate(selection,temp_array)
                     data_array_cut[reg][cat][tag] = temp_array[cut_array]
 
+##==================================================================================================================
+##================================extractCutedBranch for signal sample==============================================
+##==================================================================================================================
+def extract_cuted_signal_branch(config,year,cat,):
+    #load root file and read array
+    signal_extract_lists = ['ggh1000','vbf1000','sig']
+    tags = ['btag','untag','vbftag']
+    signal_array = {}
+    sumWeight = {}
+    #extract signal array. Only ggh1000,vbf1000 and sig will be used
+    for sample in signal_extract_lists:
+        logger.info(f"This is {sample}")
+        indir = config['ori_dir']+f'/{year}/'+config['samples_inf'][sample][0]+'/skimed'
+        files = indir+'/'+sample+'.root'
+        
+        logger.info(f"This is {sample}")
+        logger.debug(f"file path of {sample}= {files}")
+
+        #extract sumWeight
+        with uproot.open(files) as f:
+            this_sumWeight_h = f['sumWeights'].to_boost()
+            this_sumWeight = this_sumWeight_h.sum()
+            sumWeight[sample] = this_sumWeight
+        
+        #load array
+        signal_array[sample] = uproot.lazy([f"{files}:passedEvents"])
+    
+    #=======cut=============
+    logger.info(f"Start to make cut array")
+    if cat=='tt':
+        regions = ['CR','SR']
+        channels = ['ak4','net']
+    else:
+        channels = config['channel']
+        regions = ['CR','SR']
+    #regions = ['CR']
+    signal_array_cut = {}
+    for reg in regions:
+        signal_array_cut[reg] = {}
+        for channel in channels:
+            signal_array_cut[reg][channel] = {}
+            for tag in tags:
+                signal_array_cut[reg][channel][tag] = {}
+
+                logger.info(f"This is {sample} in {reg} in {channel} with {tag}")
+                selection = config['cut'][reg][channel][cat][tag]
+                logger.debug(f"In {reg} {channel} {tag}, selection text = {selection}")
+                
+                for sample in signal_extract_lists:
+                    temp_array = signal_array[sample]
+                    cut_array = ak.numexpr.evaluate(selection,temp_array)
+                    signal_array_cut[reg][channel][tag][sample] = temp_array[cut_array]
+
+    return signal_array_cut
+
+##==================================================================================================================
+##================================ make directory ==================================================================
+##==================================================================================================================
+def make_dir( sub_dir_name):
+    if not os.path.exists(sub_dir_name):
+        logger.debug("{}{}\nCreate directory: {}".format('\t\n', '#'*51, sub_dir_name))
+        os.makedirs(sub_dir_name)
+    else:
+        logger.debug('Directory '+sub_dir_name+' already exists. Exiting...')
+
+##==================================================================================================================
+##================================ i ==================================================================
+##================================================================================================================== 

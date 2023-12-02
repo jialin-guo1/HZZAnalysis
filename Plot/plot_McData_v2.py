@@ -141,11 +141,11 @@ bkg_array,signal_array,data_array,sumWeight = extractCutedBranch(config,args.yea
 if(args.cat=='lep'):
     varbs = ['pt2l','mass2l','lep_1_pt','lep_2_pt']
 if(args.cat=='ak4'):
-    varbs = ['mass2jet','pt2jet','pt2l','mass2l','KD_jjVBF','mass2l2jet','KD_Zjj']
+    varbs = ['mass2jet','pt2jet','pt2l','mass2l','KD_jjVBF','mass2l2jet','KD_Zjj','mass2l2jet_allrange']
 if(args.cat=='ak8'):
     varbs = ['massmerged','ptmerged','pt2l','mass2l','KD_JVBF','particleNetZvsQCD','mass2lj','KD_ZJ']
 if(args.cat=='net'):
-    varbs = ['massmerged','ptmerged','pt2l','mass2l','KD_JVBF','particleNetZvsQCD','mass2lj','KD_ZJ']
+    varbs = ['massmerged','ptmerged','pt2l','mass2l','KD_JVBF','particleNetZvsQCD','mass2lj','KD_ZJ','mass2lj_allrange']
 
 
 for var in varbs:

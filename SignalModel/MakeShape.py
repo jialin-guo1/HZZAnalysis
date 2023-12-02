@@ -48,9 +48,9 @@ branchs = ['GEN_H1_mass','EventWeight','foundZ1LCandidate','foundTTCRCandidate',
                         'massmerged','ptmerged','mass2jet',
                         'mass2l2jet', 'mass2lj',]
 #samples = ['ggh125','ggh300','ggh350','ggh400','ggh450','ggh500','ggh550','ggh600','ggh700','ggh800','ggh900','ggh1000','ggh1500','ggh2500','ggh3000']
-#samples = ['ggh']; sam = 'ggh'
+samples = ['ggh']; sam = 'ggh'
 #samples = ['vbf'] ; sam = 'vbf'
-samples = ['sig'] ; sam = 'sig'
+#samples = ['sig'] ; sam = 'sig'
 
 year = '2018'
 
@@ -90,7 +90,7 @@ sig_hist = []
 sig_gen_hist_raw = {}
 nbins, xmin, xmax = 400,0,4000
 edge = np.linspace(xmin, xmax, nbins+1)
-with uproot.recreate(f"Histos_MakeShape_{sam}_{year}_Apr18.root") as fout:
+with uproot.recreate(f"Histos_MakeShape_{sam}_{year}_Oct10.root") as fout:
     for i,sample in enumerate(samples):
         print(sample)
         #temp_arr = sig_arr[sample]

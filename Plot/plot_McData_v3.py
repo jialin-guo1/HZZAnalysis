@@ -60,7 +60,8 @@ def plot1DDataMC(hist_zv,hist_tt,hist_DY,hist_data):
     hep.cms.label(data=True, llabel='Preliminary',year=args.year, ax=ax, rlabel=r'%s $fb^{-1}$ (13 TeV)'%config['lumi'][args.year], fontname='sans-serif')
     ax.set_xlim(xmin, xmax); ax.set_xticklabels([]); ax.set_ylabel('Events / bin', ha='right', y=1.0)
     ##BACKGRUND
-    plot_hist([hist_zv,hist_tt,hist_DY],label=[f'MC ({var})' for var in ['WZ,ZZ','TT,WW','Z+jets']],histtype='fill', edgecolor='k', linewidth=1, stack=True) ## draw MC
+    #plot_hist([hist_zv,hist_tt,hist_DY],label=[f'MC ({var})' for var in ['WZ,ZZ','TT,WW','Z+jets']],histtype='fill', edgecolor='k', linewidth=1, stack=True) ## draw MC
+    hep.histplot([hist_zv,hist_tt,hist_DY],label=[f'MC ({var})' for var in ['WZ,ZZ','TT,WW','Z+jets']],histtype='fill', edgecolor='k', linewidth=1, stack=True) ## draw MC
     bkg_tot = (hist_zv+hist_tt+hist_DY).values()
     bkg_err = get_err(hist_zv+hist_tt+hist_DY)
     if plot_unce:
@@ -69,7 +70,8 @@ def plot1DDataMC(hist_zv,hist_tt,hist_DY,hist_data):
     ##DATA
     data_err = get_err(hist_data)
     data = hist_data.values()
-    plot_hist(hist_data,label='Data', histtype='errorbar', color='k', markersize=15, elinewidth=1.5) ## draw dat
+    #plot_hist(hist_data,label='Data', histtype='errorbar', color='k', markersize=15, elinewidth=1.5) ## draw dat
+    hep.histplot(hist_data,label='Data', histtype='errorbar', color='k', markersize=15, elinewidth=1.5) ## draw dat
     if islogY:
         ax.set(yscale = "log")
         ax.set_ylim(1e-1, 3*ax.get_ylim()[1])

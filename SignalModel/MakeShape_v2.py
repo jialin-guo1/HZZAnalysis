@@ -33,7 +33,7 @@ for mass in range(200,1000,50):
     massList.append(mass)
 for mass in range(1000,1600,100):
     massList.append(mass)
-for mass in range(1600,3800,200):
+for mass in range(1600,3400,200):
     massList.append(mass)
 
 massList = [600]
@@ -107,6 +107,11 @@ for cutcat in cutcats:
                     #h_out.Write(f'reshape_{cat}_{cutcat}_{tag}_{massList[i]}')
                     h_out.Write('reshape_{}_{}_{}_{}'.format(cat,cutcat,tag,massList[i]))
                     #out_file[f'reshape_{cat}_{cutcat}_{tag}_{massList[i]}'] = h_out
+                #else:
+                #    out_file.cd()
+                #    #hist[cutcat][f'{sample}_{reg}_{cat}_{tag}_{varbs[cutcat]}'].Write(f'reshape_{cat}_{cutcat}_{tag}_{massList[i]}')
+                #    hist[cutcat]['{}_{}_{}_{}_{}'.format(sample,reg,cat,tag,varbs[cutcat])].Write('reshape_{}_{}_{}_{}'.format(cat,cutcat,tag,massList[i]))
+                #    #out_file[f'reshape_{cat}_{cutcat}_{tag}_{massList[i]}'] = hist[cutcat][f'{sample}_{reg}_{cat}_{tag}_{varbs[cutcat]}']
 
 out_file.Write(); out_file.Close()
 #for sample in samples:

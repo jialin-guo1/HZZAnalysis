@@ -24,6 +24,7 @@ class CutAllCatCoffeaProcessor(processor.ProcessorABC):
         self.year = year
         self.fileset = fileset
         self.sumWeight = 0.0
+        self.nevents = 0.0
         self.leptonic_cut_cats=['isEE','isMuMu','2lep']
         self.regions = ['CR','SR','ALL','VR','SB','LSB','HSB']
         self.AlphaRegion = ['VR','SB']
@@ -56,6 +57,11 @@ class CutAllCatCoffeaProcessor(processor.ProcessorABC):
             self.sumWeight = (f.to_boost()).sum()
             f.close()
 
+        #get the number of events from rootfile
+        f = uproot.open(self.fileset[dataset][0])['nEvents']
+        self.nevents = (f.to_boost()).sum()
+        f.close()
+
         lumi = self.config['lumi'][self.year]
         xsec = self.config['samples_inf'][dataset][1]
 
@@ -66,6 +72,11 @@ class CutAllCatCoffeaProcessor(processor.ProcessorABC):
         bins, start, stop, name = self.getbininfo(varb)
         h_out[varb] = hist.Hist(hist.axis.Regular(bins=bins, start=start, stop=stop, name=name))
         h_out[varb].fill(events[varb])
+
+        #creat a histogram to store the number of events into the first bin
+        h_out['nevents'] = hist.Hist(hist.axis.Regular(1, 0, 1, name = 'nevents'))
+        h_out['nevents'].fill(0.5,weight=self.nevents)
+
         ####Leptonic cut apply and fill histo for each variable
         if self.option == None: #if option is None, then apply all cuts for leptonic
             h_out['lep'] = {}
@@ -465,8 +476,9 @@ class CutUnit():
         self.processor = CutAllCatCoffeaProcessor
         self.year = year
         self.fileset = setting().fileset[self.year]
-        #self.outstr = f"{self.year}_signal"
-        self.outstr = f"{self.year}"
+
+        self.outstr = f"{self.year}_signal"
+        #self.outstr = f"{self.year}"
         #print(self.fileset)
         #self.option = 'masszz'
         self.option = None
@@ -491,6 +503,8 @@ class CutUnit():
             for sample in self.fileset.keys():
                 ##Gen Variable
                 fw[f'{sample}/GEN_H1_mass'] = out[sample][out_h_dir_name]['GEN_H1_mass']
+                #number of events
+                fw[f'{sample}/nevents'] = out[sample][out_h_dir_name]['nevents']
                 ##store Lep cut
                 if self.option == None:
                     for cat in leptonic_cut_cats:
