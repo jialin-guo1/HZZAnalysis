@@ -40,6 +40,7 @@ public:
   void find4lCandidate();
   void findZ2MergedCandidata();
   void SetVBFGen();
+  void SetGen();
   void initialize();
   void SetMEsFile();
   void SetCrossSection(TString inputfile);

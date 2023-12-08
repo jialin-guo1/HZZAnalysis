@@ -253,7 +253,16 @@ void TreeLoop::Loop(){
     if(ievent%10000==0){
       cout<<ievent<<"/"<<nentries<<std::endl;
     }
-    //if(ievent==5000){break;} //test for 50000 events
+    if(ievent==10000){break;} //test for 50000 events
+
+    initialize(); // initialize all menber datas
+
+    //setup GEN variables excipt for VBF variables
+    if(isMC){
+      if(verbose) cout<<"[INFO] start GEN analysis"<<endl;
+      SetGen();
+      if(verbose) cout<<"[INFO] GEN analysis done"<<endl;
+    }
 
     if(!(*(*passedTrig))){
       if(verbose){cout<<"[INFO] failed pass trigger,skip to next tree loop"<<endl;}
@@ -269,8 +278,6 @@ void TreeLoop::Loop(){
       }
 
     }
-
-    initialize(); // initialize all menber datas
 
     Met = *(*met);
     Met_phi = *(*met_phi);
@@ -293,9 +300,9 @@ void TreeLoop::Loop(){
     */
 
     if(isMC){
-      if(verbose) cout<<"[INFO] start GEN analysis"<<endl;
+      if(verbose) cout<<"[INFO] start VBF GEN analysis"<<endl;
       SetVBFGen();
-      if(verbose) cout<<"[INFO] GEN analysis done"<<endl;
+      if(verbose) cout<<"[INFO] VBF GEN analysis done"<<endl;
     }
 
     //at least have a leptoinc Z in evnets
@@ -1959,6 +1966,13 @@ void TreeLoop::findZ2JCandidata(){
         jet_1_pt = (*jet_pt)[Z2_jetindex[0]];
         jet_2_pt = (*jet_pt)[Z2_jetindex[1]];
 
+        jet_1_eta = (*jet_eta)[Z2_jetindex[0]];
+        jet_2_eta = (*jet_eta)[Z2_jetindex[1]];
+
+        jet_1_phi = (*jet_phi)[Z2_jetindex[0]];
+        jet_2_phi = (*jet_phi)[Z2_jetindex[1]];
+  
+
         foundZ2JCandidate=true;
         if(verbose) cout<<"[INFO] find resovled jet candidates"<<endl;
 
@@ -2246,9 +2260,9 @@ void TreeLoop::findZ2MergedCandidata(){
 
 }
 
-//======================GEN VBF=======================================================
-void TreeLoop::SetVBFGen(){
-
+//======================GEN=======================================================
+void TreeLoop::SetGen(){
+  //cout<<"[INFO] start to set GEN variables"<<endl;
   //higgs mass
   int nGEN_higgs = GENH_mass->GetSize();
   if(nGEN_higgs>0){
@@ -2262,7 +2276,11 @@ void TreeLoop::SetVBFGen(){
       else{ continue; }
     }
   }
+  //cout<<"[INFO] GEN_H1_mass = "<<GEN_H1_mass<<endl;
+}
 
+//======================GEN VBF=======================================================
+void TreeLoop::SetVBFGen(){
   //VBF quark
   int nGEN_VBF  = GEN_VBF_pt->GetSize();
   if(nGEN_VBF>1){
@@ -2469,11 +2487,12 @@ void TreeLoop::SetVBFGen(){
 void TreeLoop::SetMEsFile(){// Set the MEs
   // ME lists
   setMatrixElementListFromFile(
-    "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_800.me",
+    "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_2000.me",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
-    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,DecayProbabilities_MCFM,LHE_PropagatorRewgt",
+    "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,LHE_DecayProbabilities_MCFM,LHE_PropagatorRewgt",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,AJetsVHProbabilities_SpinZero_JHUGen,PMAVJJ_SUPERDIJETMELA",
-    false
+    //false
+    true
   );
 
   // Build the MEs if they are specified
@@ -2836,6 +2855,10 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("jet_2_partonflavor",&jet_2_partonflavor);
   passedEventsTree_All->Branch("jet_1_pt",&jet_1_pt);
   passedEventsTree_All->Branch("jet_2_pt",&jet_2_pt);
+  passedEventsTree_All->Branch("jet_1_eta",&jet_1_eta);
+  passedEventsTree_All->Branch("jet_2_eta",&jet_2_eta);
+  passedEventsTree_All->Branch("jet_1_phi",&jet_1_phi);
+  passedEventsTree_All->Branch("jet_2_phi",&jet_2_phi);
   passedEventsTree_All->Branch("jet_1_pt_up",&jet_1_pt_up);
   passedEventsTree_All->Branch("jet_1_eta_up",&jet_1_eta_up);
   passedEventsTree_All->Branch("jet_1_phi_up",&jet_1_phi_up);
@@ -3137,7 +3160,9 @@ void TreeLoop::initialize(){
   jet_2_deepbtag = -999; jet_2_deepbtag_up = -999; jet_2_deepbtag_dn = -999;
   jet_1_btag_up = -999; jet_1_btag_dn=-999; jet_2_btag_up = -999; jet_2_btag_dn=-999;
   jet_2_hadronflavor=-999; jet_2_partonflavor=-999;
-  jet_1_pt = -999.99;
+  jet_1_pt = -999.99;  jet_2_pt = -999.99;
+  jet_1_eta = -999.99; jet_2_eta = -999.99;
+  jet_1_phi = -999.99; jet_2_phi = -999.99;
   jet_1_pt_up=-999.99; jet_1_pt_dn=-999.99;
   jet_1_eta_up=-999.99; jet_1_eta_dn=-999.99;
   jet_1_phi_up=-999.00; jet_1_phi_dn=-999.99;
