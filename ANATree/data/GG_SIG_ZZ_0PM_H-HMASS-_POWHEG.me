@@ -1,0 +1,37 @@
+# Below, if no width value is provided, the default width for the specified mass value is assumed. This is done for each resonance separately.
+# The default width can be extracted from an algebra over the different CPStoBW weights.
+# Actual ME weights use the default width for the high mass resonance and 4.07 MeV for H(125).
+# Notice the need to compute two interference terms for H(125) vs. HM; that is so that when you change the width, you can adjust this interference properly.
+# Likewise, you need two interference terms for HM vs. continuum for the same reason.
+# Only one interference term is needed for H(125) vs. continuum as you assume H(125) couplings are exactly as in the SM.
+# As soon as you relax the assumption on the SM H(125) width, you should use GG_BSI_H125_kappaTopBot_1_ghz1_i_MCFM to vary Gamma_H(125) togeher with other hypotheses properly.
+# Otherwise, GG_BSI_H125_kappaTopBot_1_ghz1_i_MCFM is not needed.
+
+LHE_PropagatorRewgt = [
+   "Name:SamplePropagator Alias:<Name> PropScheme:CPS hmass:<HMASS> isGen:1 NoBranch:1 isProp:1",
+   "Name:CPStoBWPropRewgt PropScheme:FixedWidth hmass:<HMASS> Options:DivideP=SamplePropagator isGen:1 isProp:1",
+
+   "Name:CPStoBW_GaH10_PropRewgt PropScheme:FixedWidth hmass:<HMASS> hwidth:10 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+   "Name:CPStoBW_GaH100_PropRewgt PropScheme:FixedWidth hmass:<HMASS> hwidth:100 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+   "Name:CPStoBW_GaH200_PropRewgt PropScheme:FixedWidth hmass:<HMASS> hwidth:200 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+]
+LHE_DecayProbabilities_MCFM = [
+   "Name:SampleHypothesisMCFM Alias:<Name> Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:<HMASS> Cluster:NoInitialQ isGen:1 NoBranch:1",
+
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:<HMASS> Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0;kappa2_top=1,0;kappa2_bot=1,0;gh2z1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 h2mass:<HMASS> Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_HM_kappa2TopBot_1_gh2z1_i_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0;kappa2_top=1,0;kappa2_bot=1,0;gh2z1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 h2mass:<HMASS> Cluster:NoInitialQ isGen:1",
+
+   "Name:GG_BSI_H125_kappaTopBot_1_ghz1_1_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_H125_kappaTopBot_1_ghz1_i_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:<HMASS> Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_HM_kappa2TopBot_1_gh2z1_i_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:<HMASS> Cluster:NoInitialQ isGen:1",
+
+   "Name:GG_BKG_MCFM Process:bkgZZ Production:ZZGG MatrixElement:MCFM Options:DivideP=SampleHypothesisMCFM Cluster:NoInitialQ isGen:1",
+]
+
+# Construct the final list
+theLHEProbabilities = []
+theLHEProbabilities.extend(LHE_PropagatorRewgt)
+theLHEProbabilities.extend(LHE_DecayProbabilities_MCFM)

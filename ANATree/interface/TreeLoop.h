@@ -28,7 +28,7 @@ class TreeLoop : public IvyBase
 //class TreeLoop
 {
 public:
-  TreeLoop(TString inputfile,TString outputfile, string year);
+  TreeLoop(TString inputfile,TString outputfile, string year, string melafile);
   ~TreeLoop();
 
   void setMatrixElementList(std::vector<std::string> const& MElist, bool const& isGen);
@@ -42,7 +42,7 @@ public:
   void SetVBFGen();
   void SetGen();
   void initialize();
-  void SetMEsFile();
+  void SetMEsFile(string melafile);
   void SetCrossSection(TString inputfile);
 
 

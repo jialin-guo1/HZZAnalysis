@@ -11,7 +11,7 @@ import hist as hist2
 
 import argparse
 parser = argparse.ArgumentParser(description="A simple ttree plotter")
-parser.add_argument("-y","--year",dest="year",default='2016', help="year to run or run for all three year. Options: 2016, 2016APV, 2017,2018,all")
+parser.add_argument("-y","--year",dest="year",default='2016', help="year to run or run for all three year. Options: 2016preAVP, 2016psotAPV, 2017,2018,all")
 parser.add_argument("-c","--cat",dest="cat",default='tt', help="choose cat to decide wichle cut selection will be used. Options: resolved,merged")
 args = parser.parse_args()
 #===========================================load config file====================================================================
@@ -24,7 +24,7 @@ sf_particleNet_signal = {}
 with open('/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/NetSF_signal_2016Legacy.yml') as f:
     sf_particleNet_signal = yaml.safe_load(f)
 config = {}
-with open("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL16_old.yml") as f:
+with open(f"/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL{args.year}.yml") as f:
     config = yaml.safe_load(f)
 
 outfilepath = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/ttoutfile"
@@ -166,6 +166,7 @@ for cat in cats:
                     if sample!='Data':
                         if sample.find('DY')!=-1 and reg=="CR": continue
                         temp_array = bkg_array[reg][cat][tag][sample]
+
                         #retray weight and apply paritcleNet weight
                         weights = (temp_array['EventWeight']*config['lumi'][args.year]*1000*config['samples_inf'][sample][1])/sumWeight[sample]
                         if (sample == 'ZZTo2Q2L' or sample =='WZTo2Q2L') and args.cat=='merged':
@@ -173,6 +174,14 @@ for cat in cats:
                         else:
                             sf_Net = ak.ones_like(temp_array['EventWeight'])
                         weights = weights*sf_Net
+
+                        #Deepjet SFs for btag in resolved category only
+                        if args.cat=='resolved' and tag=='btag':
+                            sf_Deepjet = GetDeepjetSF(temp_array,'btag',args.year)
+                            weights = weights*sf_Deepjet
+
+
+
                         #temp_hist = get_hist(temp_array[var],weights,nbins,xmin,xmax)
                         #temp_hist = bh.Histogram(massZZ_bins,storage=bh.storage.Weight())
                         temp_hist = bh.Histogram(bh.axis.Regular(bins=bins, start=minbin, stop=maxbin),storage=bh.storage.Weight())

@@ -10,6 +10,7 @@ struct Options {
     TString outfile = nullptr;
     TString input_file_path = "${CMSSW_BASE}/src/HZZAnalysis/ANATree/testfiles/";
     TString output_file_path = "${CMSSW_BASE}/src/HZZAnalysis/fileout/";
+    std::string melafile = "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_1000.me";
     std::string year = "2018";
 };
 

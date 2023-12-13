@@ -107,6 +107,7 @@ class setting():
                 ##'vbf':[f'{self.filepath}/{year}/MC/vbf/skimed/vbf.root'],
                 #'sig':[f'/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/sig/skimed/sig.root'],
                 #'ggh1000':[f'{self.filepath}/{year}/MC/ggh1000/skimed/ggh1000.root'],
+                'ggh4l400':[f'{self.filepath}/{year}/MC/ggh4l400/skimed/ggh4l400.root'],
                 'ggh125':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],
                 'ggh200':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M200_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v2_0.root'],
                 'ggh250':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M250_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],

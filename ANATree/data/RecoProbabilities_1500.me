@@ -202,7 +202,42 @@ PMAVJJ_SUPERDIJETMELA = [
    "Name:HadWH_mavjj Process:HSMHiggs Production:Had_WH MatrixElement:JHUGen Cluster:J2JECNominal DefaultME:-1 isPMaVJJ:1",
 ]
 
+##########################
+##########################
+######replaced by new reweighting scheme
+#LHE_PropagatorRewgt = [
+#   "Name:SamplePropagator Alias:<Name> PropScheme:CPS hmass:1500 isGen:1 NoBranch:1 isProp:1",
+#   "Name:CPStoBWPropRewgt PropScheme:FixedWidth hmass:1500 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+#]
+##########################
+##########################
+
+
 LHE_PropagatorRewgt = [
    "Name:SamplePropagator Alias:<Name> PropScheme:CPS hmass:1500 isGen:1 NoBranch:1 isProp:1",
    "Name:CPStoBWPropRewgt PropScheme:FixedWidth hmass:1500 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+
+   "Name:CPStoBW_GaH10_PropRewgt PropScheme:FixedWidth hmass:1500 hwidth:10 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+   "Name:CPStoBW_GaH100_PropRewgt PropScheme:FixedWidth hmass:1500 hwidth:100 Options:DivideP=SamplePropagator isGen:1 isProp:1",
+   "Name:CPStoBW_GaH200_PropRewgt PropScheme:FixedWidth hmass:1500 hwidth:200 Options:DivideP=SamplePropagator isGen:1 isProp:1",
 ]
+LHE_DecayProbabilities_MCFM = [
+   "Name:SampleHypothesisMCFM Alias:<Name> Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:1500 Cluster:NoInitialQ isGen:1 NoBranch:1",
+
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:1500 Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0;kappa2_top=1,0;kappa2_bot=1,0;gh2z1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 h2mass:1500 Cluster:NoInitialQ isGen:1",
+   "Name:GG_SIG_H125_kappaTopBot_1_ghz1_1_HM_kappa2TopBot_1_gh2z1_i_MCFM Process:HSMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0;kappa2_top=1,0;kappa2_bot=1,0;gh2z1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 h2mass:1500 Cluster:NoInitialQ isGen:1",
+
+   "Name:GG_BSI_H125_kappaTopBot_1_ghz1_1_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_H125_kappaTopBot_1_ghz1_i_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:125 hwidth:0.00407 Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_HM_kappa2TopBot_1_gh2z1_1_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=1,0 Options:DivideP=SampleHypothesisMCFM hmass:1500 Cluster:NoInitialQ isGen:1",
+   "Name:GG_BSI_HM_kappa2TopBot_1_gh2z1_i_MCFM Process:bkgZZ_SMHiggs Production:ZZGG MatrixElement:MCFM Couplings:kappa_top=1,0;kappa_bot=1,0;ghz1=0,1 Options:DivideP=SampleHypothesisMCFM hmass:1500 Cluster:NoInitialQ isGen:1",
+
+   "Name:GG_BKG_MCFM Process:bkgZZ Production:ZZGG MatrixElement:MCFM Options:DivideP=SampleHypothesisMCFM Cluster:NoInitialQ isGen:1",
+]
+
+# Construct the final list
+theLHEProbabilities = []
+theLHEProbabilities.extend(LHE_PropagatorRewgt)
+theLHEProbabilities.extend(LHE_DecayProbabilities_MCFM)

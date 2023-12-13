@@ -1,7 +1,7 @@
 #include "TreeLoop.h"
 
 //construtor
-TreeLoop::TreeLoop(TString inputfile, TString outputfile, string year){
+TreeLoop::TreeLoop(TString inputfile, TString outputfile, string year, string melafile){
 
   if(strstr(inputfile,"MuonEG") || strstr(inputfile,"DoubleMuon") || strstr(inputfile,"SingleMuon") || strstr(inputfile,"SingleElectron") || strstr(inputfile,"DoubleEG") || strstr(inputfile,"EGamma")){
     isData = true;
@@ -84,16 +84,17 @@ TreeLoop::TreeLoop(TString inputfile, TString outputfile, string year){
   TH1F *nEvents = (TH1F*)oldfile->Get("Ana/nEvents");
   nentries = nEvents->GetBinContent(1);
 
-  //if(verbose){
-  //  if(myreader->Next()){
-  //    cout<<"[INFO] setup tree reader "<<endl;
-  //  } else{
-  //    cout<<"[ERROR] can not setup tree reader"<<endl;
-  //  }
-  //}
-
   outfile = new TFile(outputfile,"recreate");
   passedEventsTree_All = new TTree("passedEvents","passedEvents");
+
+  //set up mela
+  if(doMela){
+    if(verbose){cout<<"[INFO] setup MELA using "<< melafile <<endl;}
+    cout<<"[INFO] setup MELA using "<< melafile <<endl;
+    SetMEsFile(melafile);
+  }else{
+    if(verbose){cout<<"[INFO] skip MELA"<<endl;}
+  }
 
   if(verbose){cout<<"[INFO] construtor done"<<endl;}
 
@@ -106,13 +107,13 @@ TreeLoop::~TreeLoop(){}
 void TreeLoop::Loop(){
   if(verbose){cout<<"[INFO] start to event loop"<<endl;}
 
-  if(doMela){
-    if(verbose){cout<<"[INFO] setup MELA"<<endl;}
-    SetMEsFile();
-
-  }else{
-    if(verbose){cout<<"[INFO] skip MELA"<<endl;}
-  }
+  //if(doMela){
+  //  if(verbose){cout<<"[INFO] setup MELA"<<endl;}
+  //  SetMEsFile();
+//
+  //}else{
+  //  if(verbose){cout<<"[INFO] skip MELA"<<endl;}
+  //}
 
   //===================start event loop==========================================
   setTree();
@@ -253,7 +254,7 @@ void TreeLoop::Loop(){
     if(ievent%10000==0){
       cout<<ievent<<"/"<<nentries<<std::endl;
     }
-    if(ievent==10000){break;} //test for 50000 events
+    //if(ievent==50000){break;} //test for 50000 events
 
     initialize(); // initialize all menber datas
 
@@ -2484,10 +2485,11 @@ void TreeLoop::SetVBFGen(){
 }
 
 //=========================set MEs from file==========================================
-void TreeLoop::SetMEsFile(){// Set the MEs
+void TreeLoop::SetMEsFile(std::string melafile){// Set the MEs
   // ME lists
   setMatrixElementListFromFile(
-    "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_2000.me",
+    //"${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_2000.me",
+    melafile,
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
     "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,LHE_DecayProbabilities_MCFM,LHE_PropagatorRewgt",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,AJetsVHProbabilities_SpinZero_JHUGen,PMAVJJ_SUPERDIJETMELA",

@@ -35,6 +35,11 @@ void read_options(int argc, char *argv[], Options &opt){
         opt.outfile = opt.output_file_path+argv[i+1];
       }else if (strcmp("--year",argv[i]) == 0 || strcmp("-y",argv[i]) == 0){
         opt.year = argv[i+1];
+      }else if (strcmp("--mass",argv[i]) == 0 || strcmp("-m",argv[i]) == 0){
+        opt.melafile = "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_";
+        opt.melafile.append(argv[i+1]);
+        opt.melafile.append(".me");
+        //opt.melafile = "${CMSSW_BASE}/src/HZZAnalysis/ANATree/data/RecoProbabilities_"+argv[i+1]+".me";
       }
     }
   }
@@ -48,7 +53,7 @@ int main(int argc, char *argv[]){
   read_options(argc, argv,opt);
   cout<<"input file ="<<opt.infile<<endl;
   cout<<"out file ="<<opt.outfile<<endl;
-  TreeLoop *lp = new TreeLoop(opt.infile,opt.outfile,opt.year);
+  TreeLoop *lp = new TreeLoop(opt.infile,opt.outfile,opt.year,opt.melafile);
   lp->Loop();
   //TreeLoop loop("${CMSSW_BASE}/src/HZZAnalysis/ANATree/testfile/test.root");
 
