@@ -18,6 +18,9 @@ args = parser.parse_args()
 import sys,os
 sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/lib")
 from utils import *
+from deepjet import DeepJet as dj
+
+logger.setLevel(logging.INFO) # DEBUG, INFO, WARNING, ERROR, CRITICAL. Default is ERROR.
 
 import yaml
 sf_particleNet_signal = {}
@@ -109,10 +112,10 @@ def getAlphaArray(alpha_histo,massZZ_histo):
 bins = 80; minbin = 0; maxbin = 4000
 
 regions = ['CR','SR']
-tags = ['btag','untag','vbftag']
-#tags = ['vbftag']
+#tags = ['btag','untag','vbftag']
+tags = ['btag']
 cats = ['isEE','isMuMu','2lep']
-#cats = ['isEE']
+#cats = ['2lep']
 pro_str = 'perInvFb_Bin50GeV'
 #reg = 'SR'
 #print(f'massZZ bins = {massZZ_bins}')
@@ -129,6 +132,10 @@ if args.year=='2016preAPV' or args.year=='2016postAPV':
 else:
     Alph_path = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/AlphaFile/AlphaHistoFromROOT_{args.year}.root'
     Alpha_file = uproot.open(Alph_path)
+
+#for resolved category, open a txt file to store the uncertainty of deepjet SFs
+if args.cat=='resolved':
+    dj_uncertainty_file = open(f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/txtfiles/deepjet_uncertainty_{args.year}.txt','w')
 
 #nbins, xmin, xmax = config['bininfo'][kd][0], config['bininfo'][kd][1], config['bininfo'][kd][2]
 for cat in cats:
@@ -176,11 +183,23 @@ for cat in cats:
                         weights = weights*sf_Net
 
                         #Deepjet SFs for btag in resolved category only
+                        logger.info(f'Produce deepjet SFs for cat = {args.cat}, tag = {tag}')
                         if args.cat=='resolved' and tag=='btag':
-                            sf_Deepjet = GetDeepjetSF(temp_array,'btag',args.year)
-                            weights = weights*sf_Deepjet
+                            dj_helper = dj(args.year,temp_array)
+                            sf_jet1,sf_jet2 = dj_helper.get_deepjet_sf('central')
+                            logger.info(f'sf = {sf_jet1*sf_jet2}')
+                            weights = weights*sf_jet1*sf_jet2
 
+                            #compute uncertainty for deepjet SFs.
+                            sf_jet1_up,sf_jet2_up = dj_helper.get_deepjet_sf('up')
+                            sf_jet1_down,sf_jet2_down = dj_helper.get_deepjet_sf('down')
+                            sf_certral = (sf_jet1+sf_jet2).sum()
+                            sf_up = (sf_jet1_up+sf_jet2_up).sum()
+                            sf_down = (sf_jet1_down+sf_jet2_down).sum()
+                            uncertainty_up = abs(sf_up-sf_certral)/sf_certral
+                            uncertainty_down = abs(sf_down-sf_certral)/sf_certral
 
+                            dj_uncertainty_file.write(f'{cat} {sample} {reg} {uncertainty_up}/{uncertainty_down}\n')
 
                         #temp_hist = get_hist(temp_array[var],weights,nbins,xmin,xmax)
                         #temp_hist = bh.Histogram(massZZ_bins,storage=bh.storage.Weight())
