@@ -70,7 +70,7 @@ protected:
   //===============================output Tree branch================================================
   //=================================================================================================
   //menber object
-  bool foundZ1LCandidate;
+  bool foundZ1LCandidate, foundZ1LCandidate_up, foundZ1LCandidate_dn;
   bool foundZ2JCandidate, foundZ2JCandidate_up, foundZ2JCandidate_dn;
   bool foundZ2MergedCandidata, foundZ2MergedCandidata_up, foundZ2MergedCandidata_dn;
   bool found4lCandidate;
@@ -96,8 +96,14 @@ protected:
 
   ULong64_t run,event,lumiSect;
 
-  double lep_1_pt, lep_1_eta, lep_1_phi;
-  double lep_2_pt, lep_2_eta, lep_2_phi;
+  double lep_1_pt, lep_1_eta, lep_1_phi, lep_1_mass;
+  double lep_2_pt, lep_2_eta, lep_2_phi, lep_2_mass;
+
+  double lep_1_pt_up, lep_1_eta_up, lep_1_phi_up, lep_1_mass_up;
+  double lep_2_pt_up, lep_2_eta_up, lep_2_phi_up, lep_2_mass_up;
+
+  double lep_1_pt_dn, lep_1_eta_dn, lep_1_phi_dn, lep_1_mass_dn;
+  double lep_2_pt_dn, lep_2_eta_dn, lep_2_phi_dn, lep_2_mass_dn;
 
   int lep_Z1index[2];
   int jet_Z1index[2], jet_Z1index_up[2], jet_Z1index_dn[2];
@@ -169,6 +175,7 @@ protected:
   double mass2l, pt2l;
   double massmerged,massmerged_up, massmerged_dn;
   double ptmerged, ptmerged_up, ptmerged_dn;
+  double etamerged, phimerged;
   float mass2l2jet, mass2lj;
   float mass2l2jet_up, mass2l2jet_dn, mass2lj_up, mass2lj_dn;
   int nsubjet;

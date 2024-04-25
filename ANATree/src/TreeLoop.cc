@@ -254,7 +254,7 @@ void TreeLoop::Loop(){
     if(ievent%10000==0){
       cout<<ievent<<"/"<<nentries<<std::endl;
     }
-    //if(ievent==50000){break;} //test for 50000 events
+    if(ievent==20000){break;} //test for 50000 events
 
     initialize(); // initialize all menber datas
 
@@ -312,12 +312,11 @@ void TreeLoop::Loop(){
     event = *(*Event);
     lumiSect = *(*LumiSect);
 
-    //fill event weight
     EventWeight = *(*eventWeight)*(*lep_dataMC)[lep_Z1index[0]]*(*lep_dataMC)[lep_Z1index[1]];
     GenWeight = *(*genWeight);
     PileupWeight = *(*pileupWeight);
     PrefiringWeight = *(*prefiringWeight);
-
+    
     if(abs((*lep_id)[lep_Z1index[0]])==13 && abs((*lep_id)[lep_Z1index[1]])==13){ isMuMu = true;}
     if(abs((*lep_id)[lep_Z1index[0]])==11 && abs((*lep_id)[lep_Z1index[1]])==11){ isEE = true;}
 
@@ -1521,7 +1520,7 @@ void TreeLoop::Loop(){
     }
     */
 
-    //SetVBFGen();//set Gen and match atfer reco-jet selecte
+    //SetVBFGen(); set Gen and match atfer reco-jet selected
     //==========fill output tree branch==========================================
     passedEventsTree_All->Fill();
 
@@ -1660,6 +1659,16 @@ void TreeLoop::findZ1LCandidate(){
   vector<int> Z_Z1L_lepindex1;
   vector<int> Z_Z1L_lepindex2;
 
+  //up 1%
+  int n_Zs_1p=0;
+  vector<int> Z_Z1L_lepindex1_1p;
+  vector<int> Z_Z1L_lepindex2_1p;
+
+  //down 1%
+  int n_Zs_1m=0;
+  vector<int> Z_Z1L_lepindex1_1m;
+  vector<int> Z_Z1L_lepindex2_1m;
+
   //check if n tight lepton==2
   for(unsigned int i=0; i<Nlep; i++){
     if ((*lep_tightId)[i]){ Ntightleptons+=1;}
@@ -1684,16 +1693,55 @@ void TreeLoop::findZ1LCandidate(){
       lifsr.SetPtEtaPhiM((*lepFSR_pt)[i],(*lepFSR_eta)[i],(*lepFSR_phi)[i],(*lepFSR_mass)[i]);
       ljfsr.SetPtEtaPhiM((*lepFSR_pt)[j],(*lepFSR_eta)[j],(*lepFSR_phi)[j],(*lepFSR_mass)[j]);
 
-      TLorentzVector liljfsr = lifsr+ljfsr;
-
       TLorentzVector Z, Z_noFSR;
       Z = lifsr+ljfsr;
       Z_noFSR = li+lj;
+
+      // float lepton pt 1%
+      //up 1%
+      TLorentzVector li_1p, lj_1p;
+      li_1p.SetPtEtaPhiM((*lep_pt)[i]*1.01,(*lep_eta)[i],(*lep_phi)[i],(*lep_mass)[i]);
+      lj_1p.SetPtEtaPhiM((*lep_pt)[j]*1.01,(*lep_eta)[j],(*lep_phi)[j],(*lep_mass)[j]);
+
+      TLorentzVector lifsr_1p, ljfsr_1p;
+      lifsr_1p.SetPtEtaPhiM((*lepFSR_pt)[i]*1.01,(*lepFSR_eta)[i],(*lepFSR_phi)[i],(*lepFSR_mass)[i]);
+      ljfsr_1p.SetPtEtaPhiM((*lepFSR_pt)[j]*1.01,(*lepFSR_eta)[j],(*lepFSR_phi)[j],(*lepFSR_mass)[j]);
+
+      TLorentzVector Z_1p, Z_noFSR_1p;
+      Z_1p = lifsr_1p+ljfsr_1p;
+      Z_noFSR_1p = li_1p+lj_1p;
+
+      //down 1%
+      TLorentzVector li_1m, lj_1m;
+      li_1m.SetPtEtaPhiM((*lep_pt)[i]*0.99,(*lep_eta)[i],(*lep_phi)[i],(*lep_mass)[i]);
+      lj_1m.SetPtEtaPhiM((*lep_pt)[j]*0.99,(*lep_eta)[j],(*lep_phi)[j],(*lep_mass)[j]);
+
+      TLorentzVector lifsr_1m, ljfsr_1m;
+      lifsr_1m.SetPtEtaPhiM((*lepFSR_pt)[i]*0.99,(*lepFSR_eta)[i],(*lepFSR_phi)[i],(*lepFSR_mass)[i]);
+      ljfsr_1m.SetPtEtaPhiM((*lepFSR_pt)[j]*0.99,(*lepFSR_eta)[j],(*lepFSR_phi)[j],(*lepFSR_mass)[j]);
+
+      TLorentzVector Z_1m, Z_noFSR_1m;
+      Z_1m = lifsr_1m+ljfsr_1m;
+      Z_noFSR_1m = li_1m+lj_1m;
+      
 
       if (Z.M()>0.0) {
         n_Zs++;
         Z_Z1L_lepindex1.push_back(i);
         Z_Z1L_lepindex2.push_back(j);
+      }
+
+      //up 1%
+      if (Z_1p.M()>0.0) {
+        n_Zs_1p++;
+        Z_Z1L_lepindex1_1p.push_back(i);
+        Z_Z1L_lepindex2_1p.push_back(j);
+      }
+      //down 1%
+      if (Z_1m.M()>0.0) {
+        n_Zs_1m++;
+        Z_Z1L_lepindex1_1m.push_back(i);
+        Z_Z1L_lepindex2_1m.push_back(j);
       }
     } // lep i
   } // lep j
@@ -1764,7 +1812,7 @@ void TreeLoop::findZ1LCandidate(){
     if (!((*lep_tightId)[Z1_lepindex[1]])) continue; // checking tight lepton ID
     pass_leptightID = true;
 
-    //if(Z1.Pt()<100) continue;
+    if(Z1.Pt()<100) continue;
 
     if ( (Z1.M() < mZ1Low) || (Z1.M() > mZ1High) ) continue;
     pass_lepZmass40_180 = true;
@@ -1786,9 +1834,11 @@ void TreeLoop::findZ1LCandidate(){
       lep_1_pt = (*lepFSR_pt)[lep_Z1index[0]];
       lep_1_eta = (*lepFSR_eta)[lep_Z1index[0]];
       lep_1_phi = (*lepFSR_phi)[lep_Z1index[0]];
+      lep_1_mass = (*lepFSR_mass)[lep_Z1index[0]];
       lep_2_pt = (*lepFSR_pt)[lep_Z1index[1]];
       lep_2_eta = (*lepFSR_eta)[lep_Z1index[1]];
       lep_2_phi = (*lepFSR_phi)[lep_Z1index[1]];
+      lep_2_mass = (*lepFSR_mass)[lep_Z1index[1]];
 
       //if (verbose) cout<<" new best Z1L candidate: massZ1: "<<massZ1<<" (mass3l: "<<mass3l<<")"<<endl;
       found2lepCandidate = true;
@@ -1805,12 +1855,152 @@ void TreeLoop::findZ1LCandidate(){
   if(pass_lepZmass40_180) passed_lepZmass40_180++;
   if(foundZ1LCandidate) passed_lepZ++;
 
-
   if(verbose){
     if(foundZ1LCandidate){cout<<"[INFO] found leptoinc Z candidate."<<endl;}
     else{cout<<"[INFO] no leptoinc Z candidate in this evnets"<<endl;}
   }
 
+  //1% up
+  for (int i=0; i<n_Zs_1p; i++) {
+
+    int i1 = Z_Z1L_lepindex1_1p[i]; int i2 = Z_Z1L_lepindex2_1p[i];
+
+    TLorentzVector lep_i1, lep_i2;
+    lep_i1.SetPtEtaPhiM((*lepFSR_pt)[i1]*1.01,(*lepFSR_eta)[i1],(*lepFSR_phi)[i1],(*lepFSR_mass)[i1]);
+    lep_i2.SetPtEtaPhiM((*lepFSR_pt)[i2]*1.01,(*lepFSR_eta)[i2],(*lepFSR_phi)[i2],(*lepFSR_mass)[i2]);
+
+    TLorentzVector lep_i1_nofsr, lep_i2_nofsr;
+    lep_i1_nofsr.SetPtEtaPhiM((*lep_pt)[i1]*1.01,(*lep_eta)[i1],(*lep_phi)[i1],(*lep_mass)[i1]);
+    lep_i2_nofsr.SetPtEtaPhiM((*lep_pt)[i2]*1.01,(*lep_eta)[i2],(*lep_phi)[i2],(*lep_mass)[i2]);
+
+    TLorentzVector Zi;
+    Zi = lep_i1+lep_i2;
+
+    TLorentzVector Z1 = Zi;
+    double Z1DeltaM = abs(Zi.M()-Zmass);
+    int Z1_lepindex[2] = {0,0};
+    if(lep_i1.Pt()>lep_i2.Pt()){ Z1_lepindex[0] = i1;  Z1_lepindex[1] = i2; }
+    else{ Z1_lepindex[0] = i2;  Z1_lepindex[1] = i1; }
+
+    // Check Leading and Subleading pt Cut
+    vector<double> allPt;
+    allPt.push_back(lep_i1.Pt()); allPt.push_back(lep_i2.Pt());
+    std::sort(allPt.begin(), allPt.end());
+    if (allPt[1]<leadingPtCut || allPt[0]<subleadingPtCut ) continue;
+
+    // Check dR(li,lj)>0.02 for any i,j
+    vector<double> alldR;
+    alldR.push_back(deltaR(lep_i1.Eta(),lep_i1.Phi(),lep_i2.Eta(),lep_i2.Phi()));
+    if (*min_element(alldR.begin(),alldR.end())<0.02) continue;
+
+    // Check M(l+,l-)>4.0 GeV for any OS pair
+    // Do not include FSR photons
+    vector<double> allM;
+    TLorentzVector i1i2;
+    i1i2 = (lep_i1_nofsr)+(lep_i2_nofsr);
+    allM.push_back(i1i2.M());
+    if (*min_element(allM.begin(),allM.end())<4.0) {continue;}
+
+    // Check isolation cut (without FSR ) for Z1 leptons
+    if ((*lep_RelIsoNoFSR)[Z1_lepindex[0]]>((abs((*lep_id)[Z1_lepindex[0]])==11) ? isoCutEl : isoCutMu)) continue; // checking iso with FSR removed
+    if ((*lep_RelIsoNoFSR)[Z1_lepindex[1]]>((abs((*lep_id)[Z1_lepindex[1]])==11) ? isoCutEl : isoCutMu)) continue; // checking iso with FSR removed
+
+    // Check tight ID cut for Z1 leptons
+    if (!((*lep_tightId)[Z1_lepindex[0]])) continue; // checking tight lepton ID
+    if (!((*lep_tightId)[Z1_lepindex[1]])) continue; // checking tight lepton ID
+
+    if(Z1.Pt()<100) continue;
+
+    if ( (Z1.M() < mZ1Low) || (Z1.M() > mZ1High) ) continue;
+
+    if (Z1DeltaM<=minZ1DeltaM) {
+
+      minZ1DeltaM = Z1DeltaM;
+
+      lep_1_pt_up = ((*lepFSR_pt)[Z1_lepindex[0]])*1.01;
+      lep_1_eta_up = (*lepFSR_eta)[Z1_lepindex[0]];
+      lep_1_phi_up = (*lepFSR_phi)[Z1_lepindex[0]];
+      lep_1_mass_up = (*lepFSR_mass)[Z1_lepindex[0]];
+      lep_2_pt_up = (*lepFSR_pt)[Z1_lepindex[1]]*1.01;
+      lep_2_eta_up = (*lepFSR_eta)[Z1_lepindex[1]];
+      lep_2_phi_up = (*lepFSR_phi)[Z1_lepindex[1]];
+      lep_2_mass_up = (*lepFSR_mass)[Z1_lepindex[1]];
+
+      if( ((*lep_id)[Z1_lepindex[0]]+(*lep_id)[Z1_lepindex[1]])==0 ) foundZ1LCandidate_up=true;
+    }
+
+  }
+
+  // 1% down
+  for (int i=0; i<n_Zs_1m; i++){
+      
+      int i1 = Z_Z1L_lepindex1_1m[i]; int i2 = Z_Z1L_lepindex2_1m[i];
+  
+      TLorentzVector lep_i1, lep_i2;
+      lep_i1.SetPtEtaPhiM((*lepFSR_pt)[i1]*0.99,(*lepFSR_eta)[i1],(*lepFSR_phi)[i1],(*lepFSR_mass)[i1]);
+      lep_i2.SetPtEtaPhiM((*lepFSR_pt)[i2]*0.99,(*lepFSR_eta)[i2],(*lepFSR_phi)[i2],(*lepFSR_mass)[i2]);
+
+      TLorentzVector lep_i1_nofsr, lep_i2_nofsr;
+      lep_i1_nofsr.SetPtEtaPhiM((*lep_pt)[i1]*0.99,(*lep_eta)[i1],(*lep_phi)[i1],(*lep_mass)[i1]);
+      lep_i2_nofsr.SetPtEtaPhiM((*lep_pt)[i2]*0.99,(*lep_eta)[i2],(*lep_phi)[i2],(*lep_mass)[i2]);
+
+      TLorentzVector Zi;
+      Zi = lep_i1+lep_i2;
+
+      TLorentzVector Z1 = Zi;
+      double Z1DeltaM = abs(Zi.M()-Zmass);
+      int Z1_lepindex[2] = {0,0};
+      if(lep_i1.Pt()>lep_i2.Pt()){ Z1_lepindex[0] = i1;  Z1_lepindex[1] = i2; }
+      else{ Z1_lepindex[0] = i2;  Z1_lepindex[1] = i1; }
+
+      // Check Leading and Subleading pt Cut
+      vector<double> allPt;
+      allPt.push_back(lep_i1.Pt()); allPt.push_back(lep_i2.Pt());
+      std::sort(allPt.begin(), allPt.end());
+      if (allPt[1]<leadingPtCut || allPt[0]<subleadingPtCut ) continue;
+
+      // Check dR(li,lj)>0.02 for any i,j
+      vector<double> alldR;
+      alldR.push_back(deltaR(lep_i1.Eta(),lep_i1.Phi(),lep_i2.Eta(),lep_i2.Phi()));
+      if (*min_element(alldR.begin(),alldR.end())<0.02) continue;
+
+      // Check M(l+,l-)>4.0 GeV for any OS pair
+      // Do not include FSR photons
+      vector<double> allM;
+      TLorentzVector i1i2;
+      i1i2 = (lep_i1_nofsr)+(lep_i2_nofsr);
+      allM.push_back(i1i2.M());
+      if (*min_element(allM.begin(),allM.end())<4.0) {continue;}
+
+      // Check isolation cut (without FSR ) for Z1 leptons
+      if ((*lep_RelIsoNoFSR)[Z1_lepindex[0]]>((abs((*lep_id)[Z1_lepindex[0]])==11) ? isoCutEl : isoCutMu)) continue; // checking iso with FSR removed
+      if ((*lep_RelIsoNoFSR)[Z1_lepindex[1]]>((abs((*lep_id)[Z1_lepindex[1]])==11) ? isoCutEl : isoCutMu)) continue; // checking iso with FSR removed
+
+      // Check tight ID cut for Z1 leptons
+      if (!((*lep_tightId)[Z1_lepindex[0]])) continue; // checking tight lepton ID
+      if (!((*lep_tightId)[Z1_lepindex[1]])) continue; // checking tight lepton ID
+
+      if(Z1.Pt()<100) continue;
+
+      if ( (Z1.M() < mZ1Low) || (Z1.M() > mZ1High) ) continue;
+
+      if (Z1DeltaM<=minZ1DeltaM) {
+
+        minZ1DeltaM = Z1DeltaM;
+
+        lep_1_pt_dn = (*lepFSR_pt)[Z1_lepindex[0]]*0.99;
+        lep_1_eta_dn = (*lepFSR_eta)[Z1_lepindex[0]];
+        lep_1_phi_dn = (*lepFSR_phi)[Z1_lepindex[0]];
+        lep_1_mass_dn = (*lepFSR_mass)[Z1_lepindex[0]];
+        lep_2_pt_dn = (*lepFSR_pt)[Z1_lepindex[1]]*0.99;
+        lep_2_eta_dn = (*lepFSR_eta)[Z1_lepindex[1]];
+        lep_2_phi_dn = (*lepFSR_phi)[Z1_lepindex[1]];
+        lep_2_mass_dn = (*lepFSR_mass)[Z1_lepindex[1]];
+
+        if( ((*lep_id)[Z1_lepindex[0]]+(*lep_id)[Z1_lepindex[1]])==0 ) foundZ1LCandidate_dn=true;
+      }
+
+  }
 
 }
 
@@ -1915,7 +2105,7 @@ void TreeLoop::findZ2JCandidata(){
       pass_jeteta2opint4 = true;
 
       //check dijet pt
-      //if(Zi.Pt()<dijetPtCut){ continue;}
+      if(Zi.Pt()<dijetPtCut){ continue;}
       pass_dijetpt100 = true;
 
       //check loose dijet mass for 40-180Gev
@@ -1972,7 +2162,11 @@ void TreeLoop::findZ2JCandidata(){
 
         jet_1_phi = (*jet_phi)[Z2_jetindex[0]];
         jet_2_phi = (*jet_phi)[Z2_jetindex[1]];
-  
+
+        jet_1_mass = (*jet_mass)[Z2_jetindex[0]];
+        jet_2_mass = (*jet_mass)[Z2_jetindex[1]];
+
+
 
         foundZ2JCandidate=true;
         if(verbose) cout<<"[INFO] find resovled jet candidates"<<endl;
@@ -2195,6 +2389,8 @@ void TreeLoop::findZ2MergedCandidata(){
     if((*mergedjet_pt)[i]>this_pt){
       this_pt = (*mergedjet_pt)[i];
       ptmerged = this_pt;
+      etamerged = (*mergedjet_eta)[i];
+      phimerged = (*mergedjet_phi)[i];
       massmerged = (*mergedjet_subjet_softDropMass)[i];
       merged_Z1index = i;
       particleNetZvsQCD = temp_particleNetZvsQCD;
@@ -2728,10 +2924,28 @@ void TreeLoop::setTree(){
 
   passedEventsTree_All->Branch("lep_1_pt",&lep_1_pt);
   passedEventsTree_All->Branch("lep_1_phi",&lep_1_phi);
+  passedEventsTree_All->Branch("lep_1_mass",&lep_1_mass);
   passedEventsTree_All->Branch("lep_2_pt",&lep_2_pt);
   passedEventsTree_All->Branch("lep_1_eta",&lep_1_eta);
   passedEventsTree_All->Branch("lep_2_eta",&lep_2_eta);
   passedEventsTree_All->Branch("lep_2_phi",&lep_2_phi);
+  passedEventsTree_All->Branch("lep_2_mass",&lep_2_mass);
+  passedEventsTree_All->Branch("lep_1_pt_up",&lep_1_pt_up);
+  passedEventsTree_All->Branch("lep_1_eta_up",&lep_1_eta_up);
+  passedEventsTree_All->Branch("lep_1_phi_up",&lep_1_phi_up);
+  passedEventsTree_All->Branch("lep_1_mass_up",&lep_1_mass_up);
+  passedEventsTree_All->Branch("lep_2_pt_up",&lep_2_pt_up);
+  passedEventsTree_All->Branch("lep_2_eta_up",&lep_2_eta_up);
+  passedEventsTree_All->Branch("lep_2_phi_up",&lep_2_phi_up);
+  passedEventsTree_All->Branch("lep_2_mass_up",&lep_2_mass_up);
+  passedEventsTree_All->Branch("lep_1_pt_dn",&lep_1_pt_dn);
+  passedEventsTree_All->Branch("lep_1_eta_dn",&lep_1_eta_dn);
+  passedEventsTree_All->Branch("lep_1_phi_dn",&lep_1_phi_dn);
+  passedEventsTree_All->Branch("lep_1_mass_dn",&lep_1_mass_dn);
+  passedEventsTree_All->Branch("lep_2_pt_dn",&lep_2_pt_dn);
+  passedEventsTree_All->Branch("lep_2_eta_dn",&lep_2_eta_dn);
+  passedEventsTree_All->Branch("lep_2_phi_dn",&lep_2_phi_dn);
+  passedEventsTree_All->Branch("lep_2_mass_dn",&lep_2_mass_dn);
   passedEventsTree_All->Branch("Nleptons",&Nleptons);
   passedEventsTree_All->Branch("Ntightleptons",&Ntightleptons);
 
@@ -2785,8 +2999,12 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("ptmerged",&ptmerged);
   passedEventsTree_All->Branch("ptmerged_up",&ptmerged_up);
   passedEventsTree_All->Branch("ptmerged_dn",&ptmerged_dn);
+  passedEventsTree_All->Branch("etamerged",&etamerged);
+  passedEventsTree_All->Branch("phimerged",&phimerged);
   passedEventsTree_All->Branch("nsubjet",&nsubjet);
   passedEventsTree_All->Branch("foundZ1LCandidate",&foundZ1LCandidate);
+  passedEventsTree_All->Branch("foundZ1LCandidate_up",&foundZ1LCandidate_up);
+  passedEventsTree_All->Branch("foundZ1LCandidate_dn",&foundZ1LCandidate_dn);
   passedEventsTree_All->Branch("foundZ2JCandidate",&foundZ2JCandidate);
   passedEventsTree_All->Branch("foundZ2JCandidate_up",&foundZ2JCandidate_up);
   passedEventsTree_All->Branch("foundZ2JCandidate_dn",&foundZ2JCandidate_dn);
@@ -2861,6 +3079,8 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("jet_2_eta",&jet_2_eta);
   passedEventsTree_All->Branch("jet_1_phi",&jet_1_phi);
   passedEventsTree_All->Branch("jet_2_phi",&jet_2_phi);
+  passedEventsTree_All->Branch("jet_1_mass",&jet_1_mass);
+  passedEventsTree_All->Branch("jet_2_mass",&jet_2_mass);
   passedEventsTree_All->Branch("jet_1_pt_up",&jet_1_pt_up);
   passedEventsTree_All->Branch("jet_1_eta_up",&jet_1_eta_up);
   passedEventsTree_All->Branch("jet_1_phi_up",&jet_1_phi_up);
@@ -3105,6 +3325,8 @@ void TreeLoop::setTree(){
 void TreeLoop::initialize(){
   //initialize
   foundZ1LCandidate = false;
+  foundZ1LCandidate_up = false;
+  foundZ1LCandidate_dn = false;
   foundZ2JCandidate = false;
   foundZ2JCandidate_up = false;
   foundZ2JCandidate_dn = false;
@@ -3133,6 +3355,11 @@ void TreeLoop::initialize(){
 
   EventWeight = 1.0; GenWeight = 1.0; PileupWeight = 1.0; PrefiringWeight = 1.0;
   lep_1_pt = -999.0; lep_1_eta = -999.0; lep_1_phi = -999; lep_2_eta = -999.0; lep_2_pt = -999.0; lep_2_phi = -999.0;
+  lep_1_mass = -999.0; lep_2_mass = -999.0;
+  lep_1_pt_up = -999.0; lep_1_eta_up = -999.0; lep_1_phi_up = -999; lep_2_eta_up = -999.0; lep_2_pt_up = -999.0; lep_2_phi_up = -999.0;
+  lep_1_mass_up = -999.0; lep_2_mass_up = -999.0;
+  lep_1_pt_dn = -999.0; lep_1_eta_dn = -999.0; lep_1_phi_dn = -999; lep_2_eta_dn = -999.0; lep_2_pt_dn = -999.0; lep_2_phi_dn = -999.0;
+  lep_1_mass_dn = -999.0; lep_2_mass_dn = -999.0;
   Nleptons = -999; Ntightleptons = 0;
   mass2jet=-999.99; mass2jet_up=-999.99; mass2jet_dn=-999.99;
   pt2jet=-999.99; pt2jet_up=-999.00; pt2jet_dn=-999.99;
@@ -3150,6 +3377,8 @@ void TreeLoop::initialize(){
   KD_Zjj = -999.99; KD_Zjj_up = -999.99; KD_Zjj_dn = -999.99;
   massmerged = -999.99; massmerged_up = -999.99; massmerged_dn = -999.99;
   ptmerged = -999.99; ptmerged_up = -999.99; ptmerged_dn = -999.99;
+  etamerged = -999.99;
+  phimerged = -999.99;
   nsubjet = -999.99;
   mass2lj = -999.99;
   mass2lj_up = -999.99;
@@ -3165,6 +3394,7 @@ void TreeLoop::initialize(){
   jet_1_pt = -999.99;  jet_2_pt = -999.99;
   jet_1_eta = -999.99; jet_2_eta = -999.99;
   jet_1_phi = -999.99; jet_2_phi = -999.99;
+  jet_1_mass = -999.99; jet_2_mass = -999.99;
   jet_1_pt_up=-999.99; jet_1_pt_dn=-999.99;
   jet_1_eta_up=-999.99; jet_1_eta_dn=-999.99;
   jet_1_phi_up=-999.00; jet_1_phi_dn=-999.99;

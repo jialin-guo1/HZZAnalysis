@@ -34,7 +34,7 @@ def subIHEPjob(dir,path_subscript,runPath,excute,year):
             if mass is not None:
                 outSH.write("runMEs -p {} -i {} -y {} -m {}\n".format(dir,fulljobname[len(fulljobname)-1],year,mass))
             else:
-                outSH.write("runMEs -p {} -i {} -y {} \n".format(dir,fulljobname[len(fulljobname)-1]),year)
+                outSH.write("runMEs -p {} -i {} -y {} \n".format(dir,fulljobname[len(fulljobname)-1],year))
 
         cmd = 'chmod 777 {}'.format(jobfile)
         output = processCmd(cmd)
@@ -67,6 +67,7 @@ def main():
                     'WWTo2L2Nu':'MC/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8',
                     'WZTo2Q2L':'MC/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8',
                     'ZZTo2Q2L':'MC/ZZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8',
+                    'ZZTo2L2Nu':'MC/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8',
                     'tZq':"MC/tZq_ll_4f_ckm_NLO_TuneCP5_13TeV-amcatnlo-pythia8",
                     'WZTo1L1Nu2Q':'MC/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8',
                     'WWTo1L1Nu2Q':'MC/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8',

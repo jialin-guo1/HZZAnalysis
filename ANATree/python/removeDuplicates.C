@@ -8,6 +8,8 @@ void removeDuplicates() {
     TString prefix = "/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/Data/skimed/Data2018UL";
     TString filename = prefix+".root";
 
+    //test
+
     std::cout<<filename<<std::endl;
 
     TFile *oldfile = new TFile(filename);
