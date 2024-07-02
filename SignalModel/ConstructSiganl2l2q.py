@@ -11,8 +11,14 @@ class ConstructSignal2l2q:
         self.width_bw = 700
         self.production = production
 
+        self.sigpdf = None
+        self.sig_dcb = None
+
         self.build_RooRealvar()
         self.build_splinepdf()
+
+    def init_varables(self):
+        self.mass_zz2l2q = ROOT.RooRealVar("mass", "Mass", self.low_mass, self.high_mass)
 
     def build_RooRealvar(self):
         self.mass_zz2l2q = ROOT.RooRealVar("mass", "Mass", self.low_mass, self.high_mass)
@@ -41,13 +47,14 @@ class ConstructSignal2l2q:
         '''
         # test pdf
         nbins = 3500
-        self.hsig_2l2q = ROOT.TH1F('hsig_2l2q','hsig_2l2q',2*nbins,self.low_mass,self.high_mass)
-        for ib in range(1,2*nbins+1):
+        self.hsig_2l2q = ROOT.TH1F('hsig_2l2q','hsig_2l2q',nbins,self.low_mass,self.high_mass)
+        for ib in range(1,nbins+1):
             x = self.hsig_2l2q.GetBinCenter(ib)
             self.mass_zz2l2q.setVal(x)
+            mass_set = ROOT.RooArgSet(self.mass_zz2l2q)
             if(((x<self.mH-3*self.width_bw) & (x<self.mH-0.5*0.5)) | ((x>self.mH+3*self.width_bw) & (x>self.mH+0.5*0.5)) | (self.width_bw>10*0.5)):
-                bc = self.higgspdf.getVal()
-                bc_range = self.higgspdf.getValV()*0.5
+                bc = self.higgspdf.getVal(mass_set)
+                bc_range = self.higgspdf.getVal(mass_set)*0.5
             else:
                 bc = 0
                 bc_range = 0
@@ -55,8 +62,9 @@ class ConstructSignal2l2q:
                     xx = self.mH + j*0.02*self.width_bw
                     if(xx>x-0.5*0.5 & xx<=x+0.5*0.5):
                         self.mass_zz2l2q.setVal(xx)
-                        bc += self.higgspdf.getVal()
-                        bc_range += self.higgspdf.getValV()*0.02*self.width_bw
+                        mass_set = ROOT.RooArgSet(self.mass_zz2l2q)
+                        bc += self.higgspdf.getVal(mass_set)
+                        bc_range += self.higgspdf.getVal(mass_set)*0.02*self.width_bw
             if bc<0: bc = 0
             self.hsig_2l2q.SetBinContent(ib,bc)
         print("Integral of signal histogram: ", self.hsig_2l2q.Integral())
@@ -78,7 +86,7 @@ class ConstructSignal2l2q:
         if not hasattr(self,'hsig_2l2q'):
             self.build_sighisto(ifplot)
         
-        nbins = 2*self.high_mass
+        nbins = self.high_mass
         self.mass_zz2l2q.setBins(nbins)
 
         # create RooDataHist
@@ -89,6 +97,9 @@ class ConstructSignal2l2q:
 
         #check if pdf is normalised
         print("Integral of signal pdf: ", self.sigpdf.createIntegral(ROOT.RooArgSet(self.mass_zz2l2q)))
+
+        #check value of pdf
+        print("value of sigpdf: ", self.sigpdf.getVal())
 
         # plot RooDataHist
         if ifplot:
@@ -109,8 +120,10 @@ class ConstructSignal2l2q:
             canvas = ROOT.TCanvas("canvas", "RooHistPdf of sig", 1000, 800)
             frame.Draw()
             canvas.SaveAs("sig_RooHistPdf.png")
+        #return self.sigpdf.Clone("abc")
 
     def build_dcb(self,ifplot=False):
+        self.init_varables()
 
         f_dcb = ROOT.TFile("2l2q_resolution_resolved.root")
 
@@ -126,13 +139,16 @@ class ConstructSignal2l2q:
         ##mean and sigma
         name = "mean_ggH_"
         mean_ggH = ROOT.RooRealVar(name,name, (f_dcb.Get("mean")).GetListOfFunctions().First().Eval(self.mH))
-        #mean_ggH.setVal(0)
+        mean_ggH.setVal(0)
         name = "sigma_ggH_"
         sigma_ggH = ROOT.RooRealVar(name,name, (f_dcb.Get("sigma")).GetListOfFunctions().First().Eval(self.mH))
 
         #build DCB
         name = "sig_dcb_"
         self.sig_dcb = ROOT.RooDoubleCB(name,name,self.mass_zz2l2q,mean_ggH,sigma_ggH,a1_ggH,n1_ggH,a2_ggH,n2_ggH)
+
+        #check value of dcb
+        print("value of sig_dcb: ", self.sig_dcb.getVal())
 
         #plot DCB
         if ifplot:
@@ -145,20 +161,30 @@ class ConstructSignal2l2q:
             canvas.SaveAs("sig_RooDoubleCB.png")
 
     def buid_conv_pdf(self,ifplot=False):
+        self.init_varables()
         # build convolution pdf
-        self.sig_conv = ROOT.RooFFTConvPdf("sig_conv","sig_conv",self.mass_zz2l2q,self.sigpdf,self.sig_dcb,2)
-        print(self.sig_conv)
+        #mass_zz2l2q = ROOT.RooRealVar("mass", "Mass", self.low_mass, self.high_mass)
+        #mass_zz2l2q.setBins(10000, "cache")
+        #check if self.sigpdf and self.sig_dcb 
+        print("check value of sigpdf: ", self.sigpdf.getVal())
+        print("check value of sig_dcb: ", self.sig_dcb.getVal())
+        print("check value of mass_zz2l2q: ", self.mass_zz2l2q.getVal())
+        self.sig_conv = ROOT.RooFFTConvPdf("sig_conv","sig_conv",self.mass_zz2l2q,self.sigpdf,self.sig_dcb)
+        print(self.sig_conv.getVal())
 
         #plot convolution pdf
         if ifplot:
-            frame = self.mass_zz2l2q.frame()
-            self.sig_conv.plotOn(frame)
+            frame = mass_zz2l2q.frame()
+            #self.sig_conv.plotOn(frame)
 
             # Draw the plot
             canvas = ROOT.TCanvas("canvas", "RooDoubleCB of sig", 1000, 800)
             frame.Draw()
             canvas.SaveAs("sig_convolution.png")
 
+    def debug(self):
+
+        print("debug sigpdf: ", self.sigpdf.getVal())
 
 #define this script as main
 if __name__ == '__main__':
@@ -166,18 +192,23 @@ if __name__ == '__main__':
     sig_constructor = ConstructSignal2l2q()
 
     # build signal histogram
-    #sig_constructor.build_sigpdf(ifplot=True)
     sig_constructor.build_sighisto(ifplot=False)
 
     # build signal pdf
-    #sig_constructor.build_sigpdf(ifplot=True)
     sig_constructor.build_sigpdf(ifplot=False)
+    sig_constructor.debug()
+    #pdf = sig_constructor.build_sigpdf(ifplot=False)
+    #print(pdf)
+    #print(pdf.getVal())
+
+    #zz = ROOT.gDirectory.Get("abc")
+    #print(zz)
+    #print(zz.getVal())
 
     # build resolution function
-    #sig_constructor.build_dcb(ifplot=True)
-    sig_constructor.build_dcb(ifplot=True)
+    #sig_constructor.build_dcb(ifplot=False)
 
     # build convolution pdf
-    sig_constructor.buid_conv_pdf(ifplot=True)
+    #sig_constructor.buid_conv_pdf(ifplot=True)
 
 
