@@ -3,12 +3,14 @@ import numpy as np
 import boost_histogram as bh
 import awkward as ak
 import datetime
+import logging
 
 class setting():
-    def __init__(self) -> None:
+    def __init__(self,year='2018') -> None:
+        self.year = year
         #config
         #self.config_path = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL_alphavalidate_110to135.yml"
-        self.config_path = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL16.yml"
+        self.config_path = f"/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL{self.year}.yml"
         with open( self.config_path) as f:
             self.config = yaml.safe_load(f)
         #globale parameter
@@ -131,15 +133,15 @@ class setting():
                 #'ggh400':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M400_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],
                 #'ggh2500':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M2500_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],
                 ##'ggh3000':[f'{self.filepath}/{year}/MC/ggh3000/skimed/ggh3000.root'],
-                #'vbf1000':[f'{self.filepath}/{year}/MC/vbf1000/skimed/vbf1000.root'],
+                'vbf1000':[f'{self.filepath}/{year}/MC/vbf/skimed/VBF_HToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],
                 ##'ZH_HToBB':[f'{self.filepath}/{year}/MC/ZH_HToBB_ZToLL_M-125_TuneCP5_13TeV-powheg-pythia8/skimed/ZH_HToBB_ZToLL.root'],
-                ##'WWTo1L1Nu2Q':[f'/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/WWTo1L1Nu2Q.root'],
-                #'tZq':[f'{self.filepath}/{year}/MC/tZq_ll_4f_ckm_NLO_TuneCP5_13TeV-amcatnlo-pythia8/skimed/tZq.root'],
-                ##'ZZTo2L2Nu':[f'{self.filepath}/{year}/MC/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/skimed/ZZTo2L2Nu.root'],
-                ##'WZTo1L1Nu2Q':[f'{self.filepath}/{year}/MC/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/WZTo1L1Nu2Q.root'],
+                'WWTo1L1Nu2Q':[f'/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/WWTo1L1Nu2Q.root'],
+                'tZq':[f'{self.filepath}/{year}/MC/tZq_ll_4f_ckm_NLO_TuneCP5_13TeV-amcatnlo-pythia8/skimed/tZq.root'],
+                'ZZTo2L2Nu':[f'{self.filepath}/{year}/MC/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/skimed/ZZTo2L2Nu.root'],
+                'WZTo1L1Nu2Q':[f'{self.filepath}/{year}/MC/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/WZTo1L1Nu2Q.root'],
                 ##'WZTo3LNu':[f'{self.filepath}/{year}/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/WZTo3LNu.root'],
                 ##'DYJetsToLL_M-50':[f'{self.filepath}/{year}/MC/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/skimed/DYJetsToLL_M-50.root'],
-                #'Data':[f'/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/Data/skimed/Data{year}UL_noDuplicates.root'], 
+                'Data':[f'/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/Data/skimed/Data{year}UL_noDuplicates.root'], 
             }
             self.sigfileset[year] = {
                 #'ggh125':[f'{self.filepath}/{year}/MC/ggh/skimed/GluGluHToZZTo2L2Q_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root'],

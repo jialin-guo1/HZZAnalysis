@@ -244,7 +244,7 @@ class GetHisto(setting):
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_rebin_2d_raw'] = f[f'{sample}/merged_tag/{reg}/{cat}/{tag}/{varb}_rebin_2d_raw'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d_raw'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d_raw'].to_boost()
-                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost() c0879bec1b8874e41a2a3f887231a8adea0c79f8
+                                        h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d_raw'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d_raw'].to_boost() 
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_up_rebin_2d'] = f[f'{sample}/merged_tag_up/{reg}/{cat}/{tag}/{varb}_up_rebin_2d'].to_boost()
                                         h[f'{sample}_{reg}_{cat}_{tag}_{varb}_dn_rebin_2d'] = f[f'{sample}/merged_tag_dn/{reg}/{cat}/{tag}/{varb}_dn_rebin_2d'].to_boost()
 
@@ -672,7 +672,8 @@ def extractCutedBranch(config,year,cat):
 def extractCutedCatBranch(config,year,cat,signal_extract_lists = None, tags = None):
     logger.info(f"Extracting {cat} category cuted array")
     if signal_extract_lists == None:
-        signal_extract_lists = ['ggh1000','vbf1000','sig']
+        #signal_extract_lists = ['ggh1000','vbf1000','sig']
+        signal_extract_lists = ['ggh1000']
     logger.debug(f"signal_extract_lists = {signal_extract_lists}")
     
     if tags == None:

@@ -91,6 +91,7 @@ protected:
   bool passedGENH;
 
   float EventWeight, GenWeight, PileupWeight, PrefiringWeight,SumWeight, CrossSectionWeight=1.0;
+  float EventWeight_up, EventWeight_dn;
   float xsec = 1.0;
   Long64_t nentries;
 
@@ -307,7 +308,7 @@ protected:
   TTreeReaderArray<vector<int>> *GEN_qdau_id, *GEN_qdau_status;
   TTreeReaderArray<vector<double>> *GEN_qdau_pt, *GEN_qdau_eta, *GEN_qdau_phi, *GEN_qdau_mass;
   TTreeReaderArray<double> *GEN_VBF_pt, *GEN_VBF_eta, *GEN_VBF_phi, *GEN_VBF_mass;
-  TTreeReaderArray<float> *lep_dataMC;
+  TTreeReaderArray<float> *lep_dataMC, *lep_dataMCErr;
   TTreeReaderArray<int> *mergedjet_nbHadrons, *mergedjet_ncHadrons;
   TTreeReaderArray<int> *jet_hadronFlavour, *jet_partonFlavour;
   TTreeReaderArray<double> *GENH_status, *GENH_mass, *GENH_pt, *GENH_eta, *GENH_phi;

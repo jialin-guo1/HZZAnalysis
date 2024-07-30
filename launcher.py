@@ -5,7 +5,7 @@ import os
 if __name__ == '__main__':
     print('\033[1;34mWelcome to HZZ2l2q Analysis\033[0m')
     print('\033[1;34mPlease tell me which analyis step you want to run. Here we have some options for you\033[0m')
-    print('\033[4;35m1.makecut 2.plotMcData 3.plotsplitunce 4.alpha 5.make2dtemplate 6.readunc 7.significant 8.makereso\033[0m')
+    print('\033[4;35m1.makecut 2.plotMcData 3.plotsplitunce 4.alpha 5.make2dtemplate 6.readunc 7.significant 8.makereso 9.btageff\033[0m')
     option = input()
     #ask to type option again if the input is not in the list
     while option not in ['makecut','plotMcData','plotsplitunce','alpha','make2dtemplate','readunc','significant','makereso']:
@@ -180,6 +180,13 @@ if __name__ == '__main__':
             #MakeResolutionUnit(year).run()
             MakeResolution(year=year).run()
 
+    
+    #================================================
+    if option == 'btageff':
+        print('\033[1;34mstart to BtagEff process\033[0m')
+        sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BtagEff")
+        from BtagEff import BtagEffUnit
+        BtagEffUnit(year).run()    
         
 
 

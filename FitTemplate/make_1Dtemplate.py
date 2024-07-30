@@ -19,8 +19,9 @@ import sys,os
 sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/lib")
 from utils import *
 from deepjet import DeepJet as dj
+from setting import setting
 
-logger.setLevel(logging.INFO) # DEBUG, INFO, WARNING, ERROR, CRITICAL. Default is ERROR.
+logger.setLevel(logging.DEBUG) # DEBUG, INFO, WARNING, ERROR, CRITICAL. Default is ERROR.
 
 import yaml
 sf_particleNet_signal = {}
@@ -31,23 +32,6 @@ with open(f"/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_U
     config = yaml.safe_load(f)
 
 outfilepath = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/BackgroundEstimation/ttoutfile"
-
-class Make1Dtemplate():
-    def __init__(self,year,cat):
-        self.year = year
-        self.cat = cat
-
-        self.sf_particleNet_signal = {}
-        with open('/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/NetSF_signal_2016Legacy.yml') as f:
-            self.sf_particleNet_signal = yaml.safe_load(f)
-        
-        self.config = {}
-        with open("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL16_old.yml") as f:
-            self.config = yaml.safe_load(f)
-
-        self.bins = 80
-        self.minbin = 0
-        self.maxbin = 4000
         
 #==================================================set plot color==================================================
 def set_sns_color(*args):
@@ -112,18 +96,20 @@ def getAlphaArray(alpha_histo,massZZ_histo):
 bins = 80; minbin = 0; maxbin = 4000
 
 regions = ['CR','SR']
-#tags = ['btag','untag','vbftag']
-tags = ['btag']
+tags = ['btag','untag','vbftag']
+#tags = ['vbftag','untag']
 cats = ['isEE','isMuMu','2lep']
-#cats = ['2lep']
+#cats = ['isEE']
 pro_str = 'perInvFb_Bin50GeV'
 #reg = 'SR'
 #print(f'massZZ bins = {massZZ_bins}')
 
 if(args.cat=='resolved'):
     massZZ='mass2l2jet'; kd = 'KD_Zjj'; case= 'resolved'; str_alpha = 'resolved'
+    #bins = setting().massZZ_bins['resolved']
 elif(args.cat=='merged'):
     massZZ='mass2lj'; kd = 'KD_ZJ'; case='merged'; str_alpha = 'merged_tag'
+    #bins = setting().massZZ_bins['merged']
 
 #For 2016preAPV and 2016postAPV, use 2016 Alpha file
 if args.year=='2016preAPV' or args.year=='2016postAPV':
@@ -149,6 +135,8 @@ for cat in cats:
     #create histogram for each background each region and category
     histo = {}
     with uproot.recreate(f'Files/Template1D_spin0_{file_channel}_{args.cat}_{args.year}.root') as outfile:
+    #with uproot.update(f'Files/Template1D_spin0_{file_channel}_{args.cat}_{args.year}.root') as outfile:
+        logger.info(f"outfile = Files/Template1D_spin0_{file_channel}_{args.cat}_{args.year}.root")
         for reg in regions:
             if reg=='SR':
                 region = 'SR'
@@ -167,12 +155,17 @@ for cat in cats:
                 histo[reg][tag] = {}
                 for sam in ['TTplusWW','VZ']:
                     histo[reg][tag][sam] = bh.Histogram(bh.axis.Regular(bins=bins, start=minbin, stop=maxbin),storage=bh.storage.Weight())
+                    #histo[reg][tag][sam] = bh.Histogram(bins,storage=bh.storage.Weight())
                 for sample in config['Samples_lists']:
                     print(f"This is {sample} {cat} {region} {tag}")
-                    #make histo to store the template ttbar and VZ, skip the DY MC in CR
+                    #make histo to store the template ttbar and VZ, skip the DY MC 
                     if sample!='Data':
-                        if sample.find('DY')!=-1 and reg=="CR": continue
+                        #if sample.find('DY')!=-1 and reg=="CR": continue
+                        if sample.find('DY')!=-1: continue
                         temp_array = bkg_array[reg][cat][tag][sample]
+
+                        #define histogram for filling
+                        #temp_hist = bh.Histogram(bh.axis.Regular(bins=bins, start=minbin, stop=maxbin),storage=bh.storage.Weight())
 
                         #retray weight and apply paritcleNet weight
                         weights = (temp_array['EventWeight']*config['lumi'][args.year]*1000*config['samples_inf'][sample][1])/sumWeight[sample]
@@ -183,27 +176,42 @@ for cat in cats:
                         weights = weights*sf_Net
 
                         #Deepjet SFs for btag in resolved category only
-                        logger.info(f'Produce deepjet SFs for cat = {args.cat}, tag = {tag}')
-                        if args.cat=='resolved' and tag=='btag':
-                            dj_helper = dj(args.year,temp_array)
-                            sf_jet1,sf_jet2 = dj_helper.get_deepjet_sf('central')
-                            logger.info(f'sf = {sf_jet1*sf_jet2}')
-                            weights = weights*sf_jet1*sf_jet2
+                        if args.cat=='resolved':
+                            if tag=='btag' or tag == 'untag':
+                                logger.info(f'Produce deepjet SFs for sample = {sample}, cat = {args.cat}, tag = {tag}')
+                                #dj_helper = dj(args.year,temp_array)
+                                #sf_jet1,sf_jet2 = dj_helper.get_deepjet_sf('central')
+                                #logger.info(f'sf = {sf_jet1*sf_jet2}')
+                                #weights = weights*sf_jet1*sf_jet2
 
-                            #compute uncertainty for deepjet SFs.
-                            sf_jet1_up,sf_jet2_up = dj_helper.get_deepjet_sf('up')
-                            sf_jet1_down,sf_jet2_down = dj_helper.get_deepjet_sf('down')
-                            sf_certral = (sf_jet1+sf_jet2).sum()
-                            sf_up = (sf_jet1_up+sf_jet2_up).sum()
-                            sf_down = (sf_jet1_down+sf_jet2_down).sum()
-                            uncertainty_up = abs(sf_up-sf_certral)/sf_certral
-                            uncertainty_down = abs(sf_down-sf_certral)/sf_certral
+                                #compute uncertainty for deepjet SFs.
+                                #sf_jet1_up,sf_jet2_up = dj_helper.get_deepjet_sf('up')
+                                #sf_jet1_down,sf_jet2_down = dj_helper.get_deepjet_sf('down')
+                                #sf_certral = (sf_jet1+sf_jet2).sum()
+                                #sf_up = (sf_jet1_up+sf_jet2_up).sum()
+                                #sf_down = (sf_jet1_down+sf_jet2_down).sum()
+                                #uncertainty_up = abs(sf_up-sf_certral)/sf_certral
+                                #uncertainty_down = abs(sf_down-sf_certral)/sf_certral
+                                #dj_uncertainty_file.write(f'{cat} {sample} {reg} {uncertainty_up}/{uncertainty_down}\n')
 
-                            dj_uncertainty_file.write(f'{cat} {sample} {reg} {uncertainty_up}/{uncertainty_down}\n')
+                                weights = (temp_array['w_deepjet']*temp_array['EventWeight']*config['lumi'][args.year]*1000*config['samples_inf'][sample][1])/sumWeight[sample]
 
-                        #temp_hist = get_hist(temp_array[var],weights,nbins,xmin,xmax)
-                        #temp_hist = bh.Histogram(massZZ_bins,storage=bh.storage.Weight())
+                                #temp_hist.fill(temp_array[massZZ],weight = weights)
+                            #elif tag=='untag':
+                            #    #logger.info(f'Produce deepjet SFs for sample = {sample} cat = {args.cat}, tag = {tag}')
+                            #    #dj_helper = dj(args.year,temp_array)
+                            #    ##new_arr = dj_helper.get_untag_deepjet_array(sample)
+                            #    #new_arr = dj_helper.get_untag_deepjet_weight(sample)
+                            #    #weights = (new_arr['w_btag']*new_arr['EventWeight']*config['lumi'][args.year]*1000*config['samples_inf'][sample][1])/sumWeight[sample]
+                            #    #temp_hist.fill(new_arr[massZZ],weight = weights)
+                            #    pass
+                            #else: #vbf tag
+                            #    temp_hist.fill(temp_array[massZZ],weight = weights)
+                        #else:
+                            #temp_hist = get_hist(temp_array[var],weights,nbins,xmin,xmax)
+                            #temp_hist = bh.Histogram(massZZ_bins,storage=bh.storage.Weight())
                         temp_hist = bh.Histogram(bh.axis.Regular(bins=bins, start=minbin, stop=maxbin),storage=bh.storage.Weight())
+                        #temp_hist = bh.Histogram(bins,storage=bh.storage.Weight())
                         temp_hist.fill(temp_array[massZZ],weight = weights)
 
                         if sample.find('TTTo2L2Nu')!=-1 or sample.find('WWTo2L2Nu')!=-1:
@@ -226,28 +234,34 @@ for cat in cats:
                 tag_str = 'btag_'
             elif tag=='vbftag':
                 tag_str = 'vbf_'
+
+            logger.info(f"produce Zjet in {reg} region for {cat} {tag} tag")
             
             #create a histogram to store the Zjet in CR
             hist = bh.Histogram(bh.axis.Regular(bins=bins, start=minbin, stop=maxbin),storage=bh.storage.Weight())
+            #hist = bh.Histogram(bins,storage=bh.storage.Weight())
             temp_array = data_array[reg][cat][tag]
             weight = ak.ones_like(temp_array['EventWeight'])
             hist.fill(temp_array[massZZ],weight=weight)
+            logger.debug(f"massZZ = {temp_array[massZZ]} weight = {weight} reg = {reg} cat = {cat} tag = {tag}")
 
             #substrct ttbar and VZ from data to get Zjet in CR
             hist.view().value = hist.view().value - histo[reg][tag]['TTplusWW'].view().value - histo[reg][tag]['VZ'].view().value
-            
+            logger.debug(f"massZZ = {hist.view().value}  after substrct ttbar and VZ from data to get Zjet in CR")
+
             #store the Zjet in CR into root file
             hist.view().value = np.maximum(hist.view().value,0)
             outfile[f'hmass_{args.cat}SB{tag_str}Zjet_{pro_str}'] = hist
 
             #get alpha histogram from alpha file
             temp_alpha = Alpha_file[f'{str_alpha}_{cat}_{tag}'].to_hist()
-
             #get alpha ratio array according to the massZZ from alpha histogram
             alpha_array = getAlphaArray(temp_alpha,hist)
+            logger.debug(f"alpha array = {alpha_array}")
 
             #apply alpha ratio to get Zjet in SR
             hist.view().value = hist.view().value*alpha_array
+            logger.debug(f"massZZ = {hist.view().value} after apply alpha ratio to get Zjet in SR")
 
             #stroe the Zjet in SR into root file
             hist.view().value = np.maximum(hist.view().value,0)

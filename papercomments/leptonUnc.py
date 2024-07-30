@@ -25,7 +25,7 @@ sys.path.append("/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/lib")
 from setting import setting
 
 #config_path = "/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL_alphavalidate_110to135.yml"
-year = '2016preAPV'; process = 'ttbar'
+year = '2016preAPV'; process = 'vz'
 import yaml
 config_path = f"/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/cards/config_UL{year}.yml"
 with open( config_path) as f:
@@ -50,23 +50,24 @@ out_dir = f'/cms/user/guojl/ME_test/CMSSW_10_6_26/src/HZZAnalysis/txtfiles/HM_in
 
 #samples = ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf','TTTo2L2Nu','WWTo2L2Nu','WZTo2Q2L','ZZTo2Q2L','WWTo1L1Nu2Q','tZq','ZZTo2L2Nu','WZTo1L1Nu2Q','ggh1000','ggh500','sig','ggh2000']
 #samples = ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf','TTTo2L2Nu','WWTo2L2Nu','WZTo2Q2L','ZZTo2Q2L','tZq','ggh1000','sig']
-samples = ['TTTo2L2Nu','tZq']
+#samples = ['TTTo2L2Nu','tZq']
 #samples = ['ggh125','ggh400','ggh450','ggh500','ggh550','ggh600','ggh700','ggh750','ggh800','ggh900','ggh1000','ggh2000','ggh2500','ggh3000',]
 #samples = ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf']
-#samples = ['WWTo2L2Nu','ZZTo2Q2L','WZTo2Q2L']
-#samples = ['vbf']
+samples = ['WWTo2L2Nu','ZZTo2Q2L','WZTo2Q2L']
+#samples = ['qqH']
 arr = {}
 sumweight = {}
 n_events = {}
 #for sample in samples:
 #    #arr[sample] = uproot.lazy([f"{setting().fileset[year][sample][0]}:passedEvents"],filter_name = ['jet*','found*','KD*','Met','mass*','isMuMu','isEE'])
 #    #arr[sample] = uproot.lazy([f"{setting().fileset[year][sample][0]}:passedEvents"])
-#    arr[sample] = uproot.lazy([f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/{process}/skimed/VBF_HToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root:passedEvents"])
+#    #arr[sample] = uproot.lazy([f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/{process}/skimed/ggh.root:passedEvents"])
+#    arr[sample] = uproot.lazy([f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}/MC/vbf/skimed/vbf.root:passedEvents"])
 #    #arr[sample] = uproot.lazy([f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/MC/ggh/skimed/ggh.root:passedEvents"])
 #    
-#    f = uproot.open(f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}//MC/{process}/skimed/VBF_HToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root")['sumWeights']
+#    #f = uproot.open(f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/{year}//MC/{process}/skimed/VBF_HToZZTo2L2Q_M1000_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8__v16_L1v1-v1_0.root")['sumWeights']
 #    #f = uproot.open(f"/cms/user/guojl/Sample/2L2Q/UL_Legacy/2018/MC/ggh/skimed/ggh.root")['sumWeights']
-#    sumweight[sample] = (f.to_boost()).sum()
+#    #sumweight[sample] = (f.to_boost()).sum()
 #
 #    #f = uproot.open(setting().fileset[year][sample][0])['sumWeights']
 #    #sumweight[sample] = (f.to_boost()).sum()
@@ -75,7 +76,7 @@ n_events = {}
 #    #n_events[sample] = (f.to_boost()).sum()
 #
 #    f.close()
-#
+
 
 filelists = [f"{setting().fileset[year][sample][0]}:passedEvents" for sample in samples]
 arr[process] = uproot.lazy(filelists)
@@ -185,7 +186,7 @@ for channel in channels:
                     lines[i] = new_line + '\n'
                     found_line = True
                     #break
-                if line.startswith(f'systematic {uncertainty_type}') and (not line.startswith(f'systematic {uncertainty_type} {process}')):
+                if line.startswith(f'systematic {uncertainty_type}') and line.split(" ")[2].isdigit():
                     # If the uncertainty line is not contained the process name, then delete the line
                     del lines[i]
 

@@ -254,7 +254,7 @@ void TreeLoop::Loop(){
     if(ievent%10000==0){
       cout<<ievent<<"/"<<nentries<<std::endl;
     }
-    if(ievent==20000){break;} //test for 50000 events
+    //if(ievent==10000){break;} //test for 50000 events
 
     initialize(); // initialize all menber datas
 
@@ -313,6 +313,8 @@ void TreeLoop::Loop(){
     lumiSect = *(*LumiSect);
 
     EventWeight = *(*eventWeight)*(*lep_dataMC)[lep_Z1index[0]]*(*lep_dataMC)[lep_Z1index[1]];
+    EventWeight_up = *(*eventWeight) * ((*lep_dataMC)[lep_Z1index[0]]+(*lep_dataMCErr)[lep_Z1index[0]]) * ((*lep_dataMC)[lep_Z1index[1]]+(*lep_dataMCErr)[lep_Z1index[1]]);
+    EventWeight_dn = *(*eventWeight) * ((*lep_dataMC)[lep_Z1index[0]]-(*lep_dataMCErr)[lep_Z1index[0]]) * ((*lep_dataMC)[lep_Z1index[1]]-(*lep_dataMCErr)[lep_Z1index[1]]);
     GenWeight = *(*genWeight);
     PileupWeight = *(*pileupWeight);
     PrefiringWeight = *(*prefiringWeight);
@@ -1861,6 +1863,7 @@ void TreeLoop::findZ1LCandidate(){
   }
 
   //1% up
+  minZ1DeltaM=9999.9; //reset
   for (int i=0; i<n_Zs_1p; i++) {
 
     int i1 = Z_Z1L_lepindex1_1p[i]; int i2 = Z_Z1L_lepindex2_1p[i];
@@ -1932,6 +1935,7 @@ void TreeLoop::findZ1LCandidate(){
   }
 
   // 1% down
+  minZ1DeltaM=9999.9; //reset
   for (int i=0; i<n_Zs_1m; i++){
       
       int i1 = Z_Z1L_lepindex1_1m[i]; int i2 = Z_Z1L_lepindex2_1m[i];
@@ -2688,16 +2692,18 @@ void TreeLoop::SetMEsFile(std::string melafile){// Set the MEs
     melafile,
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen",
     "AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,LHE_DecayProbabilities_MCFM,LHE_PropagatorRewgt",
+    //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,DecayProbabilities_SpinZero_JHUGen,LHE_PropagatorRewgt",
     //"AJetsVBFProbabilities_SpinZero_JHUGen,AJetsQCDProbabilities_SpinZero_JHUGen,AJetsVHProbabilities_SpinZero_JHUGen,PMAVJJ_SUPERDIJETMELA",
-    //false
-    true
+    false
+    //true
   );
 
   // Build the MEs if they are specified
   if (!lheMElist.empty() || !recoMElist.empty()){
     // Set up MELA (done only once inside IvyMELAHelpers)
     //IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::INFO);
-    IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::ERROR);
+    //IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::ERROR);
+    IvyMELAHelpers::setupMela(tempyear, 125., MiscUtils::SILENT);
     //IvyMELAHelpers::setupMela(year, 125., MiscUtils::DEBUG_VERBOSE);
     // If there are output trees, set the output trees of the MEblock.
     // Do this before building the branches.
@@ -2801,6 +2807,7 @@ void TreeLoop::setTree(){
   lep_tightId = new TTreeReaderArray<int>(*myreader, "lep_tightId");
   lep_RelIsoNoFSR = new TTreeReaderArray<float>(*myreader, "lep_RelIsoNoFSR");
   lep_dataMC = new TTreeReaderArray<float>(*myreader,"lep_dataMC");
+  lep_dataMCErr = new TTreeReaderArray<float>(*myreader,"lep_dataMCErr");
   lep_pterr = new TTreeReaderArray<double>(*myreader,"lep_pterr");
   passedTrig = new TTreeReaderValue<bool>(*myreader,"passedTrig");
 
@@ -3021,6 +3028,8 @@ void TreeLoop::setTree(){
   passedEventsTree_All->Branch("isMuMu",&isMuMu);
 
   passedEventsTree_All->Branch("EventWeight",&EventWeight);
+  passedEventsTree_All->Branch("EventWeight_up",&EventWeight_up);
+  passedEventsTree_All->Branch("EventWeight_dn",&EventWeight_dn);
   passedEventsTree_All->Branch("GenWeight",&GenWeight);
   passedEventsTree_All->Branch("PileupWeight",&PileupWeight);
   passedEventsTree_All->Branch("PrefiringWeight",&PrefiringWeight);
@@ -3354,6 +3363,7 @@ void TreeLoop::initialize(){
   merged_Z1index = -1; merged_Z1index_up = -1; merged_Z1index_dn = -1;
 
   EventWeight = 1.0; GenWeight = 1.0; PileupWeight = 1.0; PrefiringWeight = 1.0;
+  EventWeight_up = 1.0; EventWeight_dn = 1.0;
   lep_1_pt = -999.0; lep_1_eta = -999.0; lep_1_phi = -999; lep_2_eta = -999.0; lep_2_pt = -999.0; lep_2_phi = -999.0;
   lep_1_mass = -999.0; lep_2_mass = -999.0;
   lep_1_pt_up = -999.0; lep_1_eta_up = -999.0; lep_1_phi_up = -999; lep_2_eta_up = -999.0; lep_2_pt_up = -999.0; lep_2_phi_up = -999.0;

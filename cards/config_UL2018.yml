@@ -43,8 +43,15 @@ samples_inf:
    test: 'MC/test'
    Data: ['Data/skimed/Data2016UL_noDuplicates.root',1]
 
-Samples_lists: ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf',
-              'TTTo2L2Nu',
+#Samples_lists: ['DY_pt50To100','DY_pt100To250','DY_pt250To400','DY_pt400To650','DY_pt650ToInf',
+#              'TTTo2L2Nu',
+#              'WZTo2Q2L',
+#              'ZZTo2Q2L',
+#              'WWTo2L2Nu',
+#              'tZq',
+#              'Data']
+
+Samples_lists: ['TTTo2L2Nu',
               'WZTo2Q2L',
               'ZZTo2Q2L',
               'WWTo2L2Nu',
